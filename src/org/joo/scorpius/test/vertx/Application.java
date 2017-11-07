@@ -4,18 +4,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.joo.scorpius.test.vertx.trigger.TriggerManager;
 
-import io.vertx.core.Vertx;
+public class Application {
 
-public class VertxApplication {
-
-	private Vertx vertx;
-	
 	private TriggerManager triggerManager;
 	
 	private AtomicBoolean initialized;
 
-	public VertxApplication() {
-		this.vertx = Vertx.factory.vertx();
+	public Application() {
 		this.initialized = new AtomicBoolean(false);
 	}
 
@@ -23,7 +18,7 @@ public class VertxApplication {
 		if (!initialized.compareAndSet(false, true))
 			throw new RuntimeException("Application is already running");
 
-		VertxApplicationContext applicationContext = new VertxApplicationContext(vertx);
+		ApplicationContext applicationContext = new ApplicationContext();
 		this.triggerManager = new TriggerManager(applicationContext);
 		bootstrap.setTriggerManager(triggerManager);
 		bootstrap.setApplicationContext(applicationContext);
