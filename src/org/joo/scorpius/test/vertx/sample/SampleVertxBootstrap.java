@@ -1,7 +1,7 @@
 package org.joo.scorpius.test.vertx.sample;
 
+import org.joo.scorpius.test.vertx.ApplicationContext;
 import org.joo.scorpius.test.vertx.Bootstrap;
-import org.joo.scorpius.test.vertx.VertxApplicationContext;
 import org.joo.scorpius.test.vertx.trigger.TriggerConfig;
 import org.joo.scorpius.test.vertx.trigger.TriggerManager;
 
@@ -12,7 +12,7 @@ import io.vertx.ext.web.handler.BodyHandler;
 
 public class SampleVertxBootstrap implements Bootstrap {
 	
-	private VertxApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 	
 	private MessageController msgController;
 
@@ -30,7 +30,7 @@ public class SampleVertxBootstrap implements Bootstrap {
 	private void configureServer() {
 		msgController = new MessageController(triggerManager);
 
-		Vertx vertx = applicationContext.getVertx();
+		Vertx vertx = Vertx.vertx();
 		HttpServer server = vertx.createHttpServer();
 		
 		Router restAPI = configureRoutes(vertx);
@@ -51,7 +51,7 @@ public class SampleVertxBootstrap implements Bootstrap {
 	}
 
 	@Override
-	public void setApplicationContext(VertxApplicationContext applicationContext) {
+	public void setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
 	}
 }

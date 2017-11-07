@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import org.joo.scorpius.test.vertx.VertxApplicationContext;
+import org.joo.scorpius.test.vertx.ApplicationContext;
 import org.joo.scorpius.test.vertx.support.BaseRequest;
 import org.joo.scorpius.test.vertx.support.BaseResponse;
 
@@ -16,9 +16,9 @@ public class TriggerManager {
 	
 	private Map<String, TriggerConfig> triggerConfigs;
 	
-	private VertxApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 	
-	public TriggerManager(VertxApplicationContext applicationContext) {
+	public TriggerManager(ApplicationContext applicationContext) {
 		this.triggerConfigs = new HashMap<>();
 		this.applicationContext = applicationContext;
 	}

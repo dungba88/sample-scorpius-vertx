@@ -6,7 +6,7 @@ public interface Bootstrap {
 	
 	public void setTriggerManager(TriggerManager triggerManager);
 	
-	public void setApplicationContext(VertxApplicationContext applicationContext);
+	public void setApplicationContext(ApplicationContext applicationContext);
 
 	public void run();
 }

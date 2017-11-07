@@ -5,7 +5,7 @@ import org.joo.scorpius.test.vertx.sample.SampleVertxBootstrap;
 public class Main {
 
 	public static void main(String[] args) {
-		VertxApplication app = new VertxApplication();
+		Application app = new Application();
 		app.run(new SampleVertxBootstrap());
 	}
 }
