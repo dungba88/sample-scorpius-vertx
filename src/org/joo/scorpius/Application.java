@@ -1,8 +1,8 @@
-package org.joo.scorpius.test.vertx;
+package org.joo.scorpius;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.joo.scorpius.test.vertx.trigger.TriggerManager;
+import org.joo.scorpius.trigger.TriggerManager;
 
 public class Application {
 

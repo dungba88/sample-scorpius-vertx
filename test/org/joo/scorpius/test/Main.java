@@ -1,6 +1,6 @@
-package org.joo.scorpius.test.vertx;
+package org.joo.scorpius.test;
 
-import org.joo.scorpius.test.vertx.sample.SampleVertxBootstrap;
+import org.joo.scorpius.Application;
 
 public class Main {
 

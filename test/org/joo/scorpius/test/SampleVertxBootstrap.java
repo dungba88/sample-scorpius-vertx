@@ -1,9 +1,10 @@
-package org.joo.scorpius.test.vertx.sample;
+package org.joo.scorpius.test;
 
-import org.joo.scorpius.test.vertx.ApplicationContext;
-import org.joo.scorpius.test.vertx.Bootstrap;
-import org.joo.scorpius.test.vertx.trigger.TriggerConfig;
-import org.joo.scorpius.test.vertx.trigger.TriggerManager;
+import org.joo.scorpius.ApplicationContext;
+import org.joo.scorpius.Bootstrap;
+import org.joo.scorpius.support.MessageController;
+import org.joo.scorpius.trigger.TriggerConfig;
+import org.joo.scorpius.trigger.TriggerManager;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;

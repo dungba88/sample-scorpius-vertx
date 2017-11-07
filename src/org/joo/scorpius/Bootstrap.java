@@ -1,6 +1,6 @@
-package org.joo.scorpius.test.vertx;
+package org.joo.scorpius;
 
-import org.joo.scorpius.test.vertx.trigger.TriggerManager;
+import org.joo.scorpius.trigger.TriggerManager;
 
 public interface Bootstrap {
 	

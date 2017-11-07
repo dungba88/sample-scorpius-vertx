@@ -1,6 +1,6 @@
-package org.joo.scorpius.test.vertx.sample;
+package org.joo.scorpius.test;
 
-import org.joo.scorpius.test.vertx.support.BaseRequest;
+import org.joo.scorpius.support.BaseRequest;
 
 public class SampleRequest extends BaseRequest {
 

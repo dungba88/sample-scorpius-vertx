@@ -1,9 +1,9 @@
-package org.joo.scorpius.test.vertx.trigger;
+package org.joo.scorpius.trigger;
 
 import java.lang.reflect.ParameterizedType;
 
-import org.joo.scorpius.test.vertx.support.BaseRequest;
-import org.joo.scorpius.test.vertx.support.BaseResponse;
+import org.joo.scorpius.support.BaseRequest;
+import org.joo.scorpius.support.BaseResponse;
 
 public class TriggerConfig {
 

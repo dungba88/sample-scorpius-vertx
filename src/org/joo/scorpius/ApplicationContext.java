@@ -1,4 +1,4 @@
-package org.joo.scorpius.test.vertx;
+package org.joo.scorpius;
 
 public class ApplicationContext {
 

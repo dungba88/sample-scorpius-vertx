@@ -1,6 +1,6 @@
-package org.joo.scorpius.test.vertx.sample;
+package org.joo.scorpius.support;
 
-import org.joo.scorpius.test.vertx.trigger.TriggerManager;
+import org.joo.scorpius.trigger.TriggerManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

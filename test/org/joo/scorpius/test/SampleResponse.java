@@ -1,6 +1,6 @@
-package org.joo.scorpius.test.vertx.sample;
+package org.joo.scorpius.test;
 
-import org.joo.scorpius.test.vertx.support.BaseResponse;
+import org.joo.scorpius.support.BaseResponse;
 
 public class SampleResponse extends BaseResponse {
 

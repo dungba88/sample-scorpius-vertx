@@ -1,4 +1,4 @@
-package org.joo.scorpius.test.vertx.trigger;
+package org.joo.scorpius.trigger;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import org.joo.scorpius.test.vertx.ApplicationContext;
-import org.joo.scorpius.test.vertx.support.BaseRequest;
-import org.joo.scorpius.test.vertx.support.BaseResponse;
+import org.joo.scorpius.ApplicationContext;
+import org.joo.scorpius.support.BaseRequest;
+import org.joo.scorpius.support.BaseResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
