@@ -25,7 +25,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		this.request = request;
 		this.applicationContext = applicationContext;
 		this.status = TriggerExecutionStatus.CREATED;
-		this.deferred = applicationContext.getDeferredFactory().createDeferred();
+		this.deferred = applicationContext.getDeferredFactory().create();
 	}
 	
 	public void pending() {

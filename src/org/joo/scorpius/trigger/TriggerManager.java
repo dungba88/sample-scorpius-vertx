@@ -22,14 +22,11 @@ public class TriggerManager {
 	
 	private ApplicationContext applicationContext;
 	
-	private TriggerExecutionContextBuilder triggerExecutionContextBuilder;
-
 	private TriggerHandlingStrategy handlingStategy;
 	
 	public TriggerManager(ApplicationContext applicationContext) {
 		this.triggerConfigs = new HashMap<>();
 		this.applicationContext = applicationContext;
-		this.triggerExecutionContextBuilder = new TriggerExecutionContextBuilder();
 		this.handlingStategy = new DefaultHandlingStrategy();
 	}
 	
@@ -83,11 +80,12 @@ public class TriggerManager {
 	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request) {
 		TriggerConfig config = triggerConfigs.get(name);
 		
-		triggerExecutionContextBuilder.setConfig(config);
-		triggerExecutionContextBuilder.setRequest(request);
-		triggerExecutionContextBuilder.setApplicationContext(applicationContext);
+		TriggerExecutionContextBuilder builder = applicationContext.getExecutionContextBuilderFactory().create();
 		
-		return triggerExecutionContextBuilder.build();
+		builder.setConfig(config).setRequest(request)
+			   .setApplicationContext(applicationContext);
+		
+		return builder.build();
 	}
 
 	public void registerTrigger(String name, TriggerConfig triggerConfig) {

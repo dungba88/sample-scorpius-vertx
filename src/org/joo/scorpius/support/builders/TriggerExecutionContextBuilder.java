@@ -23,23 +23,26 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 		return request;
 	}
 
-	public void setRequest(BaseRequest request) {
+	public TriggerExecutionContextBuilder setRequest(BaseRequest request) {
 		this.request = request;
+		return this;
 	}
 
 	public TriggerConfig getConfig() {
 		return config;
 	}
 
-	public void setConfig(TriggerConfig config) {
+	public TriggerExecutionContextBuilder setConfig(TriggerConfig config) {
 		this.config = config;
+		return this;
 	}
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}
 
-	public void setApplicationContext(ApplicationContext applicationContext) {
+	public TriggerExecutionContextBuilder setApplicationContext(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
+		return this;
 	}
 }
