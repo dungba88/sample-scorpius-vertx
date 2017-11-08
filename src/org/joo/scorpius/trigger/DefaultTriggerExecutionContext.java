@@ -5,8 +5,9 @@ import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.Deferred;
-import org.joo.scorpius.support.deferred.DeferredObject;
+import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.support.deferred.Promise;
+import org.joo.scorpius.support.deferred.SyncDeferredObject;
 
 public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
@@ -25,7 +26,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		this.request = request;
 		this.applicationContext = applicationContext;
 		this.status = TriggerExecutionStatus.CREATED;
-		this.deferred = new DeferredObject<>();
+		this.deferred = new SyncDeferredObject<>();
 	}
 	
 	public void pending() {

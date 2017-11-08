@@ -5,39 +5,39 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
 
-public class DeferredObject<D, F extends Throwable> implements Deferred<D, F>, Promise<D, F> {
+public class AsyncDeferredObject<D, F extends Throwable> implements Deferred<D, F>, Promise<D, F> {
 
-	private volatile D result;
+	private D result;
 
-	private volatile F failedCause;
-
-	private volatile DeferredStatus status;
+	private F failedCause;
 
 	private volatile DoneCallback<D> doneCallback;
 
 	private volatile FailCallback<F> failureCallback;
 
+	private volatile DeferredStatus status;
+
 	private AtomicBoolean done;
 
 	private AtomicBoolean alert;
 
-	public DeferredObject() {
+	public AsyncDeferredObject() {
 		this.done = new AtomicBoolean(false);
 		this.alert = new AtomicBoolean(false);
 	}
 
 	@Override
-	public Deferred<D, F> resolve(D result) {
+	public Deferred<D, F> resolve(final D result) {
 		if (!done.compareAndSet(false, true))
 			throw new IllegalStateException("Deferred is already resolved or rejected");
 		this.result = result;
-		this.status = DeferredStatus.DONE;
+		this.status = DeferredStatus.RESOLVED;
 		this.onComplete(result);
 		return this;
 	}
 
 	@Override
-	public Deferred<D, F> reject(F failedCause) {
+	public Deferred<D, F> reject(final F failedCause) {
 		if (!done.compareAndSet(false, true))
 			throw new IllegalStateException("Deferred is already resolved or rejected");
 		this.failedCause = failedCause;
@@ -68,7 +68,7 @@ public class DeferredObject<D, F extends Throwable> implements Deferred<D, F>, P
 	@Override
 	public Promise<D, F> done(DoneCallback<D> callback) {
 		doneCallback = callback;
-		if (status == DeferredStatus.DONE) {
+		if (status == DeferredStatus.RESOLVED) {
 			if (alert.compareAndSet(false, true))
 				callback.onDone(result);
 		}
@@ -84,8 +84,4 @@ public class DeferredObject<D, F extends Throwable> implements Deferred<D, F>, P
 		}
 		return this;
 	}
-}
-
-enum DeferredStatus {
-	DONE, REJECTED;
 }
