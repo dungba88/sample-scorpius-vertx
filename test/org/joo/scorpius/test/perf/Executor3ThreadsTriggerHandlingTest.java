@@ -3,24 +3,23 @@ package org.joo.scorpius.test.perf;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.joo.scorpius.support.queue.UnsafeSPSCRingBuffer;
 import org.joo.scorpius.test.support.SampleRequest;
-import org.joo.scorpius.trigger.handle.QueueHandlingStrategy;
+import org.joo.scorpius.trigger.handle.ExecutorHandlingStrategy;
 
-public class SingleConsumerQueueTriggerHandlingTest extends AbstractTriggerTest {
+public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 	
 	public static void main(String[] args) {
-		SingleConsumerQueueTriggerHandlingTest testCase = new SingleConsumerQueueTriggerHandlingTest(10000000);
+		Executor3ThreadsTriggerHandlingTest testCase = new Executor3ThreadsTriggerHandlingTest(10000000);
 		testCase.test();
 	}
 	
 	private AtomicInteger processed = new AtomicInteger(0);
 	
-	private QueueHandlingStrategy strategy;
+	private ExecutorHandlingStrategy strategy;
 	
-	public SingleConsumerQueueTriggerHandlingTest(long iterations) {
+	public Executor3ThreadsTriggerHandlingTest(long iterations) {
 		super(iterations);
-		strategy = new QueueHandlingStrategy(new UnsafeSPSCRingBuffer(1024 * 1024 * 16), 1);
+		strategy = new ExecutorHandlingStrategy(7);
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class SingleConsumerQueueTriggerHandlingTest extends AbstractTriggerTest 
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
 	protected void cleanup() {
 		try {

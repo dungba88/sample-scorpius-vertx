@@ -1,7 +1,6 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joo.scorpius.support.queue.SPMCRingBuffer;
@@ -43,16 +42,18 @@ public class ThreeConsumerQueueTriggerHandlingTest extends AbstractTriggerTest {
 		}
 		
 		try {
-			latch.await(7000, TimeUnit.MILLISECONDS);
+			latch.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println(processed.get());
 	}
 	
 	@Override
 	protected void cleanup() {
-		strategy.stop();
+		try {
+			strategy.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
