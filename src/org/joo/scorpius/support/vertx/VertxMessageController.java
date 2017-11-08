@@ -1,4 +1,4 @@
-package org.joo.scorpius.test.vertx;
+package org.joo.scorpius.support.vertx;
 
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
