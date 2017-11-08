@@ -2,7 +2,6 @@ package org.joo.scorpius.test;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.Bootstrap;
-import org.joo.scorpius.support.MessageController;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerManager;
 
@@ -15,7 +14,7 @@ public class SampleVertxBootstrap implements Bootstrap {
 	
 	private ApplicationContext applicationContext;
 	
-	private MessageController msgController;
+	private VertxMessageController msgController;
 
 	private TriggerManager triggerManager;
 	
@@ -29,7 +28,7 @@ public class SampleVertxBootstrap implements Bootstrap {
 	}
 
 	private void configureServer() {
-		msgController = new MessageController(triggerManager);
+		msgController = new VertxMessageController(triggerManager);
 
 		Vertx vertx = Vertx.vertx();
 		HttpServer server = vertx.createHttpServer();
