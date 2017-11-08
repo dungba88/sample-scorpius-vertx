@@ -1,9 +1,11 @@
-package org.joo.scorpius.test;
+package org.joo.scorpius.test.vertx;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.Bootstrap;
+import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerManager;
+import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpServer;
@@ -24,7 +26,8 @@ public class SampleVertxBootstrap implements Bootstrap {
 	}
 
 	private void configureTriggers() {
-		triggerManager.registerTrigger("react.greetings", new TriggerConfig(new SampleTrigger()));
+		triggerManager.setHandlingStategy(new DefaultHandlingStrategy());
+		triggerManager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}
 
 	private void configureServer() {
