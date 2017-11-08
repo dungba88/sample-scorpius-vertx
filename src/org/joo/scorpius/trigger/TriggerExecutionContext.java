@@ -14,7 +14,7 @@ public interface TriggerExecutionContext {
 	
 	public void finish(BaseResponse response);
 	
-	public void reject(TriggerExecutionException ex);
+	public void fail(TriggerExecutionException ex);
 	
 	public Promise<BaseResponse, TriggerExecutionException> promise();
 

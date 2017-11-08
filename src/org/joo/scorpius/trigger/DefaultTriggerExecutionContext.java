@@ -39,7 +39,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		try {
 			config.getTrigger().execute(this);
 		} catch (TriggerExecutionException e) {
-			reject(e);
+			fail(e);
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		deferred.resolve(response);
 	}
 	
-	public void reject(TriggerExecutionException ex) {
+	public void fail(TriggerExecutionException ex) {
 		if (status == TriggerExecutionStatus.FINISHED)
 			throw new IllegalAccessError("Trigger is already finished");
 		deferred.reject(ex);
