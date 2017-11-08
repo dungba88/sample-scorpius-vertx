@@ -68,15 +68,10 @@ public class TriggerManager {
 		return deferred.promise();
 	}
 
-	private TriggerExecutionContext buildExecutionContext(String name, Object data) {
+	private TriggerExecutionContext buildExecutionContext(String name, String data) {
 		TriggerConfig config = triggerConfigs.get(name);
-		BaseRequest request = (data instanceof BaseRequest) ? (BaseRequest)data : decodeBaseRequest(data.toString(), config.getRequestClass());
-		
-		triggerExecutionContextBuilder.setConfig(config);
-		triggerExecutionContextBuilder.setRequest(request);
-		triggerExecutionContextBuilder.setApplicationContext(applicationContext);
-		
-		return triggerExecutionContextBuilder.build();
+		BaseRequest request = decodeBaseRequest(data, config.getRequestClass());
+		return buildExecutionContext(name, request);
 	}
 
 	private BaseRequest decodeBaseRequest(String data, Class<?> requestClass) {
@@ -86,6 +81,16 @@ public class TriggerManager {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request) {
+		TriggerConfig config = triggerConfigs.get(name);
+		
+		triggerExecutionContextBuilder.setConfig(config);
+		triggerExecutionContextBuilder.setRequest(request);
+		triggerExecutionContextBuilder.setApplicationContext(applicationContext);
+		
+		return triggerExecutionContextBuilder.build();
 	}
 
 	public void registerTrigger(String name, TriggerConfig triggerConfig) {
