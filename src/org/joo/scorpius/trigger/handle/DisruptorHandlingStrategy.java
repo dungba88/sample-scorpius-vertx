@@ -1,6 +1,6 @@
 package org.joo.scorpius.trigger.handle;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
@@ -11,6 +11,8 @@ import com.lmax.disruptor.dsl.Disruptor;
 
 public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
 	
+	private ExecutorService executor;
+	
 	private Disruptor<ExecutionContextEvent> disruptor;
 	
 	public DisruptorHandlingStrategy() {
@@ -18,7 +20,8 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 	}
 
 	@SuppressWarnings("unchecked")
-	public DisruptorHandlingStrategy(int bufferSize, Executor executor) {
+	public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor) {
+		this.executor = executor;
 		this.disruptor = new Disruptor<>(new ExecutionContextEventFactory(), bufferSize, executor);
 		this.disruptor.handleEventsWith(this::onEvent);
 		this.disruptor.start();
@@ -46,6 +49,7 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 	@Override
 	public void close() throws Exception {
 		disruptor.shutdown();
+		executor.shutdown();
 	}
 }
 
