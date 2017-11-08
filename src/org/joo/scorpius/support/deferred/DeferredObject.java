@@ -55,7 +55,7 @@ public class DeferredObject<D, F extends Throwable> implements Deferred<D, F>, P
 
 	@Override
 	public Promise<D, F> done(DoneCallback<D> callback) {
-		if (done.get() && status == DeferredStatus.DONE) {
+		if (status == DeferredStatus.DONE) {
 			callback.onDone(result);
 		} else {
 			this.doneCallback = callback;
@@ -65,7 +65,7 @@ public class DeferredObject<D, F extends Throwable> implements Deferred<D, F>, P
 
 	@Override
 	public Promise<D, F> fail(FailureCallback<F> callback) {
-		if (done.get() && status == DeferredStatus.REJECTED) {
+		if (status == DeferredStatus.REJECTED) {
 			callback.onFail(failedCause);
 		} else {
 			this.failureCallback = callback;
