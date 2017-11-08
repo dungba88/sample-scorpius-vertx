@@ -2,6 +2,7 @@ package org.joo.scorpius.test.vertx;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.Bootstrap;
+import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerManager;
@@ -21,8 +22,13 @@ public class SampleVertxBootstrap implements Bootstrap {
 	private TriggerManager triggerManager;
 	
 	public void run() {
+		configuredDeferredFactory();
 		configureTriggers();
 		configureServer();
+	}
+
+	private void configuredDeferredFactory() {
+		applicationContext.setDeferredFactory(() -> new AsyncDeferredObject<>());
 	}
 
 	private void configureTriggers() {
