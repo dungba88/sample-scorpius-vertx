@@ -1,7 +1,6 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.trigger.handle.DisruptorHandlingStrategy;
@@ -19,12 +18,16 @@ public class DisruptorTriggerHandlingTest extends AbstractTriggerTest {
 	
 	public DisruptorTriggerHandlingTest(long iterations) {
 		super(iterations);
-		strategy = new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(1));
+		strategy = new DisruptorHandlingStrategy();
 	}
 
 	@Override
 	protected void cleanup() {
-		
+		try {
+			strategy.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
