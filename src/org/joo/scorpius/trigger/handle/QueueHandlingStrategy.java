@@ -24,8 +24,14 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
 		for(ConsumerThread thread: consumerThreads) {
 			thread.cancel();
 		}
+		for(ConsumerThread thread: consumerThreads) {
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+			}
+		}
 	}
-
+	
 	@Override
 	public void handle(TriggerExecutionContext context) {
 		queue.enqueue(context);
@@ -35,7 +41,7 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
 class ConsumerThread extends Thread {
 	
 	private HandlingQueue queue;
-
+	
 	public ConsumerThread(HandlingQueue queue) {
 		this.queue = queue;
 	}

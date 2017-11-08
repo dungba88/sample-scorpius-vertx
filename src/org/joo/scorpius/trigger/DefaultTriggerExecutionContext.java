@@ -19,7 +19,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	private TriggerExecutionStatus status;
 	
 	private Deferred<BaseResponse, TriggerExecutionException> deferred;
-
+	
 	public DefaultTriggerExecutionContext(TriggerConfig config, BaseRequest request, ApplicationContext applicationContext) {
 		this.config = config;
 		this.request = request;

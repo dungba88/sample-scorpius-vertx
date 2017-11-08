@@ -1,5 +1,8 @@
 package org.joo.scorpius.support.deferred;
 
+import org.jdeferred.DoneCallback;
+import org.jdeferred.FailCallback;
+
 public class SimpleFailurePromise<D, F extends Throwable> implements Promise<D, F> {
 	
 	private F failedCause;
@@ -14,7 +17,7 @@ public class SimpleFailurePromise<D, F extends Throwable> implements Promise<D, 
 	}
 
 	@Override
-	public Promise<D, F> fail(FailureCallback<F> callback) {
+	public Promise<D, F> fail(FailCallback<F> callback) {
 		callback.onFail(failedCause);
 		return this;
 	}

@@ -23,6 +23,11 @@ public class SingleConsumerQueueTriggerHandlingTest extends AbstractTriggerTest 
 	}
 
 	@Override
+	protected void warmup() {
+		manager.fire("greet", new SampleRequest());
+	}
+
+	@Override
 	protected void doTest() {
 		processed = 0;
 		CountDownLatch latch = new CountDownLatch(1);
@@ -45,7 +50,7 @@ public class SingleConsumerQueueTriggerHandlingTest extends AbstractTriggerTest 
 	}
 
 	@Override
-	protected void warmup() {
-		manager.fire("greet", new SampleRequest());
+	protected void cleanup() {
+		
 	}
 }

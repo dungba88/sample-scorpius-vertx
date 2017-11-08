@@ -32,9 +32,13 @@ public abstract class AbstractTriggerTest {
 		
 		System.out.println("Elapsed: " + elapsed + "ms");
 		System.out.println("Pace: " + pace + " ops/sec");
+		
+		cleanup();
 	}
+
+	protected abstract void warmup();
 
 	protected abstract void doTest();
 
-	protected abstract void warmup();
+	protected abstract void cleanup();
 }

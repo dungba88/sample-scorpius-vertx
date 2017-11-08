@@ -18,6 +18,11 @@ public class DefaultTriggerHandlingTest extends AbstractTriggerTest {
 	}
 
 	@Override
+	protected void cleanup() {
+		
+	}
+
+	@Override
 	protected void doTest() {
 		processed = 0;
 		CountDownLatch latch = new CountDownLatch(1);
