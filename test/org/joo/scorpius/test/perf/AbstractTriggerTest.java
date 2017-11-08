@@ -17,10 +17,11 @@ public abstract class AbstractTriggerTest {
 		this.context = new ApplicationContext();
 		this.manager = new TriggerManager(context);
 		this.iterations = iterations;
-		this.manager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}
-
+	
 	public void test() {
+		setup();
+
 		warmup();
 
 		long start = System.currentTimeMillis();
@@ -34,6 +35,10 @@ public abstract class AbstractTriggerTest {
 		System.out.println("Pace: " + pace + " ops/sec");
 		
 		cleanup();
+	}
+	
+	protected void setup() {
+		this.manager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}
 
 	protected abstract void warmup();
