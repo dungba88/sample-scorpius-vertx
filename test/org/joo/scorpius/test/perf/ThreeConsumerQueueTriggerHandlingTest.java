@@ -3,14 +3,13 @@ package org.joo.scorpius.test.perf;
 import java.util.concurrent.CountDownLatch;
 
 import org.joo.scorpius.support.queue.SPMCRingBuffer;
-import org.joo.scorpius.support.queue.UnsafeSPSCRingBuffer;
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.trigger.handle.QueueHandlingStrategy;
 
-public class QueueTriggerHandlingTest extends AbstractTriggerTest {
+public class ThreeConsumerQueueTriggerHandlingTest extends AbstractTriggerTest {
 	
 	public static void main(String[] args) {
-		QueueTriggerHandlingTest testCase = new QueueTriggerHandlingTest(10000000);
+		ThreeConsumerQueueTriggerHandlingTest testCase = new ThreeConsumerQueueTriggerHandlingTest(10000000);
 		testCase.test();
 	}
 	
@@ -18,9 +17,9 @@ public class QueueTriggerHandlingTest extends AbstractTriggerTest {
 	
 	private QueueHandlingStrategy strategy;
 	
-	public QueueTriggerHandlingTest(long iterations) {
+	public ThreeConsumerQueueTriggerHandlingTest(long iterations) {
 		super(iterations);
-		strategy = new QueueHandlingStrategy(new UnsafeSPSCRingBuffer(1024 * 1024 * 16), 1);
+		strategy = new QueueHandlingStrategy(new SPMCRingBuffer(1024 * 1024 * 16), 3);
 	}
 
 	@Override
