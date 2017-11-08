@@ -1,12 +1,12 @@
 package org.joo.scorpius.trigger;
 
-import org.jdeferred.Deferred;
-import org.jdeferred.Promise;
-import org.jdeferred.impl.DeferredObject;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.deferred.Deferred;
+import org.joo.scorpius.support.deferred.DeferredObject;
+import org.joo.scorpius.support.deferred.Promise;
 
 public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
@@ -18,7 +18,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
 	private TriggerExecutionStatus status;
 	
-	private Deferred<BaseResponse, TriggerExecutionException, Object> deferred;
+	private Deferred<BaseResponse, TriggerExecutionException> deferred;
 
 	public DefaultTriggerExecutionContext(TriggerConfig config, BaseRequest request, ApplicationContext applicationContext) {
 		this.config = config;
@@ -55,7 +55,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		deferred.reject(ex);
 	}
 	
-	public Promise<BaseResponse, TriggerExecutionException, Object> promise() {
+	public Promise<BaseResponse, TriggerExecutionException> promise() {
 		return deferred.promise();
 	}
 

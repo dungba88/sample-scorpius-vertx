@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jdeferred.Deferred;
-import org.jdeferred.Promise;
-import org.jdeferred.impl.DeferredObject;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
+import org.joo.scorpius.support.deferred.Promise;
+import org.joo.scorpius.support.deferred.SimpleDonePromise;
 import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
@@ -34,11 +33,11 @@ public class TriggerManager {
 		this.handlingStategy = new DefaultHandlingStrategy();
 	}
 	
-	public Promise<BaseResponse, TriggerExecutionException, Object> fire(String name, String data) {
+	public Promise<BaseResponse, TriggerExecutionException> fire(String name, String data) {
 		return fire(name, data, handlingStategy);
 	}
 
-	public Promise<BaseResponse, TriggerExecutionException, Object> fire(String name, String data, TriggerHandlingStrategy handlingStrategy) {
+	public Promise<BaseResponse, TriggerExecutionException> fire(String name, String data, TriggerHandlingStrategy handlingStrategy) {
 		if (!triggerConfigs.containsKey(name)) {
 			return resolveDefault();
 		}
@@ -48,11 +47,11 @@ public class TriggerManager {
 		return executionContext.promise();
 	}
 	
-	public Promise<BaseResponse, TriggerExecutionException, Object> fire(String name, BaseRequest data) {
+	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data) {
 		return fire(name, data, handlingStategy);
 	}
 	
-	public Promise<BaseResponse, TriggerExecutionException, Object> fire(String name, BaseRequest data, TriggerHandlingStrategy handlingStrategy) {
+	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data, TriggerHandlingStrategy handlingStrategy) {
 		if (!triggerConfigs.containsKey(name)) {
 			return resolveDefault();
 		}
@@ -62,10 +61,8 @@ public class TriggerManager {
 		return executionContext.promise();
 	}
 	
-	private Promise<BaseResponse, TriggerExecutionException, Object> resolveDefault() {
-		Deferred<BaseResponse, TriggerExecutionException, Object> deferred = new DeferredObject<>();
-		deferred.resolve(null);
-		return deferred.promise();
+	private Promise<BaseResponse, TriggerExecutionException> resolveDefault() {
+		return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
 	}
 
 	private TriggerExecutionContext buildExecutionContext(String name, String data) {

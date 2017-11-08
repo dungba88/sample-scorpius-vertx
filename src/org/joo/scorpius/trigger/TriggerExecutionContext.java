@@ -1,10 +1,10 @@
 package org.joo.scorpius.trigger;
 
-import org.jdeferred.Promise;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.deferred.Promise;
 
 public interface TriggerExecutionContext {
 
@@ -16,7 +16,7 @@ public interface TriggerExecutionContext {
 	
 	public void reject(TriggerExecutionException ex);
 	
-	public Promise<BaseResponse, TriggerExecutionException, Object> promise();
+	public Promise<BaseResponse, TriggerExecutionException> promise();
 
 	public TriggerConfig getConfig();
 
