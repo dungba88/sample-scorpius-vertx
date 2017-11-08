@@ -1,8 +1,5 @@
 package org.joo.scorpius.support.deferred;
 
-import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
-
 public class SyncDeferredObject<D, F extends Throwable> implements Deferred<D, F>, Promise<D, F> {
 
 	private D result;

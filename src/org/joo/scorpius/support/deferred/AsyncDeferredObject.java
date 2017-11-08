@@ -2,9 +2,6 @@ package org.joo.scorpius.support.deferred;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.jdeferred.DoneCallback;
-import org.jdeferred.FailCallback;
-
 public class AsyncDeferredObject<D, F extends Throwable> implements Deferred<D, F>, Promise<D, F> {
 
 	private D result;
