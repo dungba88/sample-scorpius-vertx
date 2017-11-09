@@ -18,23 +18,30 @@ public abstract class AbstractTriggerTest {
 		this.context = new ApplicationContext();
 		this.manager = new DefaultTriggerManager(context);
 		this.iterations = iterations;
-		this.manager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}
-
+	
 	public void test() {
-		warmup();
-
-		long start = System.currentTimeMillis();
-		
-		doTest();
-		
-		long elapsed = System.currentTimeMillis() - start;
-		long pace = iterations * 1000 / elapsed;
-		
-		System.out.println("Elapsed: " + elapsed + "ms");
-		System.out.println("Pace: " + pace + " ops/sec");
-		
-		cleanup();
+		try {
+			setup();
+	
+			warmup();
+	
+			long start = System.currentTimeMillis();
+			
+			doTest();
+			
+			long elapsed = System.currentTimeMillis() - start;
+			long pace = iterations * 1000 / elapsed;
+			
+			System.out.println("Elapsed: " + elapsed + "ms");
+			System.out.println("Pace: " + pace + " ops/sec");
+		} finally {
+			cleanup();
+		}
+	}
+	
+	protected void setup() {
+		this.manager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}
 
 	protected abstract void warmup();
