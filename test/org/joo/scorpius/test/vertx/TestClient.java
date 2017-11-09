@@ -1,5 +1,6 @@
 package org.joo.scorpius.test.vertx;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,6 +52,11 @@ public class TestClient {
 		System.out.println("Success: " + handler.getCounter());
 		System.out.println("Failed: " + handler.getFailed());
 
+		try {
+			httpClient.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		executor.shutdown();
 	}
 }
