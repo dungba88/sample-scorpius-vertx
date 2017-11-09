@@ -9,6 +9,8 @@ import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
+import org.joo.scorpius.support.deferred.DoneCallback;
+import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.deferred.SimpleDonePromise;
 import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
@@ -43,11 +45,18 @@ public class DefaultTriggerManager implements TriggerManager {
 
 	@Override
 	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data) {
+		return fire(name, data, null, null);
+	}
+	
+	@Override
+	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data, 
+																 DoneCallback<BaseResponse> doneCallback, 
+																 FailCallback<TriggerExecutionException> failCallback) {
 		if (!triggerConfigs.containsKey(name)) {
 			return resolveDefault();
 		}
 		
-		TriggerExecutionContext executionContext = buildExecutionContext(name, data);
+		TriggerExecutionContext executionContext = buildExecutionContext(name, data, doneCallback, failCallback);
 		handlingStrategy.handle(executionContext);
 		return executionContext.promise();
 	}
@@ -56,13 +65,17 @@ public class DefaultTriggerManager implements TriggerManager {
 		return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
 	}
 
-	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request) {
+	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, 
+														  DoneCallback<BaseResponse> doneCallback, 
+														  FailCallback<TriggerExecutionException> failCallback) {
 		TriggerConfig config = triggerConfigs.get(name);
 		
 		TriggerExecutionContextBuilder builder = applicationContext.getExecutionContextBuilderFactory().create();
 		
 		builder.setConfig(config).setRequest(request)
-			   .setApplicationContext(applicationContext);
+			   .setApplicationContext(applicationContext)
+			   .setDoneCallback(doneCallback)
+			   .setFailCallback(failCallback);
 		
 		return builder.build();
 	}
