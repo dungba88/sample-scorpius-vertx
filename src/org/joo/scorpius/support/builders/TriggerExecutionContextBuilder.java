@@ -4,8 +4,10 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;
+import org.joo.scorpius.support.deferred.SimpleDeferredObject;
 import org.joo.scorpius.trigger.DefaultTriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
@@ -23,8 +25,15 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 	private DoneCallback<BaseResponse> doneCallback;
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public TriggerExecutionContext build() {
-		return new DefaultTriggerExecutionContext(config, request, applicationContext, doneCallback, failCallback);
+		Deferred<BaseResponse, TriggerExecutionException> deferred = null;
+		if (doneCallback != null || failCallback != null) {
+			deferred = new SimpleDeferredObject<BaseResponse, TriggerExecutionException>(doneCallback, failCallback);
+		} else {
+			deferred = applicationContext.getDeferredFactory().create();
+		}
+		return new DefaultTriggerExecutionContext(config, request, applicationContext, deferred);
 	}
 
 	public BaseRequest getRequest() {
