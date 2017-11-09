@@ -21,6 +21,7 @@ public class ThreeConsumerQueueTriggerHandlingTest extends AbstractTriggerTest {
 	public ThreeConsumerQueueTriggerHandlingTest(long iterations) {
 		super(iterations);
 		strategy = new QueueHandlingStrategy(new SPMCRingBuffer(1024 * 1024 * 16), 3);
+		manager.setHandlingStrategy(strategy);
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class ThreeConsumerQueueTriggerHandlingTest extends AbstractTriggerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire("greet", new SampleRequest(), strategy).done(response -> {
+			manager.fire("greet", new SampleRequest()).done(response -> {
 				if (processed.incrementAndGet() == iterations) {
 					latch.countDown();
 				}

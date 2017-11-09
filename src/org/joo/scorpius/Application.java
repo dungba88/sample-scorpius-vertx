@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.support.builders.Builder;
+import org.joo.scorpius.trigger.DefaultTriggerManager;
 import org.joo.scorpius.trigger.TriggerManager;
 
 public class Application {
@@ -12,19 +13,22 @@ public class Application {
 	
 	private AtomicBoolean initialized;
 	
-	private Builder<ApplicationContext> applicationContextBuilder;
+	private ApplicationContext applicationContext;
 
 	public Application() {
+		this(new ApplicationContextBuilder());
+	}
+	
+	public Application(Builder<ApplicationContext> applicationContextBuilder) {
 		this.initialized = new AtomicBoolean(false);
-		this.applicationContextBuilder = new ApplicationContextBuilder(); 
+		this.applicationContext = applicationContextBuilder.build();
 	}
 
 	public void run(Bootstrap bootstrap) {
 		if (!initialized.compareAndSet(false, true))
 			throw new RuntimeException("Application is already running");
 
-		ApplicationContext applicationContext = applicationContextBuilder.build();
-		this.triggerManager = new TriggerManager(applicationContext);
+		this.triggerManager = new DefaultTriggerManager(applicationContext);
 		bootstrap.setTriggerManager(triggerManager);
 		bootstrap.setApplicationContext(applicationContext);
 		bootstrap.run();

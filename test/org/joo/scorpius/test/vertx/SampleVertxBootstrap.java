@@ -32,7 +32,7 @@ public class SampleVertxBootstrap implements Bootstrap {
 	}
 
 	private void configureTriggers() {
-		triggerManager.setHandlingStategy(new DefaultHandlingStrategy());
+		triggerManager.setHandlingStrategy(new DefaultHandlingStrategy());
 		triggerManager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}
 

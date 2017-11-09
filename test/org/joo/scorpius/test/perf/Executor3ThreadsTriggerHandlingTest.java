@@ -20,6 +20,7 @@ public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 	public Executor3ThreadsTriggerHandlingTest(long iterations) {
 		super(iterations);
 		strategy = new ExecutorHandlingStrategy(7);
+		manager.setHandlingStrategy(strategy);
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire("greet", new SampleRequest(), strategy).done(response -> {
+			manager.fire("greet", new SampleRequest()).done(response -> {
 				if (processed.incrementAndGet() == iterations) {
 					latch.countDown();
 				}

@@ -2,6 +2,7 @@ package org.joo.scorpius.test.perf;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.test.support.SampleTrigger;
+import org.joo.scorpius.trigger.DefaultTriggerManager;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerManager;
 
@@ -15,7 +16,7 @@ public abstract class AbstractTriggerTest {
 	
 	public AbstractTriggerTest(long iterations) {
 		this.context = new ApplicationContext();
-		this.manager = new TriggerManager(context);
+		this.manager = new DefaultTriggerManager(context);
 		this.iterations = iterations;
 		this.manager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
 	}

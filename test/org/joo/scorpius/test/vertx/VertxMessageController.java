@@ -1,5 +1,6 @@
 package org.joo.scorpius.test.vertx;
 
+import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerManager;
@@ -25,8 +26,10 @@ public class VertxMessageController implements Handler<RoutingContext> {
 
 		String msgName = rc.request().getParam("name");
 		String msgData = rc.getBodyAsString();
+		
+		BaseRequest request = triggerManager.decodeRequestForEvent(msgName, msgData);
 
-		triggerManager.fire(msgName, msgData).done(triggerResponse -> {
+		triggerManager.fire(msgName, request).done(triggerResponse -> {
 			onDone(triggerResponse, response, rc);
 		}).fail(exception -> {
 			onFail(exception, response, rc);
