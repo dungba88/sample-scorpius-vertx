@@ -1,13 +1,15 @@
-package org.joo.scorpius.trigger.handle;
+package org.joo.scorpius.trigger.handle.disruptor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
+import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
-import com.lmax.disruptor.EventFactory;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.WaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
+import com.lmax.disruptor.dsl.ProducerType;
 
 public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
 	
@@ -27,6 +29,23 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 		this.disruptor.start();
 	}
 	
+	public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor, ProducerType producerType, WaitStrategy waitStrategy) {
+		this(bufferSize, executor, producerType, waitStrategy, false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor, ProducerType producerType, WaitStrategy waitStategy, boolean workerPool) {
+		this.executor = executor;
+		this.disruptor = new Disruptor<>(new ExecutionContextEventFactory(), bufferSize, executor, producerType, waitStategy);
+		if (workerPool) {
+			this.disruptor.handleEventsWithWorkerPool(this::onEvent);
+		} else {
+			this.disruptor.handleEventsWith(this::onEvent);
+		}
+		this.disruptor.handleExceptionsWith(new DisruptorExceptionHandler());
+		this.disruptor.start();
+	}
+	
 	@Override
 	public void handle(TriggerExecutionContext context) {
 		RingBuffer<ExecutionContextEvent> ringBuffer = disruptor.getRingBuffer(); 
@@ -42,6 +61,10 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
         }
 	}
 	
+	private void onEvent(ExecutionContextEvent event) throws Exception {
+		event.getExecutionContext().execute();
+	}
+	
 	private void onEvent(ExecutionContextEvent event, long sequence, boolean endOfBatch) {
 		event.getExecutionContext().execute();
 	}
@@ -50,26 +73,5 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 	public void close() throws Exception {
 		disruptor.shutdown();
 		executor.shutdown();
-	}
-}
-
-class ExecutionContextEventFactory implements EventFactory<ExecutionContextEvent>
-{
-    public ExecutionContextEvent newInstance()
-    {
-        return new ExecutionContextEvent();
-    }
-}
-
-class ExecutionContextEvent {
-
-	private TriggerExecutionContext executionContext;
-	
-	public TriggerExecutionContext getExecutionContext() {
-		return executionContext;
-	}
-
-	public void setExecutionContext(TriggerExecutionContext executionContext) {
-		this.executionContext = executionContext;
 	}
 }
