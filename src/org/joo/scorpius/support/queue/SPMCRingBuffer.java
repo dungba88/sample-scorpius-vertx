@@ -5,7 +5,7 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public class SPMCRingBuffer extends SPSCRingBuffer {
 	
-	private AtomicBoolean lock = new AtomicBoolean(false);
+	protected AtomicBoolean lock = new AtomicBoolean(false);
 	
 	public SPMCRingBuffer(int maximumSize) {
 		super(maximumSize);
@@ -13,6 +13,7 @@ public class SPMCRingBuffer extends SPSCRingBuffer {
 	
 	@Override
 	public TriggerExecutionContext dequeue() {
+		if (isEmpty()) return null;
 		while(!lock.compareAndSet(false, true)) {}
 		try {
 			return super.dequeue();
