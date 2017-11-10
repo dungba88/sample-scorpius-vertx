@@ -3,7 +3,7 @@ package org.joo.scorpius.test.perf;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.joo.scorpius.support.queue.UnsafeSPSCRingBuffer;
+import org.joo.scorpius.support.queue.SPSCRingBuffer;
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.trigger.handle.QueueHandlingStrategy;
 
@@ -20,7 +20,7 @@ public class SingleConsumerQueueTriggerHandlingTest extends AbstractTriggerTest 
 	
 	public SingleConsumerQueueTriggerHandlingTest(long iterations) {
 		super(iterations);
-		strategy = new QueueHandlingStrategy(new UnsafeSPSCRingBuffer(1024 * 1024 * 16), 1);
+		strategy = new QueueHandlingStrategy(new SPSCRingBuffer(1024 * 1024 * 16), 1);
 		manager.setHandlingStrategy(strategy);
 	}
 
