@@ -45,7 +45,7 @@ public abstract class AbstractTriggerTest {
 	}
 	
 	protected void setup() {
-		this.manager.registerTrigger("greet", new TriggerConfig(new SampleTrigger()));
+		this.manager.registerTrigger("greet").withAction(new SampleTrigger());
 	}
 
 	protected abstract void warmup();

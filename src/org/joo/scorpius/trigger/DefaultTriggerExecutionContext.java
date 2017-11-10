@@ -37,6 +37,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		if (status == TriggerExecutionStatus.EXECUTING || status == TriggerExecutionStatus.FINISHED) {
 			throw new IllegalAccessError("Trigger is already running or finished");
 		}
+		if (config.getTrigger() == null)
+			return;
 		try {
 			config.getTrigger().execute(this);
 		} catch (TriggerExecutionException e) {

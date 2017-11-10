@@ -37,6 +37,9 @@ public class DefaultTriggerManager implements TriggerManager {
 	public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException {
 		if (name == null)
 			throw new MalformedRequestException("Event name is null");
+		
+		if (!triggerConfigs.containsKey(name))
+			return null;
 
 		TriggerConfig config = triggerConfigs.get(name);
 		ObjectMapper mapper = new ObjectMapper();
@@ -83,12 +86,18 @@ public class DefaultTriggerManager implements TriggerManager {
 		
 		return builder.build();
 	}
+	
+	@Override
+	public TriggerRegistration registerTrigger(String name) {
+		return registerTrigger(name, new TriggerConfig());
+	}
 
 	@Override
-	public void registerTrigger(String name, TriggerConfig triggerConfig) {
+	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
 		if (triggerConfigs.containsKey(name))
 			throw new IllegalArgumentException("Event " + name + " is already registered");
 		triggerConfigs.put(name, triggerConfig);
+		return triggerConfig;
 	}
 
 	@Override

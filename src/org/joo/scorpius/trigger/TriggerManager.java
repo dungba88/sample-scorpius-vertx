@@ -17,8 +17,10 @@ public interface TriggerManager {
 
 	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
 			DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback);
+	
+	public TriggerRegistration registerTrigger(String name);
 
-	public void registerTrigger(String name, TriggerConfig triggerConfig);
+	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
 
 	public TriggerHandlingStrategy getHandlingStrategy();
 
