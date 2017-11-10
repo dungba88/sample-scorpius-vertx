@@ -2,7 +2,7 @@ package org.joo.scorpius.support.vertx;
 
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.MalformedRequestException;
 import org.joo.scorpius.trigger.TriggerManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +27,12 @@ public class VertxMessageController implements Handler<RoutingContext> {
 		String msgName = rc.request().getParam("name");
 		String msgData = rc.getBodyAsString();
 		
-		BaseRequest request = triggerManager.decodeRequestForEvent(msgName, msgData);
+		BaseRequest request = null;
+		try {
+			request = triggerManager.decodeRequestForEvent(msgName, msgData);
+		} catch (MalformedRequestException e) {
+			onFail(e, response, rc);
+		}
 
 		triggerManager.fire(msgName, request).done(triggerResponse -> {
 			onDone(triggerResponse, response, rc);
@@ -36,7 +41,7 @@ public class VertxMessageController implements Handler<RoutingContext> {
 		});
 	}
 
-	private void onFail(TriggerExecutionException exception, HttpServerResponse response, RoutingContext rc) {
+	private void onFail(Throwable exception, HttpServerResponse response, RoutingContext rc) {
 		rc.fail(exception);
 	}
 

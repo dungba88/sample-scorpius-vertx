@@ -7,6 +7,7 @@ import java.util.Map;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
+import org.joo.scorpius.support.MalformedRequestException;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
 import org.joo.scorpius.support.deferred.DoneCallback;
@@ -33,13 +34,16 @@ public class DefaultTriggerManager implements TriggerManager {
 	}
 	
 	@Override
-	public BaseRequest decodeRequestForEvent(String name, String data) {
+	public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException {
+		if (name == null)
+			throw new MalformedRequestException("Event name is null");
+
 		TriggerConfig config = triggerConfigs.get(name);
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			return (BaseRequest) mapper.readValue(data, config.getRequestClass());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new MalformedRequestException(e);
 		}
 	}
 
