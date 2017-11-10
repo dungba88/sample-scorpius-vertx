@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -63,9 +64,9 @@ public class TestClient {
 
 class Handler implements FutureCallback<HttpResponse> {
 
-	private int counter = 0;
+	private AtomicInteger counter = new AtomicInteger(0);
 	
-	private int failed = 0;
+	private AtomicInteger failed = new AtomicInteger(0);
 
 	private int noConnections = 0;
 
@@ -78,25 +79,27 @@ class Handler implements FutureCallback<HttpResponse> {
 
 	@Override
 	public void completed(HttpResponse result) {
-		counter++;
-		if (counter == noConnections)
+		if (counter.incrementAndGet() + failed.get() == noConnections)
 			latch.countDown();
 	}
 
 	@Override
 	public void failed(Exception ex) {
-		failed++;
+		if (counter.get() + failed.incrementAndGet() == noConnections)
+			latch.countDown();
 	}
 
 	@Override
 	public void cancelled() {
+		if (counter.get() + failed.incrementAndGet() == noConnections)
+			latch.countDown();
 	}
 	
 	public int getCounter() {
-		return counter;
+		return counter.get();
 	}
 	
 	public int getFailed() {
-		return failed;
+		return failed.get();
 	}
 }
