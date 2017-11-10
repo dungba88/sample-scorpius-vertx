@@ -5,6 +5,7 @@ import org.joo.scorpius.Bootstrap;
 import org.joo.scorpius.trigger.TriggerManager;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -17,10 +18,10 @@ public abstract class VertxBootstrap implements Bootstrap {
 
 	protected VertxMessageController msgController;
 
-	protected void configureServer() {
+	protected void configureServer(VertxOptions options) {
 		msgController = new VertxMessageController(triggerManager);
 
-		Vertx vertx = Vertx.vertx();
+		Vertx vertx = Vertx.vertx(options);
 		HttpServer server = vertx.createHttpServer();
 
 		Router restAPI = configureRoutes(vertx);
