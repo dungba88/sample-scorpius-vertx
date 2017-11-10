@@ -1,5 +1,6 @@
 package org.joo.scorpius.support.deferred;
 
+@Deprecated
 public class SyncDeferredObject<D, F extends Throwable> implements Deferred<D, F>, Promise<D, F> {
 
 	private D result;
