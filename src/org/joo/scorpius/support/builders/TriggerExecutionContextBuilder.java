@@ -25,7 +25,6 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 	private DoneCallback<BaseResponse> doneCallback;
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public TriggerExecutionContext build() {
 		Deferred<BaseResponse, TriggerExecutionException> deferred = null;
 		if (doneCallback != null || failCallback != null) {
