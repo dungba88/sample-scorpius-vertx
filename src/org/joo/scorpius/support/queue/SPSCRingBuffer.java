@@ -2,7 +2,7 @@ package org.joo.scorpius.support.queue;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
-public class UnsafeSPSCRingBuffer implements HandlingQueue {
+public class SPSCRingBuffer implements HandlingQueue {
 
 	private int mask;
 
@@ -22,8 +22,8 @@ public class UnsafeSPSCRingBuffer implements HandlingQueue {
 
 	static {
 		try {
-			headOffset = UnsafeUtils.objectFieldOffset(UnsafeSPSCRingBuffer.class.getDeclaredField("head"));
-			tailOffset = UnsafeUtils.objectFieldOffset(UnsafeSPSCRingBuffer.class.getDeclaredField("tail"));
+			headOffset = UnsafeUtils.objectFieldOffset(SPSCRingBuffer.class.getDeclaredField("head"));
+			tailOffset = UnsafeUtils.objectFieldOffset(SPSCRingBuffer.class.getDeclaredField("tail"));
 			dataBaseOffset = UnsafeUtils.arrayBaseOffset(TriggerExecutionContext[].class);
 			indexScale = UnsafeUtils.arrayIndexScale(TriggerExecutionContext[].class);
 		} catch (Exception e) {
@@ -31,7 +31,7 @@ public class UnsafeSPSCRingBuffer implements HandlingQueue {
 		}
 	}
 
-	public UnsafeSPSCRingBuffer(int maximumSize) {
+	public SPSCRingBuffer(int maximumSize) {
 		if (!isPowerOf2(maximumSize)) {
 			throw new RuntimeException("Maximum size must be power of 2");
 		}
