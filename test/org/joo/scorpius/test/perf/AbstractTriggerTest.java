@@ -22,21 +22,25 @@ public abstract class AbstractTriggerTest {
 	
 	public void test() {
 		try {
+			System.out.println("Setting up...");
 			setup();
 	
+			System.out.println("Warming up...");
 			warmup();
+			
+			System.out.println("\nTesting...");
 	
 			long start = System.currentTimeMillis();
-			
 			doTest();
-			
 			long elapsed = System.currentTimeMillis() - start;
 			long pace = iterations * 1000 / elapsed;
 			
 			System.out.println("Elapsed: " + elapsed + "ms");
 			System.out.println("Pace: " + pace + " ops/sec");
 		} finally {
+			System.out.println("\nCleaning up...");
 			cleanup();
+			System.out.println("Finished");
 		}
 	}
 	
