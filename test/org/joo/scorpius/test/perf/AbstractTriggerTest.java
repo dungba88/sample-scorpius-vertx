@@ -3,7 +3,6 @@ package org.joo.scorpius.test.perf;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.trigger.DefaultTriggerManager;
-import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerManager;
 
 public abstract class AbstractTriggerTest {
