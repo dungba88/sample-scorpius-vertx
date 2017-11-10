@@ -2,8 +2,8 @@ package org.joo.scorpius;
 
 import org.joo.scorpius.support.builders.Factory;
 import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
+import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.support.deferred.Deferred;
-import org.joo.scorpius.support.deferred.SyncDeferredObject;
 
 public class ApplicationContext {
 
@@ -12,7 +12,7 @@ public class ApplicationContext {
 	private Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory;
 	
 	public ApplicationContext() {
-		deferredFactory = () -> new SyncDeferredObject<>();
+		deferredFactory = () -> new AsyncDeferredObject<>();
 		executionContextBuilderFactory = () -> new TriggerExecutionContextBuilder();
 	}
 
