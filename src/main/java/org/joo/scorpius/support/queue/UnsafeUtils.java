@@ -21,7 +21,7 @@ public class UnsafeUtils {
 		UNSAFE.putObject(o, offset, value);
 	}
 
-	public static Object getObject(Object o, int offset) {
+	public static Object getObject(Object o, long offset) {
 		return UNSAFE.getObject(o, offset);
 	}
 
