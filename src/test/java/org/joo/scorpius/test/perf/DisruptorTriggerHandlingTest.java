@@ -22,7 +22,7 @@ public class DisruptorTriggerHandlingTest extends AbstractTriggerTest {
 	
 	public DisruptorTriggerHandlingTest(long iterations) {
 		super(iterations);
-		strategy = new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.SINGLE, new YieldingWaitStrategy(), true);
+		strategy = new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.SINGLE, new YieldingWaitStrategy());
 		manager.setHandlingStrategy(strategy);
 	}
 

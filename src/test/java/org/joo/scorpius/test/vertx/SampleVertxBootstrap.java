@@ -21,7 +21,7 @@ public class SampleVertxBootstrap extends VertxBootstrap {
 	}
 
 	private void configureTriggers() {
-		triggerManager.setHandlingStrategy(new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.MULTI, new YieldingWaitStrategy(), true));
+		triggerManager.setHandlingStrategy(new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.MULTI, new YieldingWaitStrategy()));
 		triggerManager.registerTrigger("greet").withAction(new SampleTrigger());
 	}
 }
