@@ -8,6 +8,7 @@ import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.WaitStrategy;
+import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -21,12 +22,8 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 		this(1024, Executors.newCachedThreadPool());
 	}
 
-	@SuppressWarnings("unchecked")
 	public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor) {
-		this.executor = executor;
-		this.disruptor = new Disruptor<>(new ExecutionContextEventFactory(), bufferSize, executor);
-		this.disruptor.handleEventsWith(this::onEvent);
-		this.disruptor.start();
+		this(bufferSize, executor, ProducerType.MULTI, new YieldingWaitStrategy());
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -54,10 +51,6 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 	}
 	
 	private void onEvent(ExecutionContextEvent event) throws Exception {
-		event.getExecutionContext().execute();
-	}
-	
-	private void onEvent(ExecutionContextEvent event, long sequence, boolean endOfBatch) {
 		event.getExecutionContext().execute();
 	}
 
