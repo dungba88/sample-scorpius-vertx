@@ -10,8 +10,6 @@ public class SampleTrigger extends AbstractTrigger<SampleRequest, BaseResponse> 
 	@Override
 	public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
 		SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
-		SampleResponse response = new SampleResponse();
-		response.setName("Hi " + theRequest.getName());
-		executionContext.finish(response);
+		executionContext.finish(new SampleResponse("Hi " + theRequest.getName()));
 	}
 }
