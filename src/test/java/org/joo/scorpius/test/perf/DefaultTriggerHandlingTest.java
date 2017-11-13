@@ -23,7 +23,7 @@ public class DefaultTriggerHandlingTest extends AbstractTriggerTest {
 	}
 
 	@Override
-	protected void doTest(String msgName) {
+	protected void doTest(long iterations, String msgName) {
 		processed = 0;
 		CountDownLatch latch = new CountDownLatch(1);
 		

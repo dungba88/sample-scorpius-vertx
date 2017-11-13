@@ -45,7 +45,7 @@ public abstract class AbstractTriggerTest {
 		System.out.println("\nTesting (" + msgName + ")...");
 		
 		long start = System.currentTimeMillis();
-		doTest(msgName);
+		doTest(iterations, msgName);
 		long elapsed = System.currentTimeMillis() - start;
 		long pace = iterations * 1000 / elapsed;
 		
@@ -60,14 +60,12 @@ public abstract class AbstractTriggerTest {
 	}
 
 	protected void warmup() {
-		for(int i=0; i<1000; i++) {
-			manager.fire("greet_java", new SampleRequest());
-			manager.fire("greet_scala", new SampleRequest());
-			manager.fire("greet_groovy", new SampleRequest());
-		}
+		doTest(1000, "greet_java");
+		doTest(1000, "greet_scala");
+		doTest(1000, "greet_groovy");
 	}
 
-	protected abstract void doTest(String msgName);
+	protected abstract void doTest(long iterations, String msgName);
 
 	protected abstract void cleanup();
 }
