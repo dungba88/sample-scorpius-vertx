@@ -50,7 +50,7 @@ class ConsumerThread extends Thread {
 	public void run() {
 		while(!Thread.currentThread().isInterrupted()) {
 			while(!Thread.currentThread().isInterrupted() && queue.isEmpty()) {
-				Thread.onSpinWait();
+//				Thread.onSpinWait();
 			}
 			TriggerExecutionContext context = queue.dequeue();
 			if (context != null) {

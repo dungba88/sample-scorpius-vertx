@@ -25,17 +25,12 @@ public class ThreeConsumerQueueNonDeferredTriggerHandlingTest extends AbstractTr
 	}
 
 	@Override
-	protected void warmup() {
-		manager.fire("greet", new SampleRequest());
-	}
-
-	@Override
-	protected void doTest() {
+	protected void doTest(String msgName) {
 		processed = new AtomicInteger(0);
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire("greet", new SampleRequest(), response -> {
+			manager.fire(msgName, new SampleRequest(), response -> {
 				if (processed.incrementAndGet() == iterations) {
 					latch.countDown();
 				}

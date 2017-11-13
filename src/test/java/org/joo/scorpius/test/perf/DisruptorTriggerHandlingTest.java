@@ -36,12 +36,12 @@ public class DisruptorTriggerHandlingTest extends AbstractTriggerTest {
 	}
 
 	@Override
-	protected void doTest() {
+	protected void doTest(String msgName) {
 		processed = 0;
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire("greet", new SampleRequest()).done(response -> {
+			manager.fire(msgName, new SampleRequest()).done(response -> {
 				if (++processed == iterations) {
 					latch.countDown();
 				}
@@ -53,10 +53,5 @@ public class DisruptorTriggerHandlingTest extends AbstractTriggerTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	protected void warmup() {
-		manager.fire("greet", new SampleRequest());
 	}
 }

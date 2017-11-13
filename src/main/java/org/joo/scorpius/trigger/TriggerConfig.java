@@ -27,6 +27,12 @@ public class TriggerConfig implements TriggerRegistration {
 	}
 
 	@Override
+	public TriggerRegistration withCondition(String condition) {
+		this.condition = new SqlTriggerCondition(condition);
+		return this;
+	}
+
+	@Override
 	public TriggerRegistration withCondition(TriggerCondition condition) {
 		this.condition = condition;
 		return this;
