@@ -1,8 +1,10 @@
 package org.joo.scorpius.support.queue;
+
 import java.lang.reflect.Field;
 
 import sun.misc.Unsafe;
 
+@SuppressWarnings("restriction")
 public class UnsafeUtils {
 
 	private static final Unsafe UNSAFE;
