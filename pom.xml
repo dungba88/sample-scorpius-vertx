@@ -6,11 +6,11 @@
 	<artifactId>joo-scorpius</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	
+
 	<name>Scorpius</name>
 	<description>Trigger framework for Java</description>
 	<url>https://github.com/dungba88/scorpius</url>
-	
+
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -23,7 +23,7 @@
 		<url>https://github.com/dungba88/scorpius.git</url>
 		<developerConnection>scm:git:[fetch=]https://github.com/dungba88/scorpius.git</developerConnection>
 	</scm>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>io.vertx</groupId>
@@ -51,13 +51,19 @@
 			<version>4.1.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.12.4</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-	
+
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
-	
+
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh_snapshots</id>
@@ -133,6 +139,20 @@
 					<goals>deploy</goals>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.1.4</version>
+				<executions>
+					<execution>
+						<id>scala-test-compile</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -146,5 +166,5 @@
 				<role>developer</role>
 			</roles>
 		</developer>
-	</developers>	
+	</developers>
 </project>
