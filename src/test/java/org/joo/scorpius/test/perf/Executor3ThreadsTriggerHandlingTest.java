@@ -1,17 +1,14 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.trigger.handle.ExecutorHandlingStrategy;
+import org.junit.Assert;
 
 public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
-	
-	public static void main(String[] args) {
-		Executor3ThreadsTriggerHandlingTest testCase = new Executor3ThreadsTriggerHandlingTest(10000000);
-		testCase.test();
-	}
 	
 	private AtomicInteger processed = new AtomicInteger(0);
 	
@@ -37,10 +34,12 @@ public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 		}
 		
 		try {
-			latch.await();
+			latch.await(10000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		Assert.assertTrue(processed.get() == iterations);
 	}
 	
 	@Override

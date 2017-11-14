@@ -1,15 +1,12 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.joo.scorpius.test.support.SampleRequest;
+import org.junit.Assert;
 
 public class DefaultTriggerHandlingTest extends AbstractTriggerTest {
-	
-	public static void main(String[] args) {
-		DefaultTriggerHandlingTest testCase = new DefaultTriggerHandlingTest(10000000);
-		testCase.test();
-	}
 	
 	private long processed = 0;
 	
@@ -36,9 +33,11 @@ public class DefaultTriggerHandlingTest extends AbstractTriggerTest {
 		}
 		
 		try {
-			latch.await();
+			latch.await(10000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		Assert.assertTrue(processed == iterations);
 	}
 }

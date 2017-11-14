@@ -1,25 +1,23 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.trigger.handle.vertx.EventBusHandlingStrategy;
+import org.junit.Assert;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 
 public class EventBusNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
 	
-	public static void main(String[] args) {
-		EventBusNonDeferredTriggerHandlingTest testCase = new EventBusNonDeferredTriggerHandlingTest(10000000);
-		testCase.test();
-	}
-	
 	private EventBusHandlingStrategy strategy;
 	
 	private EventBus eventBus;
 	
-	private long processed = 0;
+	private AtomicInteger processed = new AtomicInteger(0);
 	
 	public EventBusNonDeferredTriggerHandlingTest(long iterations) {
 		super(iterations);
@@ -40,21 +38,23 @@ public class EventBusNonDeferredTriggerHandlingTest extends AbstractTriggerTest 
 
 	@Override
 	protected void doTest(long iterations, String msgName) {
-		processed = 0;
+		processed = new AtomicInteger(0);
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
 			manager.fire(msgName, new SampleRequest(), response -> {
-				if (++processed == iterations) {
+				if (processed.incrementAndGet() == iterations) {
 					latch.countDown();
 				}
 			}, null);
 		}
 		
 		try {
-			latch.await();
+			latch.await(10000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		Assert.assertTrue(processed.get() == iterations);
 	}
 }
