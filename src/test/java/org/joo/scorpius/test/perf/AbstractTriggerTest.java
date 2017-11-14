@@ -3,7 +3,6 @@ package org.joo.scorpius.test.perf;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.test.support.GroovyTrigger;
-import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.test.support.ScalaTrigger;
 import org.joo.scorpius.trigger.DefaultTriggerManager;
