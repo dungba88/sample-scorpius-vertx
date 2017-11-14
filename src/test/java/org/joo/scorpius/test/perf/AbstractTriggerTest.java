@@ -2,7 +2,6 @@ package org.joo.scorpius.test.perf;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
-import org.joo.scorpius.test.support.GroovyTrigger;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.test.support.ScalaTrigger;
 import org.joo.scorpius.trigger.DefaultTriggerManager;
@@ -32,7 +31,6 @@ public abstract class AbstractTriggerTest {
 			
 			testInternal("greet_java");
 			testInternal("greet_scala");
-			testInternal("greet_groovy");
 		} finally {
 			System.out.println("\nCleaning up...");
 			cleanup();
@@ -55,13 +53,11 @@ public abstract class AbstractTriggerTest {
 	protected void setup() {
 		manager.registerTrigger("greet_java").withAction(new SampleTrigger());
 		manager.registerTrigger("greet_scala").withAction(new ScalaTrigger());
-		manager.registerTrigger("greet_groovy").withAction(new GroovyTrigger());
 	}
 
 	protected void warmup() {
 		doTest(1000, "greet_java");
 		doTest(1000, "greet_scala");
-		doTest(1000, "greet_groovy");
 	}
 
 	protected abstract void doTest(long iterations, String msgName);
