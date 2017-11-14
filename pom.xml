@@ -26,6 +26,11 @@
 			<artifactId>msgpack</artifactId>
 			<version>0.6.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.dungba</groupId>
+			<artifactId>joo-libra</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
