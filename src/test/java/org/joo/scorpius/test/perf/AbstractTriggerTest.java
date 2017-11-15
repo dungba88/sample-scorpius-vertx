@@ -6,7 +6,6 @@ import java.util.List;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.test.support.SampleTrigger;
-import org.joo.scorpius.test.support.ScalaTrigger;
 import org.joo.scorpius.trigger.DefaultTriggerManager;
 import org.joo.scorpius.trigger.TriggerManager;
 import org.junit.Test;
@@ -72,7 +71,6 @@ public abstract class AbstractTriggerTest {
 	
 	protected void setup() {
 		manager.registerTrigger("greet_java").withAction(new SampleTrigger());
-		manager.registerTrigger("greet_scala").withAction(new ScalaTrigger());
 	}
 
 	protected void warmup() {
