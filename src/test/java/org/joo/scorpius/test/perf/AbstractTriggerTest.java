@@ -49,7 +49,6 @@ public abstract class AbstractTriggerTest {
 			warmup();
 			
 			testInternal("greet_java");
-			testInternal("greet_scala");
 		} finally {
 			System.out.println("\nCleaning up...");
 			cleanup();
@@ -75,7 +74,6 @@ public abstract class AbstractTriggerTest {
 
 	protected void warmup() {
 		doTest(1000, "greet_java");
-		doTest(1000, "greet_scala");
 	}
 
 	protected abstract void doTest(long iterations, String msgName);
