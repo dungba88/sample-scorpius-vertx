@@ -8,10 +8,14 @@ public class SampleRequest extends BaseRequest {
 
 	private String name;
 	
+	public SampleRequest() {
+		
+	}
+	
 	public SampleRequest(String name) {
 		this.name = name;
 	}
-
+	
 	public String getName() {
 		return name;
 	}
