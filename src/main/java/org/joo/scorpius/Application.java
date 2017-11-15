@@ -26,7 +26,7 @@ public class Application {
 
 	public void run(Bootstrap bootstrap) {
 		if (!initialized.compareAndSet(false, true))
-			throw new RuntimeException("Application is already running");
+			throw new IllegalStateException("Application is already running");
 
 		this.triggerManager = new DefaultTriggerManager(applicationContext);
 		bootstrap.setTriggerManager(triggerManager);

@@ -38,7 +38,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
 	public void execute() {
 		if (status == TriggerExecutionStatus.EXECUTING || status == TriggerExecutionStatus.FINISHED) {
-			throw new IllegalAccessError("Trigger is already running or finished");
+			throw new IllegalStateException("Trigger is already running or finished");
 		}
 		if (config.getTrigger() == null)
 			return;
@@ -51,13 +51,13 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
 	public void finish(BaseResponse response) {
 		if (status == TriggerExecutionStatus.FINISHED)
-			throw new IllegalAccessError("Trigger is already finished");
+			throw new IllegalStateException("Trigger is already finished");
 		deferred.resolve(response);
 	}
 	
 	public void fail(TriggerExecutionException ex) {
 		if (status == TriggerExecutionStatus.FINISHED)
-			throw new IllegalAccessError("Trigger is already finished");
+			throw new IllegalStateException("Trigger is already finished");
 		deferred.reject(ex);
 	}
 	
