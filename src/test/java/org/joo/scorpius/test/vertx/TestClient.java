@@ -22,7 +22,7 @@ public class TestClient {
 		CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault();
 		httpClient.start();
 		ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
-		HttpPost request = new HttpPost("http://localhost:8080/msg?name=greet");
+		HttpPost request = new HttpPost("http://localhost:8080/msg?name=greet_java");
 		String xml = "{\"name\": \"Anh Dung\"}";
         HttpEntity entity = new ByteArrayEntity(xml.getBytes());
         request.setEntity(entity);
