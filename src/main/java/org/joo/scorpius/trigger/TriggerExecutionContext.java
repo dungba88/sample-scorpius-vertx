@@ -25,4 +25,6 @@ public interface TriggerExecutionContext {
 	public TriggerExecutionStatus getStatus();
 
 	public ApplicationContext getApplicationContext();
+	
+	public TriggerManager getTriggerManager();
 }

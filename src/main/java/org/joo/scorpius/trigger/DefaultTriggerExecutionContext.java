@@ -19,9 +19,12 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
 	private Deferred<BaseResponse, TriggerExecutionException> deferred;
 	
-	public DefaultTriggerExecutionContext(TriggerConfig config, BaseRequest request, 
+	private TriggerManager manager;
+	
+	public DefaultTriggerExecutionContext(TriggerManager manager, TriggerConfig config, BaseRequest request, 
 										  ApplicationContext applicationContext,
 										  Deferred<BaseResponse, TriggerExecutionException> deferred) {
+		this.manager = manager;
 		this.config = config;
 		this.request = request;
 		this.applicationContext = applicationContext;
@@ -76,5 +79,10 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
+	}
+
+	@Override
+	public TriggerManager getTriggerManager() {
+		return manager;
 	}
 }

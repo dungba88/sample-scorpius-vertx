@@ -79,7 +79,7 @@ public class DefaultTriggerManager implements TriggerManager {
 		
 		TriggerExecutionContextBuilder builder = applicationContext.getExecutionContextBuilderFactory().create();
 		
-		builder.setConfig(config).setRequest(request)
+		builder.setManager(this).setConfig(config).setRequest(request)
 			   .setApplicationContext(applicationContext)
 			   .setDoneCallback(doneCallback)
 			   .setFailCallback(failCallback);

@@ -11,6 +11,7 @@ import org.joo.scorpius.support.deferred.SimpleDeferredObject;
 import org.joo.scorpius.trigger.DefaultTriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
+import org.joo.scorpius.trigger.TriggerManager;
 
 public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionContext> {
 	
@@ -19,10 +20,12 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 	private BaseRequest request;
 
 	private ApplicationContext applicationContext;
-
+	
 	private FailCallback<TriggerExecutionException> failCallback;
 
 	private DoneCallback<BaseResponse> doneCallback;
+	
+	private TriggerManager manager;
 
 	@Override
 	public TriggerExecutionContext build() {
@@ -32,7 +35,7 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 		} else {
 			deferred = applicationContext.getDeferredFactory().create();
 		}
-		return new DefaultTriggerExecutionContext(config, request, applicationContext, deferred);
+		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred);
 	}
 
 	public BaseRequest getRequest() {
@@ -69,6 +72,15 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 
 	public TriggerExecutionContextBuilder setFailCallback(FailCallback<TriggerExecutionException> failCallback) {
 		this.failCallback = failCallback;
+		return this;
+	}
+
+	public TriggerManager getManager() {
+		return manager;
+	}
+
+	public TriggerExecutionContextBuilder setManager(TriggerManager manager) {
+		this.manager = manager;
 		return this;
 	}
 }
