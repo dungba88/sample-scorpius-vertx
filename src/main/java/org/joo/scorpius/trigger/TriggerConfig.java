@@ -1,6 +1,7 @@
 package org.joo.scorpius.trigger;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.function.Supplier;
 
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
@@ -43,6 +44,18 @@ public class TriggerConfig implements TriggerRegistration {
 		this.trigger = trigger;
 		this.requestClass = getRequestClassFor(trigger);
 		return this;
+	}
+
+	@Override
+	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(
+			Supplier<Trigger<T, H>> supplier) {
+		return withAction(supplier.get());
+	}
+
+	@Override
+	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Class<Trigger<T, H>> clazz) 
+			throws InstantiationException, IllegalAccessException {
+		return withAction(clazz.newInstance());
 	}
 	
 	public TriggerCondition getCondition() {
