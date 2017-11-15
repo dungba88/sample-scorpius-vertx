@@ -4,6 +4,8 @@ import org.joo.scorpius.support.BaseResponse;
 
 public class SampleResponse extends BaseResponse {
 
+	private static final long serialVersionUID = -7325467977709977459L;
+
 	private String name;
 	
 	public SampleResponse(String name) {

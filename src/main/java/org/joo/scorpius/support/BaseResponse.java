@@ -1,5 +1,8 @@
 package org.joo.scorpius.support;
 
-public class BaseResponse {
+import java.io.Serializable;
 
+public class BaseResponse implements Serializable {
+
+	private static final long serialVersionUID = -1905254636756119073L;
 }
