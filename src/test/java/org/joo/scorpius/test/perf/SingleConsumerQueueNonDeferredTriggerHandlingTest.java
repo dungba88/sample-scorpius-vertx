@@ -1,18 +1,15 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joo.scorpius.support.queue.SPSCRingBuffer;
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.trigger.handle.QueueHandlingStrategy;
+import org.junit.Assert;
 
 public class SingleConsumerQueueNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
-	
-	public static void main(String[] args) {
-		SingleConsumerQueueNonDeferredTriggerHandlingTest testCase = new SingleConsumerQueueNonDeferredTriggerHandlingTest(10000000);
-		testCase.test();
-	}
 	
 	private AtomicInteger processed = new AtomicInteger(0);
 	
@@ -38,10 +35,12 @@ public class SingleConsumerQueueNonDeferredTriggerHandlingTest extends AbstractT
 		}
 		
 		try {
-			latch.await();
+			latch.await(10000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		Assert.assertTrue(processed.get() == iterations);
 	}
 
 	@Override

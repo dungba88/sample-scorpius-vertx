@@ -22,7 +22,7 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy, AutoClose
 	
 	@Override
 	public void handle(TriggerExecutionContext context) {
-		queue.enqueue(context);
+		while (!queue.enqueue(context)) {}
 	}
 
 	@Override
