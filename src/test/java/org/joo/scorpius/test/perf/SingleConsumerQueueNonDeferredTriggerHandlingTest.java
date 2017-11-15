@@ -27,7 +27,7 @@ public class SingleConsumerQueueNonDeferredTriggerHandlingTest extends AbstractT
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire(msgName, new SampleRequest(), response -> {
+			manager.fire(msgName, new SampleRequest("World"), response -> {
 				if (processed.incrementAndGet() == iterations) {
 					latch.countDown();
 				}

@@ -25,7 +25,7 @@ public class DefaultNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire(msgName, new SampleRequest(), response -> {
+			manager.fire(msgName, new SampleRequest("World"), response -> {
 				if (++processed == iterations) {
 					latch.countDown();
 				}

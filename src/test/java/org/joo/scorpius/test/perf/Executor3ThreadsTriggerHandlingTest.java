@@ -26,7 +26,7 @@ public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire(msgName, new SampleRequest()).done(response -> {
+			manager.fire(msgName, new SampleRequest("World")).done(response -> {
 				if (processed.incrementAndGet() == iterations) {
 					latch.countDown();
 				}
