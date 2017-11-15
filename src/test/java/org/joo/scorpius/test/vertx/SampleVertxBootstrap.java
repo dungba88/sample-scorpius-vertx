@@ -18,7 +18,7 @@ public class SampleVertxBootstrap extends VertxBootstrap {
 		configureTriggers();
 		
 		VertxOptions options = new VertxOptions().setEventLoopPoolSize(8);
-		configureServer(options);
+		configureServer(options, 8080);
 	}
 
 	private void configureTriggers() {

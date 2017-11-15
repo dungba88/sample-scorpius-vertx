@@ -18,7 +18,7 @@ public abstract class VertxBootstrap implements Bootstrap {
 
 	protected VertxMessageController msgController;
 
-	protected void configureServer(VertxOptions options) {
+	protected void configureServer(VertxOptions options, int port) {
 		msgController = new VertxMessageController(triggerManager);
 
 		Vertx vertx = Vertx.vertx(options);
@@ -26,7 +26,7 @@ public abstract class VertxBootstrap implements Bootstrap {
 
 		Router restAPI = configureRoutes(vertx);
 
-		server.requestHandler(restAPI::accept).listen(8080);
+		server.requestHandler(restAPI::accept).listen(port);
 	}
 
 	protected Router configureRoutes(Vertx vertx) {
