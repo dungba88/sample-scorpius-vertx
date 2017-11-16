@@ -1,5 +1,6 @@
 package org.joo.scorpius.trigger;
 
+import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.MalformedRequestException;
@@ -21,6 +22,8 @@ public interface TriggerManager {
 	public TriggerRegistration registerTrigger(String name);
 
 	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
+	
+	public ApplicationContext getApplicationContext();
 
 	public TriggerHandlingStrategy getHandlingStrategy();
 
