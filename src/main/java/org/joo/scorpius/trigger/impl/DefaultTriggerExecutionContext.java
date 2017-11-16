@@ -11,7 +11,8 @@ import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
-import org.joo.scorpius.support.message.ExecutionContextMessage;
+import org.joo.scorpius.support.message.ExecutionContextFinishMessage;
+import org.joo.scorpius.support.message.ExecutionContextStartMessage;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerEvent;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
@@ -64,7 +65,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 			return;
 
 		if (manager.isEventEnabled(TriggerEvent.START))
-			manager.notifyEvent(TriggerEvent.START, new ExecutionContextMessage(id, eventName, request));
+			manager.notifyEvent(TriggerEvent.START, new ExecutionContextStartMessage(id, eventName, request));
 		
 		try {
 			config.getTrigger().execute(this);
@@ -72,16 +73,17 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 			fail(e);
 		} catch(Throwable e) {
 			fail(new TriggerExecutionException(e));
-		} finally {
-			if (manager.isEventEnabled(TriggerEvent.FINISH))
-				manager.notifyEvent(TriggerEvent.FINISH, new ExecutionContextMessage(id, eventName, request));
 		}
 	}
 	
 	public void finish(BaseResponse response) {
 		if (status == TriggerExecutionStatus.FINISHED)
 			throw new IllegalStateException("Trigger is already finished");
+		
 		deferred.resolve(response);
+
+		if (manager.isEventEnabled(TriggerEvent.FINISH))
+			manager.notifyEvent(TriggerEvent.FINISH, new ExecutionContextFinishMessage(id, eventName, request, response));
 	}
 	
 	public void fail(TriggerExecutionException ex) {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.joo.scorpius.support.BaseRequest;
 
-public class ExecutionContextMessage implements Serializable {
+public class ExecutionContextStartMessage implements Serializable {
 
 	private static final long serialVersionUID = 4814185340706357939L;
 	
@@ -14,7 +14,7 @@ public class ExecutionContextMessage implements Serializable {
 	
 	private final BaseRequest request;
 
-	public ExecutionContextMessage(String id, String eventName, BaseRequest request) {
+	public ExecutionContextStartMessage(String id, String eventName, BaseRequest request) {
 		this.id = id;
 		this.eventName = eventName;
 		this.request = request;
