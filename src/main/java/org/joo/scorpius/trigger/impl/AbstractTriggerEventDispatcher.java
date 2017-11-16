@@ -29,4 +29,9 @@ public class AbstractTriggerEventDispatcher implements TriggerEventDispatcher {
 			handler.handleEvent(event, msg);
 		}
 	}
+
+	@Override
+	public boolean isEventEnabled(TriggerEvent event) {
+		return handlerMap.containsKey(event);
+	}
 }

@@ -11,6 +11,7 @@ import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
+import org.joo.scorpius.support.message.ExecutionContextMessage;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerEvent;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
@@ -62,12 +63,18 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		if (config.getTrigger() == null)
 			return;
 
+		if (manager.isEventEnabled(TriggerEvent.START))
+			manager.notifyEvent(TriggerEvent.START, new ExecutionContextMessage(id, eventName, request));
+		
 		try {
 			config.getTrigger().execute(this);
 		} catch (TriggerExecutionException e) {
 			fail(e);
 		} catch(Throwable e) {
 			fail(new TriggerExecutionException(e));
+		} finally {
+			if (manager.isEventEnabled(TriggerEvent.FINISH))
+				manager.notifyEvent(TriggerEvent.FINISH, new ExecutionContextMessage(id, eventName, request));
 		}
 	}
 	
@@ -87,7 +94,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		if (logger.isErrorEnabled()) {
 			logger.error("Exception occured while executing trigger with event name {}", eventName, ex);
 		}
-		manager.notifyEvent(TriggerEvent.EXCEPTION, new ExecutionContextExceptionMessage(id, eventName, request, ex));
+		if (manager.isEventEnabled(TriggerEvent.EXCEPTION))
+			manager.notifyEvent(TriggerEvent.EXCEPTION, new ExecutionContextExceptionMessage(id, eventName, request, ex));
 	}
 
 	public Promise<BaseResponse, TriggerExecutionException> promise() {
