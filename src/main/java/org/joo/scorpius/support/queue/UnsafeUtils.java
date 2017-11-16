@@ -15,7 +15,7 @@ public class UnsafeUtils {
 			field.setAccessible(true);
 			UNSAFE = (Unsafe) field.get(null); 
 		} catch (Exception e) { 
-			throw new AssertionError(e);
+			throw new RuntimeException(e);
 		}
 	}
 	

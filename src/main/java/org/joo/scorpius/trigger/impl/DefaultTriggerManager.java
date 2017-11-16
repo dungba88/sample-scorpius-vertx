@@ -1,4 +1,4 @@
-package org.joo.scorpius.trigger;
+package org.joo.scorpius.trigger.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -15,12 +15,16 @@ import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.deferred.SimpleDonePromise;
 import org.joo.scorpius.support.deferred.SimpleFailurePromise;
+import org.joo.scorpius.trigger.TriggerConfig;
+import org.joo.scorpius.trigger.TriggerExecutionContext;
+import org.joo.scorpius.trigger.TriggerManager;
+import org.joo.scorpius.trigger.TriggerRegistration;
 import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DefaultTriggerManager implements TriggerManager {
+public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
 	
 	private Map<String, TriggerConfig> triggerConfigs;
 	
@@ -90,7 +94,8 @@ public class DefaultTriggerManager implements TriggerManager {
 		builder.setManager(this).setConfig(config).setRequest(request)
 			   .setApplicationContext(applicationContext)
 			   .setDoneCallback(doneCallback)
-			   .setFailCallback(failCallback);
+			   .setFailCallback(failCallback)
+			   .setEventName(name);
 		
 		return builder.build();
 	}

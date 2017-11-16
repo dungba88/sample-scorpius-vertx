@@ -4,8 +4,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.support.builders.Builder;
-import org.joo.scorpius.trigger.DefaultTriggerManager;
 import org.joo.scorpius.trigger.TriggerManager;
+import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
 
 public class Application {
 

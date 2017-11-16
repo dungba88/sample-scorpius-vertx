@@ -10,10 +10,10 @@ import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.SimpleDeferredObject;
-import org.joo.scorpius.trigger.DefaultTriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerManager;
+import org.joo.scorpius.trigger.impl.DefaultTriggerExecutionContext;
 
 public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionContext> {
 	
@@ -29,6 +29,8 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 	
 	private TriggerManager manager;
 	
+	private String eventName;
+	
 	@Override
 	public TriggerExecutionContext build() {
 		Deferred<BaseResponse, TriggerExecutionException> deferred = null;
@@ -38,7 +40,7 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 			deferred = applicationContext.getDeferredFactory().create();
 		}
 		Optional<String> id = applicationContext.getIdGenerator().create();
-		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id.orElse(null));
+		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id.orElse(null), getEventName());
 	}
 
 	public BaseRequest getRequest() {
@@ -84,6 +86,15 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 
 	public TriggerExecutionContextBuilder setManager(TriggerManager manager) {
 		this.manager = manager;
+		return this;
+	}
+
+	public String getEventName() {
+		return eventName;
+	}
+
+	public TriggerExecutionContextBuilder setEventName(String eventName) {
+		this.eventName = eventName;
 		return this;
 	}
 }

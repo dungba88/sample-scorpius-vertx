@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
+import org.joo.scorpius.trigger.impl.SqlTriggerCondition;
 
 public class TriggerConfig implements TriggerRegistration {
 

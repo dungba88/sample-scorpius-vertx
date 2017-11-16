@@ -1,8 +1,10 @@
-package org.joo.scorpius.trigger;
+package org.joo.scorpius.trigger.impl;
 
 import org.joo.libra.PredicateContext;
 import org.joo.libra.sql.SqlPredicate;
 import org.joo.libra.support.PredicateExecutionException;
+import org.joo.scorpius.trigger.TriggerCondition;
+import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public class SqlTriggerCondition implements TriggerCondition {
 	

@@ -1,17 +1,29 @@
-package org.joo.scorpius.trigger;
+package org.joo.scorpius.trigger.impl;
 
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.Promise;
+import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
+import org.joo.scorpius.trigger.TriggerConfig;
+import org.joo.scorpius.trigger.TriggerEvent;
+import org.joo.scorpius.trigger.TriggerExecutionContext;
+import org.joo.scorpius.trigger.TriggerExecutionStatus;
+import org.joo.scorpius.trigger.TriggerManager;
 
 public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
+	private final static Logger logger = LogManager.getLogger(DefaultTriggerExecutionContext.class);
+	
 	private String id;
+	
+	private String eventName;
 	
 	private TriggerConfig config;
 	
@@ -28,8 +40,9 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	public DefaultTriggerExecutionContext(TriggerManager manager, TriggerConfig config, BaseRequest request, 
 										  ApplicationContext applicationContext,
 										  Deferred<BaseResponse, TriggerExecutionException> deferred,
-										  String id) {
+										  String id, String eventName) {
 		this.id = id;
+		this.eventName = eventName;
 		this.manager = manager;
 		this.config = config;
 		this.request = request;
@@ -48,15 +61,13 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		}
 		if (config.getTrigger() == null)
 			return;
-		
+
 		try {
 			config.getTrigger().execute(this);
 		} catch (TriggerExecutionException e) {
 			fail(e);
 		} catch(Throwable e) {
 			fail(new TriggerExecutionException(e));
-		} finally {
-			//TODO: log
 		}
 	}
 	
@@ -67,11 +78,18 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	}
 	
 	public void fail(TriggerExecutionException ex) {
-		//TODO: log
+		logException(ex);
 		if (status == TriggerExecutionStatus.FINISHED) return;
 		deferred.reject(ex);
 	}
 	
+	private void logException(TriggerExecutionException ex) {
+		if (logger.isErrorEnabled()) {
+			logger.error("Exception occured while executing trigger with event name {}", eventName, ex);
+		}
+		manager.notifyEvent(TriggerEvent.EXCEPTION, new ExecutionContextExceptionMessage(id, eventName, request, ex));
+	}
+
 	public Promise<BaseResponse, TriggerExecutionException> promise() {
 		return deferred.promise();
 	}
@@ -115,5 +133,10 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	@Override
 	public boolean verifyTraceId() {
 		return request.verifyTraceId();
+	}
+
+	@Override
+	public String getEventName() {
+		return eventName;
 	}
 }

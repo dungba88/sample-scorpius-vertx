@@ -10,7 +10,7 @@ import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
-public interface TriggerManager {
+public interface TriggerManager extends TriggerEventDispatcher {
 
 	public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException;
 

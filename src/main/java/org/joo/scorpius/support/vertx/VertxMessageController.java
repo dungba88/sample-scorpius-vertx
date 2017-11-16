@@ -17,6 +17,8 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.ext.web.RoutingContext;
 
 public class VertxMessageController implements Handler<RoutingContext> {
+	
+	private final static ObjectMapper mapper = new ObjectMapper();
 
 	private TriggerManager triggerManager;
 
@@ -65,7 +67,6 @@ public class VertxMessageController implements Handler<RoutingContext> {
 			response.end();
 			return;
 		}
-		ObjectMapper mapper = new ObjectMapper();
 		try {
 			String strResponse = mapper.writeValueAsString(triggerResponse);
 			response.end(strResponse);

@@ -30,4 +30,6 @@ public interface TriggerExecutionContext extends Traceable {
 	public TriggerManager getTriggerManager();
 	
 	public String getId();
+	
+	public String getEventName();
 }

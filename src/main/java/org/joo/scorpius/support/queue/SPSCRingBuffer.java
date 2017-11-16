@@ -27,7 +27,7 @@ public class SPSCRingBuffer implements HandlingQueue {
 			dataBaseOffset = UnsafeUtils.arrayBaseOffset(TriggerExecutionContext[].class);
 			indexScale = UnsafeUtils.arrayIndexScale(TriggerExecutionContext[].class);
 		} catch (Exception e) {
-			throw new AssertionError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
