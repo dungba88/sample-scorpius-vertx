@@ -14,6 +14,7 @@ import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.deferred.SimpleDonePromise;
+import org.joo.scorpius.support.deferred.SimpleFailurePromise;
 import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
@@ -63,6 +64,13 @@ public class DefaultTriggerManager implements TriggerManager {
 			return resolveDefault();
 		}
 		
+		if (!data.verifyTraceId()) {
+			TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
+			if (failCallback != null)
+				failCallback.onFail(ex);
+			return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
+		}
+		
 		TriggerExecutionContext executionContext = buildExecutionContext(name, data, doneCallback, failCallback);
 		handlingStrategy.handle(executionContext);
 		return executionContext.promise();
@@ -108,5 +116,10 @@ public class DefaultTriggerManager implements TriggerManager {
 	@Override
 	public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy) {
 		this.handlingStrategy = handlingStategy;
+	}
+
+	@Override
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
 	}
 }

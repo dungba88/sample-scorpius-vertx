@@ -31,11 +31,16 @@ public class NestedNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire("nested", new NestedRequest(msgName), response -> {
+			manager.fire("nested", new NestedRequest(manager.getApplicationContext().getIdGenerator().create(), msgName), response -> {
 				if (++processed == iterations) {
 					latch.countDown();
 				}
-			}, null);
+			}, ex -> {
+				ex.printStackTrace();
+				if (++processed == iterations) {
+					latch.countDown();
+				}
+			});
 		}
 		
 		try {

@@ -8,7 +8,8 @@ public class NestedRequest extends BaseRequest {
 
 	private String name;
 	
-	public NestedRequest(String name) {
+	public NestedRequest(String traceId, String name) {
+		super(traceId);
 		this.name = name;
 	}
 
