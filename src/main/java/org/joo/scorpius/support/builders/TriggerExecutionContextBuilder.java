@@ -26,7 +26,7 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 	private DoneCallback<BaseResponse> doneCallback;
 	
 	private TriggerManager manager;
-
+	
 	@Override
 	public TriggerExecutionContext build() {
 		Deferred<BaseResponse, TriggerExecutionException> deferred = null;
@@ -35,7 +35,8 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 		} else {
 			deferred = applicationContext.getDeferredFactory().create();
 		}
-		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred);
+		String id = applicationContext.getIdGenerator().create();
+		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id);
 	}
 
 	public BaseRequest getRequest() {

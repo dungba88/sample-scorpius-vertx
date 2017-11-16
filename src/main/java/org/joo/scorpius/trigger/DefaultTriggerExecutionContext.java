@@ -9,6 +9,8 @@ import org.joo.scorpius.support.deferred.Promise;
 
 public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
+	private String id;
+	
 	private TriggerConfig config;
 	
 	private BaseRequest request;
@@ -23,7 +25,9 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
 	public DefaultTriggerExecutionContext(TriggerManager manager, TriggerConfig config, BaseRequest request, 
 										  ApplicationContext applicationContext,
-										  Deferred<BaseResponse, TriggerExecutionException> deferred) {
+										  Deferred<BaseResponse, TriggerExecutionException> deferred,
+										  String id) {
+		this.id = id;
 		this.manager = manager;
 		this.config = config;
 		this.request = request;
@@ -42,10 +46,15 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 		}
 		if (config.getTrigger() == null)
 			return;
+		
 		try {
 			config.getTrigger().execute(this);
 		} catch (TriggerExecutionException e) {
 			fail(e);
+		} catch(Throwable e) {
+			fail(new TriggerExecutionException(e));
+		} finally {
+			//TODO: log
 		}
 	}
 	
@@ -56,8 +65,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	}
 	
 	public void fail(TriggerExecutionException ex) {
-		if (status == TriggerExecutionStatus.FINISHED)
-			throw new IllegalStateException("Trigger is already finished");
+		//TODO: log
+		if (status == TriggerExecutionStatus.FINISHED) return;
 		deferred.reject(ex);
 	}
 	
@@ -84,5 +93,25 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	@Override
 	public TriggerManager getTriggerManager() {
 		return manager;
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public String getTraceId() {
+		return request.getTraceId();
+	}
+
+	@Override
+	public void attachTraceId(String traceId) {
+		request.attachTraceId(traceId);
+	}
+
+	@Override
+	public boolean verifyTraceId() {
+		return request.verifyTraceId();
 	}
 }
