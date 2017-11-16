@@ -1,5 +1,7 @@
 package org.joo.scorpius.test.support;
 
+import java.util.Optional;
+
 import org.joo.scorpius.support.BaseRequest;
 
 public class NestedRequest extends BaseRequest {
@@ -8,7 +10,7 @@ public class NestedRequest extends BaseRequest {
 
 	private String name;
 	
-	public NestedRequest(String traceId, String name) {
+	public NestedRequest(Optional<String> traceId, String name) {
 		super(traceId);
 		this.name = name;
 	}

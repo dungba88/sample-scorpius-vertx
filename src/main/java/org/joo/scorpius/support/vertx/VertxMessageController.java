@@ -1,5 +1,7 @@
 package org.joo.scorpius.support.vertx;
 
+import java.util.Optional;
+
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
@@ -46,12 +48,12 @@ public class VertxMessageController implements Handler<RoutingContext> {
 		});
 	}
 	
-	protected String getTraceId(RoutingContext rc, ApplicationContext applicationContext) {
+	protected Optional<String> getTraceId(RoutingContext rc, ApplicationContext applicationContext) {
 		String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
 		if (traceId == null || traceId.isEmpty()) {
-			traceId = triggerManager.getApplicationContext().getIdGenerator().create();
+			return triggerManager.getApplicationContext().getIdGenerator().create();
 		}
-		return traceId;
+		return Optional.of(traceId);
 	}
 
 	private void onFail(Throwable exception, HttpServerResponse response, RoutingContext rc) {

@@ -1,5 +1,7 @@
 package org.joo.scorpius.trigger;
 
+import java.util.Optional;
+
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
@@ -101,12 +103,12 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	}
 
 	@Override
-	public String getTraceId() {
+	public Optional<String> getTraceId() {
 		return request.getTraceId();
 	}
 
 	@Override
-	public void attachTraceId(String traceId) {
+	public void attachTraceId(Optional<String> traceId) {
 		request.attachTraceId(traceId);
 	}
 

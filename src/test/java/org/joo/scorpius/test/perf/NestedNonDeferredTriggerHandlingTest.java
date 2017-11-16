@@ -1,5 +1,6 @@
 package org.joo.scorpius.test.perf;
 
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +32,7 @@ public class NestedNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
 		CountDownLatch latch = new CountDownLatch(1);
 		
 		for(int i=0; i<iterations; i++) {
-			manager.fire("nested", new NestedRequest(manager.getApplicationContext().getIdGenerator().create(), msgName), response -> {
+			manager.fire("nested", new NestedRequest(Optional.empty(), msgName), response -> {
 				if (++processed == iterations) {
 					latch.countDown();
 				}

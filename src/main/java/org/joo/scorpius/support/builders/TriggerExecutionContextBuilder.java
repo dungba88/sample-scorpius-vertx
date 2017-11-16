@@ -1,5 +1,7 @@
 package org.joo.scorpius.support.builders;
 
+import java.util.Optional;
+
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
@@ -35,8 +37,8 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 		} else {
 			deferred = applicationContext.getDeferredFactory().create();
 		}
-		String id = applicationContext.getIdGenerator().create();
-		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id);
+		Optional<String> id = applicationContext.getIdGenerator().create();
+		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id.orElse(null));
 	}
 
 	public BaseRequest getRequest() {

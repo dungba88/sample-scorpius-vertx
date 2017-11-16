@@ -1,11 +1,13 @@
 package org.joo.scorpius.support.builders;
 
+import java.util.Optional;
+
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.support.deferred.Deferred;
-import org.joo.scorpius.support.id.TimeBasedIdGenerator;
+import org.joo.scorpius.support.id.VoidIdGenerator;
 
 public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 	
@@ -13,12 +15,12 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 	
 	private Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory;
 	
-	private Factory<String> idGenerator;
+	private Factory<Optional<String>> idGenerator;
 	
 	public ApplicationContextBuilder() {
 		deferredFactory = () -> new AsyncDeferredObject<>();
 		executionContextBuilderFactory = () -> new TriggerExecutionContextBuilder();
-		idGenerator = new TimeBasedIdGenerator();
+		idGenerator = new VoidIdGenerator();
 	}
 	
 	@Override
@@ -42,11 +44,11 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 		this.executionContextBuilderFactory = executionContextBuilderFactory;
 	}
 
-	public Factory<String> getIdGenerator() {
+	public Factory<Optional<String>> getIdGenerator() {
 		return idGenerator;
 	}
 
-	public void setIdGenerator(Factory<String> idGenerator) {
+	public void setIdGenerator(Factory<Optional<String>> idGenerator) {
 		this.idGenerator = idGenerator;
 	}
 }

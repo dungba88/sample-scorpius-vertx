@@ -1,11 +1,13 @@
 package org.joo.scorpius.support.id;
 
+import java.util.Optional;
+
 import org.joo.scorpius.support.builders.Factory;
 
 import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 
-public class TimeBasedIdGenerator implements Factory<String> {
+public class TimeBasedIdGenerator implements Factory<Optional<String>> {
 	
 	private TimeBasedGenerator generator;
 
@@ -14,7 +16,7 @@ public class TimeBasedIdGenerator implements Factory<String> {
 	}
 
 	@Override
-	public String create() {
-		return generator.generate().toString();
+	public Optional<String> create() {
+		return Optional.of(generator.generate().toString());
 	}
 }

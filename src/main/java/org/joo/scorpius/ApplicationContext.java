@@ -1,5 +1,7 @@
 package org.joo.scorpius;
 
+import java.util.Optional;
+
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.builders.Factory;
@@ -12,11 +14,11 @@ public class ApplicationContext {
 	
 	private Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory;
 
-	private Factory<String> idGenerator;
+	private Factory<Optional<String>> idGenerator;
 	
 	public ApplicationContext(Factory<Deferred<BaseResponse, TriggerExecutionException>> deferredFactory,
 			Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory,
-			Factory<String> idGenerator) {
+			Factory<Optional<String>> idGenerator) {
 		this.deferredFactory = deferredFactory;
 		this.executionContextBuilderFactory = executionContextBuilderFactory;
 		this.idGenerator = idGenerator;
@@ -30,7 +32,7 @@ public class ApplicationContext {
 		return executionContextBuilderFactory;
 	}
 
-	public Factory<String> getIdGenerator() {
+	public Factory<Optional<String>> getIdGenerator() {
 		return idGenerator;
 	}
 }

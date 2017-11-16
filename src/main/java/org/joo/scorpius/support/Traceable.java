@@ -1,10 +1,12 @@
 package org.joo.scorpius.support;
 
+import java.util.Optional;
+
 public interface Traceable {
 
-	public String getTraceId();
+	public Optional<String> getTraceId();
 	
-	public void attachTraceId(String traceId);
+	public void attachTraceId(Optional<String> traceId);
 	
 	public boolean verifyTraceId();
 }
