@@ -20,7 +20,7 @@ public class VertxMessageController implements Handler<RoutingContext> {
 	
 	private final static ObjectMapper mapper = new ObjectMapper();
 
-	private TriggerManager triggerManager;
+	protected final TriggerManager triggerManager;
 
 	public VertxMessageController(TriggerManager triggerManager) {
 		this.triggerManager = triggerManager;
@@ -34,6 +34,7 @@ public class VertxMessageController implements Handler<RoutingContext> {
 		String msgData = rc.getBodyAsString();
 		
 		BaseRequest request = null;
+
 		try {
 			request = triggerManager.decodeRequestForEvent(msgName, msgData);
 		} catch (MalformedRequestException e) {
@@ -58,11 +59,11 @@ public class VertxMessageController implements Handler<RoutingContext> {
 		return Optional.of(traceId);
 	}
 
-	private void onFail(Throwable exception, HttpServerResponse response, RoutingContext rc) {
+	protected void onFail(Throwable exception, HttpServerResponse response, RoutingContext rc) {
 		rc.fail(exception);
 	}
 
-	private void onDone(BaseResponse triggerResponse, HttpServerResponse response, RoutingContext rc) {
+	protected void onDone(BaseResponse triggerResponse, HttpServerResponse response, RoutingContext rc) {
 		if (triggerResponse == null) {
 			response.end();
 			return;
