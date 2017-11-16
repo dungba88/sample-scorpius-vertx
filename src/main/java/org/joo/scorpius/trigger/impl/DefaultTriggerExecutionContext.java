@@ -81,6 +81,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 			throw new IllegalStateException("Trigger is already finished");
 		
 		deferred.resolve(response);
+		
+		status = TriggerExecutionStatus.FINISHED;
 
 		if (manager.isEventEnabled(TriggerEvent.FINISH))
 			manager.notifyEvent(TriggerEvent.FINISH, new ExecutionContextFinishMessage(id, eventName, request, response));
@@ -88,8 +90,12 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	
 	public void fail(TriggerExecutionException ex) {
 		logException(ex);
+		
 		if (status == TriggerExecutionStatus.FINISHED) return;
+
 		deferred.reject(ex);
+		
+		status = TriggerExecutionStatus.FINISHED;
 	}
 	
 	private void logException(TriggerExecutionException ex) {
