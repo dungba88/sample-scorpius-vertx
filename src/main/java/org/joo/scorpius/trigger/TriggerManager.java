@@ -8,6 +8,7 @@ import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
+import org.joo.scorpius.support.message.PeriodicTaskMessage;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 public interface TriggerManager extends TriggerEventDispatcher {
@@ -19,6 +20,10 @@ public interface TriggerManager extends TriggerEventDispatcher {
 	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
 			DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback);
 	
+	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg);
+	
+	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig);
+
 	public TriggerRegistration registerTrigger(String name);
 
 	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
@@ -28,4 +33,6 @@ public interface TriggerManager extends TriggerEventDispatcher {
 	public TriggerHandlingStrategy getHandlingStrategy();
 
 	public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy);
+	
+	public void shutdown();
 }

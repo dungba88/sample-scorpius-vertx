@@ -32,5 +32,11 @@ public class Application {
 		bootstrap.setTriggerManager(triggerManager);
 		bootstrap.setApplicationContext(applicationContext);
 		bootstrap.run();
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				triggerManager.shutdown();
+			}
+		});
 	}
 }

@@ -3,6 +3,10 @@ package org.joo.scorpius.trigger.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
@@ -15,6 +19,7 @@ import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.deferred.SimpleDonePromise;
 import org.joo.scorpius.support.deferred.SimpleFailurePromise;
+import org.joo.scorpius.support.message.PeriodicTaskMessage;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerManager;
@@ -32,10 +37,13 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	
 	private TriggerHandlingStrategy handlingStrategy;
 	
+	private ScheduledExecutorService scheduledExecutors;
+	
 	public DefaultTriggerManager(ApplicationContext applicationContext) {
 		this.triggerConfigs = new HashMap<>();
 		this.applicationContext = applicationContext;
 		this.handlingStrategy = new DefaultHandlingStrategy();
+		this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
 	}
 	
 	@Override
@@ -112,6 +120,21 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 		triggerConfigs.put(name, triggerConfig);
 		return triggerConfig;
 	}
+	
+	@Override
+	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg) {
+		return registerPeriodicEvent(msg, new TriggerConfig());
+	}
+
+	@Override
+	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig) {
+		String name = UUID.randomUUID().toString();
+		TriggerRegistration config = registerTrigger(name, triggerConfig);
+		scheduledExecutors.scheduleAtFixedRate(() -> {
+			fire(name, msg.getRequest());
+		}, msg.getDelay(), msg.getPeriod(), TimeUnit.MILLISECONDS);
+		return config;
+	}
 
 	@Override
 	public TriggerHandlingStrategy getHandlingStrategy() {
@@ -126,5 +149,10 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	@Override
 	public ApplicationContext getApplicationContext() {
 		return applicationContext;
+	}
+
+	@Override
+	public void shutdown() {
+		scheduledExecutors.shutdown();
 	}
 }
