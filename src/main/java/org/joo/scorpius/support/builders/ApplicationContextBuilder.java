@@ -5,7 +5,7 @@ import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.support.deferred.Deferred;
-import org.joo.scorpius.support.id.AtomicIdGenerator;
+import org.joo.scorpius.support.id.TimeBasedIdGenerator;
 
 public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 	
@@ -18,7 +18,7 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 	public ApplicationContextBuilder() {
 		deferredFactory = () -> new AsyncDeferredObject<>();
 		executionContextBuilderFactory = () -> new TriggerExecutionContextBuilder();
-		idGenerator = new AtomicIdGenerator();
+		idGenerator = new TimeBasedIdGenerator();
 	}
 	
 	@Override
