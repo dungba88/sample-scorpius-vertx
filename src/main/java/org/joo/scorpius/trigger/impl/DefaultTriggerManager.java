@@ -1,11 +1,14 @@
 package org.joo.scorpius.trigger.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.joo.scorpius.ApplicationContext;
@@ -39,11 +42,14 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	
 	private ScheduledExecutorService scheduledExecutors;
 	
+	private List<ScheduledFuture<?>> scheduledFutures;
+	
 	public DefaultTriggerManager(ApplicationContext applicationContext) {
 		this.triggerConfigs = new HashMap<>();
 		this.applicationContext = applicationContext;
 		this.handlingStrategy = new DefaultHandlingStrategy();
 		this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
+		this.scheduledFutures = new ArrayList<>();
 	}
 	
 	@Override
@@ -130,9 +136,10 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig) {
 		String name = UUID.randomUUID().toString();
 		TriggerRegistration config = registerTrigger(name, triggerConfig);
-		scheduledExecutors.scheduleAtFixedRate(() -> {
+		ScheduledFuture<?> future = scheduledExecutors.scheduleAtFixedRate(() -> {
 			fire(name, msg.getRequest());
 		}, msg.getDelay(), msg.getPeriod(), TimeUnit.MILLISECONDS);
+		scheduledFutures.add(future);
 		return config;
 	}
 
@@ -153,6 +160,13 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
 	@Override
 	public void shutdown() {
+		for(ScheduledFuture<?> future : scheduledFutures) {
+			future.cancel(true);
+		}
 		scheduledExecutors.shutdown();
+	}
+	
+	public List<ScheduledFuture<?>> getScheduledFutures() {
+		return scheduledFutures;
 	}
 }
