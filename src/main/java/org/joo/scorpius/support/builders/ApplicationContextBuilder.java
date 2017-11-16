@@ -1,5 +1,7 @@
 package org.joo.scorpius.support.builders;
 
+import java.util.UUID;
+
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.TriggerExecutionException;
@@ -12,14 +14,17 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 	
 	private Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory;
 	
+	private Factory<String> idGenerator;
+	
 	public ApplicationContextBuilder() {
 		deferredFactory = () -> new AsyncDeferredObject<>();
 		executionContextBuilderFactory = () -> new TriggerExecutionContextBuilder();
+		idGenerator = () -> UUID.randomUUID().toString();
 	}
 	
 	@Override
 	public ApplicationContext build() {
-		return new ApplicationContext(deferredFactory, executionContextBuilderFactory);
+		return new ApplicationContext(deferredFactory, executionContextBuilderFactory, getIdGenerator());
 	}
 
 	public Factory<Deferred<BaseResponse, TriggerExecutionException>> getDeferredFactory() {
@@ -36,5 +41,13 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 
 	public void setExecutionContextBuilderFactory(Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory) {
 		this.executionContextBuilderFactory = executionContextBuilderFactory;
+	}
+
+	public Factory<String> getIdGenerator() {
+		return idGenerator;
+	}
+
+	public void setIdGenerator(Factory<String> idGenerator) {
+		this.idGenerator = idGenerator;
 	}
 }

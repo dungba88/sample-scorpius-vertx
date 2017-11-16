@@ -12,10 +12,14 @@ public class ApplicationContext {
 	
 	private Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory;
 
+	private Factory<String> idGenerator;
+	
 	public ApplicationContext(Factory<Deferred<BaseResponse, TriggerExecutionException>> deferredFactory,
-			Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory) {
+			Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory,
+			Factory<String> idGenerator) {
 		this.deferredFactory = deferredFactory;
 		this.executionContextBuilderFactory = executionContextBuilderFactory;
+		this.idGenerator = idGenerator;
 	}
 
 	public Factory<Deferred<BaseResponse, TriggerExecutionException>> getDeferredFactory() {
@@ -24,5 +28,9 @@ public class ApplicationContext {
 
 	public Factory<TriggerExecutionContextBuilder> getExecutionContextBuilderFactory() {
 		return executionContextBuilderFactory;
+	}
+
+	public Factory<String> getIdGenerator() {
+		return idGenerator;
 	}
 }
