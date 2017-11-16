@@ -11,6 +11,5 @@ public class SampleTrigger extends AbstractTrigger<SampleRequest, BaseResponse> 
 	public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
 		SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
 		executionContext.finish(new SampleResponse("Hi " + theRequest.getName()));
-		throw new NullPointerException("hello");
 	}
 }
