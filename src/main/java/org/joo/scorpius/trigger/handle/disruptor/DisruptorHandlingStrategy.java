@@ -30,8 +30,8 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 	public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor, ProducerType producerType, WaitStrategy waitStategy) {
 		this.executor = executor;
 		this.disruptor = new Disruptor<>(new ExecutionContextEventFactory(), bufferSize, executor, producerType, waitStategy);
-		this.disruptor.handleEventsWithWorkerPool(this::onEvent);
 		this.disruptor.handleExceptionsWith(new DisruptorExceptionHandler());
+		this.disruptor.handleEventsWithWorkerPool(this::onEvent);
 		this.disruptor.start();
 	}
 	
