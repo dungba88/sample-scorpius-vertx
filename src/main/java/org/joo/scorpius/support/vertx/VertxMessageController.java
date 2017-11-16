@@ -1,7 +1,9 @@
 package org.joo.scorpius.support.vertx;
 
+import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
+import org.joo.scorpius.support.CommonConstants;
 import org.joo.scorpius.support.MalformedRequestException;
 import org.joo.scorpius.trigger.TriggerManager;
 
@@ -32,13 +34,24 @@ public class VertxMessageController implements Handler<RoutingContext> {
 			request = triggerManager.decodeRequestForEvent(msgName, msgData);
 		} catch (MalformedRequestException e) {
 			onFail(e, response, rc);
+			return;
 		}
-
+		
+		request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
+		
 		triggerManager.fire(msgName, request).done(triggerResponse -> {
 			onDone(triggerResponse, response, rc);
 		}).fail(exception -> {
 			onFail(exception, response, rc);
 		});
+	}
+	
+	protected String getTraceId(RoutingContext rc, ApplicationContext applicationContext) {
+		String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
+		if (traceId == null || traceId.isEmpty()) {
+			traceId = triggerManager.getApplicationContext().getIdGenerator().create();
+		}
+		return traceId;
 	}
 
 	private void onFail(Throwable exception, HttpServerResponse response, RoutingContext rc) {
