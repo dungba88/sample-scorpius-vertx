@@ -137,7 +137,7 @@ Put it altogether, the flow when you raising an event is as below:
 - The trigger will perform its duty, and call `finish` when it is done, or `fail` when it encounters an error and cannot finish its job.
 - Client `A` promise callback will be called, and handle the result/exception from the trigger.
 
-The `TriggerHandlingStrategy` is a concept to decouple the `TriggerManager` and the execution of the triggers, more will be covered on section [#extends](#extends)
+The `TriggerHandlingStrategy` is a concept to decouple the `TriggerManager` and the execution of the triggers, more will be covered on section [#extend](#extend)
 
 ## extend
 
