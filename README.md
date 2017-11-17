@@ -1,4 +1,7 @@
 # scorpius
+[![License](https://img.shields.io/github/license/dungba88/scorpius.svg?maxAge=2592000)](LICENSE)
+[![Build Status](https://travis-ci.org/dungba88/scorpius.svg?branch=master)](https://travis-ci.org/dungba88/scorpius)
+[![Maven Central](https://img.shields.io/maven-central/v/org.dungba/joo-scorpius.svg?maxAge=2592000)](http://mvnrepository.com/artifact/org.dungba/joo-scorpius)
 
 Scorpius is an asynchronous framework for defining and executing trigger in Java. Trigger is a type of event-driven programming, which you define an independent handler and register it with an event. When that event is fired, the associated trigger will be executed. A trigger can have an optional condition, to specify whether the trigger should be executed for a specific event payload.
 
