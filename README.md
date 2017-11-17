@@ -45,15 +45,17 @@ Creating a trigger is easy, just extend the `AbstractTrigger` and you will be go
 ```java
 public class SampleTrigger extends AbstractTrigger<SampleRequest, BaseResponse> {
 
-	@Override
-	public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
-    // get the request from executionContext
-		SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
-    // do some works here
-    // ...
-    // and return the response
-    executionContext.finish(response));
-	}
+    @Override
+    public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
+        // get the request from executionContext
+        SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
+        
+	// do some works here
+        // ...
+        
+	// and return the response
+        executionContext.finish(response));
+    }
 }
 ```
 
