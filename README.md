@@ -154,4 +154,4 @@ Almost everything in Scorpius is extensible, or configurable. The most prominien
 
 Well, it depends on the situation. With the default one, the caller will be blocked until the trigger fulfills its job or fails with an exception. So this strategy will be faster and more favorable if all of your triggers doesn't block (i.e they are asynchronous) and their executions is very fast.
 
-If you want your trigger to prematurely return result to caller, and continue doing it job independently, then `DisruptorHandlingStrategy` is more favorable.
+If you want your trigger to prematurely return result to caller, and continue doing it job independently, then `DisruptorHandlingStrategy` is more favorable. You will have more throughputs at the cost of slightly increased latency.
