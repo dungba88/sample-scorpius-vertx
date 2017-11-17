@@ -137,11 +137,6 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	}
 
 	@Override
-	public Optional<String> getTraceId() {
-		return request.getTraceId();
-	}
-
-	@Override
 	public void attachTraceId(Optional<String> traceId) {
 		request.attachTraceId(traceId);
 	}
@@ -154,5 +149,15 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 	@Override
 	public String getEventName() {
 		return eventName;
+	}
+
+	@Override
+	public String getTraceId() {
+		return request.getTraceId();
+	}
+
+	@Override
+	public Optional<String> fetchRawTraceId() {
+		return request.fetchRawTraceId();
 	}
 }

@@ -25,13 +25,18 @@ public class BaseRequest implements Traceable, Serializable {
 	}
 	
 	@Override
-	public Optional<String> getTraceId() {
-		return traceId;
-	}
-
-	@Override
 	public boolean verifyTraceId() {
 		if (traceId == null || !traceId.isPresent()) return true;
 		return !traceId.get().isEmpty();
+	}
+
+	@Override
+	public String getTraceId() {
+		return traceId != null ? traceId.orElse(null) : null;
+	}
+
+	@Override
+	public Optional<String> fetchRawTraceId() {
+		return traceId;
 	}
 }

@@ -4,7 +4,9 @@ import java.util.Optional;
 
 public interface Traceable {
 
-	public Optional<String> getTraceId();
+	public String getTraceId();
+	
+	public Optional<String> fetchRawTraceId();
 	
 	public void attachTraceId(Optional<String> traceId);
 	
