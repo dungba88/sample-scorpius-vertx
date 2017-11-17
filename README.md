@@ -126,3 +126,32 @@ Promise<BaseResponse, TriggerExecutionException> promise =
 promise.done(response -> // handle the response)
        .fail(ex -> // handle the failure);
 ```
+
+## trigger execution flow
+
+Put it altogether, the flow when you raising an event is as below:
+
+- A client `A` raise the event with a payload
+- `TriggerManager` accept the event, create an `executionContext` associated with it, the pass to a `TriggerHandlingStrategy`. The `executionContext` will contain the event, payload and the trigger itself. Also `TriggerManager` will return a `Promise` to the client `A`
+- `TriggerHandlingStrategy` will execute the trigger, immediately or sometimes in the future.
+- The trigger will perform its duty, and call `finish` when it is done, or `fail` when it encounters an error and cannot finish its job.
+- Client `A` promise callback will be called, and handle the result/exception from the trigger.
+
+The `TriggerHandlingStrategy` is a concept to decouple the `TriggerManager` and the execution of the triggers, more will be covered on section [#extends](#extends)
+
+## extend
+
+Almost everything in Scorpius is extensible, or configurable. The most prominient one is the `TriggerHandlingStrategy`.
+
+`TriggerHandlingStrategy` is how you want a trigger to be executed when its associated event is raised. There are several builtin implementation:
+
+- `DefaultHandlingStrategy`: This is the default, it will execute the triggers immediately, in the same `Thread` as the caller
+- `DisruptorHandlingStrategy`: This will use LMAX Disruptor to execute the triggers. It is the fastest and most efficient strategy besides the default one
+- `ExecutorHandlingStrategy`: This will use Java `ExecutorService` to execute the triggers. You can specify number of threads used by the `ExecutorService`
+- `QueueHandlingStrategy`: This will an adhoc queue to execute the trigger
+
+*Which strategy to be used?*
+
+Well, it depends on the situation. With the default one, the caller will be blocked until the trigger fulfills its job or fails with an exception. So this strategy will be faster and more favorable if all of your triggers doesn't block (i.e they are asynchronous) and their executions is very fast.
+
+If you want your trigger to prematurely return result to caller, and continue doing it job independently, then `DisruptorHandlingStrategy` is more favorable.
