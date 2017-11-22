@@ -12,12 +12,8 @@ public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 	
 	private AtomicInteger processed = new AtomicInteger(0);
 	
-	private ExecutorHandlingStrategy strategy;
-	
 	public Executor3ThreadsTriggerHandlingTest(long iterations) {
-		super(iterations);
-		strategy = new ExecutorHandlingStrategy(7);
-		manager.setHandlingStrategy(strategy);
+		super(iterations, new ExecutorHandlingStrategy(7));
 	}
 
 	@Override
@@ -40,14 +36,5 @@ public class Executor3ThreadsTriggerHandlingTest extends AbstractTriggerTest {
 		}
 		
 		Assert.assertTrue(processed.get() == iterations);
-	}
-	
-	@Override
-	protected void cleanup() {
-		try {
-			strategy.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

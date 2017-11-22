@@ -7,6 +7,7 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.trigger.TriggerManager;
+import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +34,9 @@ public abstract class AbstractTriggerTest {
 		return list;
 	}
 
-	public AbstractTriggerTest(long iterations) {
+	public AbstractTriggerTest(long iterations, TriggerHandlingStrategy strategy) {
 		this.context = new ApplicationContextBuilder().build();
+		this.context.override(TriggerHandlingStrategy.class, strategy);
 		this.manager = new DefaultTriggerManager(context);
 		this.iterations = iterations;
 	}
@@ -42,17 +44,13 @@ public abstract class AbstractTriggerTest {
 	@Test
 	public void test() {
 		try {
-			System.out.println("Setting up...");
 			setup();
 	
-			System.out.println("Warming up...");
 			warmup();
 			
 			testInternal("greet_java");
 		} finally {
-			System.out.println("\nCleaning up...");
 			cleanup();
-			System.out.println("Finished");
 		}
 	}
 	
@@ -78,5 +76,7 @@ public abstract class AbstractTriggerTest {
 
 	protected abstract void doTest(long iterations, String msgName);
 
-	protected abstract void cleanup();
+	protected void cleanup() {
+		manager.shutdown();
+	}
 }

@@ -4,6 +4,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.joo.scorpius.test.support.SampleRequest;
+import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.junit.Assert;
 
 public class DefaultTriggerHandlingTest extends AbstractTriggerTest {
@@ -11,7 +12,7 @@ public class DefaultTriggerHandlingTest extends AbstractTriggerTest {
 	private long processed = 0;
 	
 	public DefaultTriggerHandlingTest(long iterations) {
-		super(iterations);
+		super(iterations, new DefaultHandlingStrategy());
 	}
 
 	@Override

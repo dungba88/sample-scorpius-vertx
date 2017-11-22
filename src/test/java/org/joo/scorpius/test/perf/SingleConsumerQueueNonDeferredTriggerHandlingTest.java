@@ -13,12 +13,8 @@ public class SingleConsumerQueueNonDeferredTriggerHandlingTest extends AbstractT
 	
 	private AtomicInteger processed = new AtomicInteger(0);
 	
-	private QueueHandlingStrategy strategy;
-	
 	public SingleConsumerQueueNonDeferredTriggerHandlingTest(long iterations) {
-		super(iterations);
-		strategy = new QueueHandlingStrategy(new SPSCRingBuffer(1024 * 1024 * 16), 1);
-		manager.setHandlingStrategy(strategy);
+		super(iterations, new QueueHandlingStrategy(new SPSCRingBuffer(1024 * 1024 * 16), 1));
 	}
 
 	@Override
@@ -41,14 +37,5 @@ public class SingleConsumerQueueNonDeferredTriggerHandlingTest extends AbstractT
 		}
 		
 		Assert.assertTrue(processed.get() == iterations);
-	}
-
-	@Override
-	protected void cleanup() {
-		try {
-			strategy.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.test.support.SampleTrigger;
+import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.junit.Assert;
 
 public class DefaultConditionalTriggerHandlingTest extends AbstractTriggerTest {
@@ -12,7 +13,7 @@ public class DefaultConditionalTriggerHandlingTest extends AbstractTriggerTest {
 	private long processed = 0;
 	
 	public DefaultConditionalTriggerHandlingTest(long iterations) {
-		super(iterations);
+		super(iterations, new DefaultHandlingStrategy());
 	}
 
 	@Override

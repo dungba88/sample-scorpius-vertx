@@ -8,4 +8,9 @@ public class DefaultHandlingStrategy implements TriggerHandlingStrategy {
 	public void handle(TriggerExecutionContext context) {
 		context.execute();
 	}
+
+	@Override
+	public void close() throws Exception {
+		
+	}
 }

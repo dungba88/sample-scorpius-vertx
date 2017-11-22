@@ -3,7 +3,7 @@ package org.joo.scorpius.trigger.handle;
 import org.joo.scorpius.support.queue.HandlingQueue;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
-public class QueueHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
+public class QueueHandlingStrategy implements TriggerHandlingStrategy {
 	
 	private HandlingQueue queue;
 	

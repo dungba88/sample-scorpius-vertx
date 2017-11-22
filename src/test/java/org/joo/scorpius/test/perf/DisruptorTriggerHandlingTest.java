@@ -14,23 +14,10 @@ import com.lmax.disruptor.dsl.ProducerType;
 
 public class DisruptorTriggerHandlingTest extends AbstractTriggerTest {
 	
-	private DisruptorHandlingStrategy strategy;
-	
 	private AtomicInteger processed = new AtomicInteger(0);
 	
 	public DisruptorTriggerHandlingTest(long iterations) {
-		super(iterations);
-		strategy = new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.SINGLE, new YieldingWaitStrategy());
-		manager.setHandlingStrategy(strategy);
-	}
-
-	@Override
-	protected void cleanup() {
-		try {
-			strategy.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		super(iterations, new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.SINGLE, new YieldingWaitStrategy()));
 	}
 
 	@Override

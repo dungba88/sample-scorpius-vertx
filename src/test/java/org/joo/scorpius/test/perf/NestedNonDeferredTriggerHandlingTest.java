@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.joo.scorpius.test.support.NestedRequest;
 import org.joo.scorpius.test.support.NestedTrigger;
+import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.junit.Assert;
 
 public class NestedNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
@@ -13,10 +14,10 @@ public class NestedNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
 	private long processed = 0;
 	
 	public NestedNonDeferredTriggerHandlingTest(long iterations) {
-		super(iterations);
+		super(iterations, new DefaultHandlingStrategy());
 	}
 	
-	protected void setup() {	
+	protected void setup() {
 		super.setup();
 		manager.registerTrigger("nested").withAction(NestedTrigger::new);
 	}

@@ -11,6 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
@@ -34,6 +36,8 @@ import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
+	
+	private final static Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
 	
 	private Map<String, List<TriggerConfig>> triggerConfigs;
 	
@@ -186,6 +190,11 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 			future.cancel(true);
 		}
 		scheduledExecutors.shutdown();
+		try {
+			handlingStrategy.close();
+		} catch (Exception e) {
+			logger.warn("Exception occurred when closing handling strategy", e);
+		}
 	}
 	
 	public List<ScheduledFuture<?>> getScheduledFutures() {
