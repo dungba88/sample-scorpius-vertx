@@ -1,4 +1,4 @@
-package org.joo.scorpius.support;
+package org.joo.scorpius.support.exception;
 
 public class MalformedRequestException extends Exception {
 
