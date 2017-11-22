@@ -2,12 +2,10 @@ package org.joo.scorpius;
 
 import org.joo.scorpius.support.di.ApplicationModuleInjector;
 
-import com.google.inject.Module;
-
 public class ApplicationContext implements ApplicationModuleInjector {
 
 	private final ApplicationModuleInjector injector;
-
+	
 	public ApplicationContext(ApplicationModuleInjector injector) {
 		this.injector = injector;
 	}
@@ -22,8 +20,7 @@ public class ApplicationContext implements ApplicationModuleInjector {
 	}
 
 	@Override
-	public ApplicationModuleInjector applyModules(Module... modules) {
-		injector.applyModules(modules);
-		return this;
+	public <T> void override(Class<T> clazz, T instance) {
+		injector.override(clazz, instance);
 	}
 }

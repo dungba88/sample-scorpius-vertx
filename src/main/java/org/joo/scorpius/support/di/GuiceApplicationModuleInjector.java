@@ -7,7 +7,7 @@ import com.google.inject.Module;
 public class GuiceApplicationModuleInjector implements ApplicationModuleInjector {
 
 	private Injector injector;
-
+	
 	public GuiceApplicationModuleInjector(Module... modules) {
 		this.injector = Guice.createInjector(modules);
 	}
@@ -17,9 +17,12 @@ public class GuiceApplicationModuleInjector implements ApplicationModuleInjector
 		return injector.getInstance(clazz);
 	}
 	
+	public Injector getInternalInjector() {
+		return injector;
+	}
+
 	@Override
-	public ApplicationModuleInjector applyModules(Module... modules) {
-		this.injector = this.injector.createChildInjector(modules);
-		return this;
+	public <T> void override(Class<T> clazz, T instance) {
+		throw new UnsupportedOperationException();
 	}
 }

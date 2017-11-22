@@ -29,6 +29,7 @@ public abstract class AbstractTriggerTest {
 		list.add(new Object[] {10000});
 		list.add(new Object[] {100000});
 		list.add(new Object[] {1000000});
+		list.add(new Object[] {10000000});
 		return list;
 	}
 

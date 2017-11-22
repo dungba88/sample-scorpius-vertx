@@ -1,16 +1,27 @@
 package org.joo.scorpius.support.builders;
 
 import org.joo.scorpius.ApplicationContext;
+import org.joo.scorpius.support.builders.contracts.DeferredFactory;
+import org.joo.scorpius.support.builders.contracts.TriggerExecutionContextBuilderFactory;
+import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
+import org.joo.scorpius.support.builders.id.IdGenerator;
+import org.joo.scorpius.support.builders.id.VoidIdGenerator;
+import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.support.di.ApplicationModuleInjector;
-import org.joo.scorpius.support.di.DefaultGuiceInjectionModule;
-import org.joo.scorpius.support.di.GuiceApplicationModuleInjector;
+import org.joo.scorpius.support.di.SimpleApplicationModuleInjector;
+import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 
 public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 	
 	private ApplicationModuleInjector injector;
 	
 	public ApplicationContextBuilder() {
-		injector = new GuiceApplicationModuleInjector(new DefaultGuiceInjectionModule());
+		injector = new SimpleApplicationModuleInjector(map -> {
+			map.put(IdGenerator.class, new VoidIdGenerator());
+			map.put(DeferredFactory.class, (DeferredFactory)(() -> new AsyncDeferredObject<>()));
+			map.put(TriggerExecutionContextBuilderFactory.class, (TriggerExecutionContextBuilderFactory)(() -> new TriggerExecutionContextBuilder()));
+			map.put(TriggerHandlingStrategyFactory.class, (TriggerHandlingStrategyFactory)(() -> new DefaultHandlingStrategy()));
+		});
 	}
 	
 	@Override
