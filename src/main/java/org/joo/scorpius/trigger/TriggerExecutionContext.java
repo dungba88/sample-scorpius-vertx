@@ -4,8 +4,8 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.Traceable;
-import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.deferred.Promise;
+import org.joo.scorpius.support.exception.TriggerExecutionException;
 
 public interface TriggerExecutionContext extends Traceable {
 

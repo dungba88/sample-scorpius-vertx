@@ -2,7 +2,7 @@ package org.joo.scorpius.trigger;
 
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.exception.TriggerExecutionException;
 
 public interface Trigger<T extends BaseRequest, H extends BaseResponse> {
 	

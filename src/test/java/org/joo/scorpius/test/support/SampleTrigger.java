@@ -1,7 +1,7 @@
 package org.joo.scorpius.test.support;
 
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.impl.AbstractTrigger;
 
