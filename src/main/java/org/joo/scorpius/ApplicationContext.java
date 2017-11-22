@@ -1,38 +1,29 @@
 package org.joo.scorpius;
 
-import java.util.Optional;
+import org.joo.scorpius.support.di.ApplicationModuleInjector;
 
-import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.TriggerExecutionException;
-import org.joo.scorpius.support.builders.Factory;
-import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
-import org.joo.scorpius.support.deferred.Deferred;
+import com.google.inject.Module;
 
-public class ApplicationContext {
+public class ApplicationContext implements ApplicationModuleInjector {
 
-	private Factory<Deferred<BaseResponse, TriggerExecutionException>> deferredFactory;
+	private final ApplicationModuleInjector injector;
+
+	public ApplicationContext(ApplicationModuleInjector injector) {
+		this.injector = injector;
+	}
 	
-	private Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory;
-
-	private Factory<Optional<String>> idGenerator;
-	
-	public ApplicationContext(Factory<Deferred<BaseResponse, TriggerExecutionException>> deferredFactory,
-			Factory<TriggerExecutionContextBuilder> executionContextBuilderFactory,
-			Factory<Optional<String>> idGenerator) {
-		this.deferredFactory = deferredFactory;
-		this.executionContextBuilderFactory = executionContextBuilderFactory;
-		this.idGenerator = idGenerator;
+	public ApplicationModuleInjector getInjector() {
+		return injector;
 	}
 
-	public Factory<Deferred<BaseResponse, TriggerExecutionException>> getDeferredFactory() {
-		return deferredFactory;
+	@Override
+	public <T> T getInstance(Class<T> clazz) {
+		return injector.getInstance(clazz);
 	}
 
-	public Factory<TriggerExecutionContextBuilder> getExecutionContextBuilderFactory() {
-		return executionContextBuilderFactory;
-	}
-
-	public Factory<Optional<String>> getIdGenerator() {
-		return idGenerator;
+	@Override
+	public ApplicationModuleInjector applyModules(Module... modules) {
+		injector.applyModules(modules);
+		return this;
 	}
 }

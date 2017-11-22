@@ -5,11 +5,13 @@ import java.util.Optional;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.builders.contracts.DeferredFactory;
+import org.joo.scorpius.support.builders.id.IdGenerator;
 import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.SimpleDeferredObject;
+import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerManager;
@@ -37,9 +39,9 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
 		if (doneCallback != null || failCallback != null) {
 			deferred = new SimpleDeferredObject<BaseResponse, TriggerExecutionException>(doneCallback, failCallback);
 		} else {
-			deferred = applicationContext.getDeferredFactory().create();
+			deferred = applicationContext.getInstance(DeferredFactory.class).create();
 		}
-		Optional<String> id = applicationContext.getIdGenerator().create();
+		Optional<String> id = applicationContext.getInstance(IdGenerator.class).create();
 		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id.orElse(null), getEventName());
 	}
 

@@ -14,20 +14,21 @@ import java.util.concurrent.TimeUnit;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.MalformedRequestException;
-import org.joo.scorpius.support.TriggerExecutionException;
 import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
+import org.joo.scorpius.support.builders.contracts.TriggerExecutionContextBuilderFactory;
+import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
 import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;
 import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.deferred.SimpleDonePromise;
 import org.joo.scorpius.support.deferred.SimpleFailurePromise;
+import org.joo.scorpius.support.exception.MalformedRequestException;
+import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.PeriodicTaskMessage;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerManager;
 import org.joo.scorpius.trigger.TriggerRegistration;
-import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +48,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	public DefaultTriggerManager(ApplicationContext applicationContext) {
 		this.triggerConfigs = new HashMap<>();
 		this.applicationContext = applicationContext;
-		this.handlingStrategy = new DefaultHandlingStrategy();
+		this.handlingStrategy = applicationContext.getInstance(TriggerHandlingStrategyFactory.class).create();
 		this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
 		this.scheduledFutures = new ArrayList<>();
 	}
@@ -121,7 +122,8 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, TriggerConfig config,
 														  DoneCallback<BaseResponse> doneCallback, 
 														  FailCallback<TriggerExecutionException> failCallback) {
-		TriggerExecutionContextBuilder builder = applicationContext.getExecutionContextBuilderFactory().create();
+		TriggerExecutionContextBuilder builder = 
+				applicationContext.getInstance(TriggerExecutionContextBuilderFactory.class).create();
 		
 		builder.setManager(this).setConfig(config).setRequest(request)
 			   .setApplicationContext(applicationContext)
@@ -165,7 +167,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	public TriggerHandlingStrategy getHandlingStrategy() {
 		return handlingStrategy;
 	}
-
+	
 	@Override
 	public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy) {
 		this.handlingStrategy = handlingStategy;

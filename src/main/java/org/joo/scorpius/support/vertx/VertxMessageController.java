@@ -6,7 +6,8 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.CommonConstants;
-import org.joo.scorpius.support.MalformedRequestException;
+import org.joo.scorpius.support.builders.id.IdGenerator;
+import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.trigger.TriggerManager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,7 +55,7 @@ public class VertxMessageController implements Handler<RoutingContext> {
 	protected Optional<String> getTraceId(RoutingContext rc, ApplicationContext applicationContext) {
 		String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
 		if (traceId == null || traceId.isEmpty()) {
-			return triggerManager.getApplicationContext().getIdGenerator().create();
+			return triggerManager.getApplicationContext().getInstance(IdGenerator.class).create();
 		}
 		return Optional.of(traceId);
 	}

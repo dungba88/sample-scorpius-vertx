@@ -3,7 +3,7 @@ package org.joo.scorpius.support.message;
 import java.io.Serializable;
 
 import org.joo.scorpius.support.BaseRequest;
-import org.joo.scorpius.support.TriggerExecutionException;
+import org.joo.scorpius.support.exception.TriggerExecutionException;
 
 public class ExecutionContextExceptionMessage implements Serializable {
 
