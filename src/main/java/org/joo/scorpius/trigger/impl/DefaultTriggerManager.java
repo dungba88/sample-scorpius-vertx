@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
 	
-	private Map<String, TriggerConfig> triggerConfigs;
+	private Map<String, List<TriggerConfig>> triggerConfigs;
 	
 	private ApplicationContext applicationContext;
 	
@@ -60,10 +60,12 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 		if (!triggerConfigs.containsKey(name))
 			return null;
 
-		TriggerConfig config = triggerConfigs.get(name);
+		List<TriggerConfig> configs = triggerConfigs.get(name);
+		if (configs.isEmpty()) return null;
+
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			return (BaseRequest) mapper.readValue(data, config.getRequestClass());
+			return (BaseRequest) mapper.readValue(data, configs.get(0).getRequestClass());
 		} catch (IOException e) {
 			throw new MalformedRequestException(e);
 		}
@@ -78,9 +80,10 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data, 
 																 DoneCallback<BaseResponse> doneCallback, 
 																 FailCallback<TriggerExecutionException> failCallback) {
-		if (!triggerConfigs.containsKey(name)) {
-			return resolveDefault();
-		}
+		if (!triggerConfigs.containsKey(name)) return resolveDefault();
+
+		List<TriggerConfig> configs = triggerConfigs.get(name);
+		if (configs.isEmpty()) return resolveDefault();
 		
 		if (!data.verifyTraceId()) {
 			TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
@@ -89,20 +92,35 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 			return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
 		}
 		
-		TriggerExecutionContext executionContext = buildExecutionContext(name, data, doneCallback, failCallback);
+		TriggerExecutionContext dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
+				
+		TriggerConfig config = findMatchingTrigger(configs, dummyExecutionContext);
+
+		if (config == null) return resolveDefault();
+
+		TriggerExecutionContext executionContext = buildExecutionContext(name, data, configs.get(0), doneCallback, failCallback);
+		
+		
 		handlingStrategy.handle(executionContext);
 		return executionContext.promise();
 	}
 	
+	private TriggerConfig findMatchingTrigger(List<TriggerConfig> configs,
+			TriggerExecutionContext dummyExecutionContext) {
+		for(TriggerConfig config : configs) {
+			if (config.getCondition() == null || config.getCondition().satisfiedBy(dummyExecutionContext))
+				return config;
+		}
+		return null;
+	}
+
 	private Promise<BaseResponse, TriggerExecutionException> resolveDefault() {
 		return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
 	}
-
-	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, 
+	
+	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, TriggerConfig config,
 														  DoneCallback<BaseResponse> doneCallback, 
 														  FailCallback<TriggerExecutionException> failCallback) {
-		TriggerConfig config = triggerConfigs.get(name);
-		
 		TriggerExecutionContextBuilder builder = applicationContext.getExecutionContextBuilderFactory().create();
 		
 		builder.setManager(this).setConfig(config).setRequest(request)
@@ -121,9 +139,9 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
 	@Override
 	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
-		if (triggerConfigs.containsKey(name))
-			throw new IllegalArgumentException("Event " + name + " is already registered");
-		triggerConfigs.put(name, triggerConfig);
+		if (!triggerConfigs.containsKey(name))
+			triggerConfigs.put(name, new ArrayList<>());
+		triggerConfigs.get(name).add(triggerConfig);
 		return triggerConfig;
 	}
 	
