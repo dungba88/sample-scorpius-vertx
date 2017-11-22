@@ -1,4 +1,4 @@
-package org.joo.scorpius.support.builders.id;
+package org.joo.scorpius.support.builders.contracts;
 
 import java.util.Optional;
 

@@ -3,6 +3,8 @@ package org.joo.scorpius.support.builders.id;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.joo.scorpius.support.builders.contracts.IdGenerator;
+
 public class AtomicIdGenerator implements IdGenerator {
 	
 	private AtomicReference<AtomicCounter> counter;

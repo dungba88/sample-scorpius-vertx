@@ -6,7 +6,7 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.builders.contracts.DeferredFactory;
-import org.joo.scorpius.support.builders.id.IdGenerator;
+import org.joo.scorpius.support.builders.contracts.IdGenerator;
 import org.joo.scorpius.support.deferred.Deferred;
 import org.joo.scorpius.support.deferred.DoneCallback;
 import org.joo.scorpius.support.deferred.FailCallback;

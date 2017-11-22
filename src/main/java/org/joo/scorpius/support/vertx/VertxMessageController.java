@@ -6,7 +6,7 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.CommonConstants;
-import org.joo.scorpius.support.builders.id.IdGenerator;
+import org.joo.scorpius.support.builders.contracts.IdGenerator;
 import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.trigger.TriggerManager;
 
