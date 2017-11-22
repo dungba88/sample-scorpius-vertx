@@ -1,10 +1,9 @@
 package org.joo.scorpius.support.builders.id;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.joo.scorpius.support.builders.Factory;
-
-public class AtomicIdGenerator implements Factory<String> {
+public class AtomicIdGenerator implements IdGenerator {
 	
 	private AtomicReference<AtomicCounter> counter;
 	
@@ -13,14 +12,14 @@ public class AtomicIdGenerator implements Factory<String> {
 	}
 	
 	@Override
-	public String create() {
+	public Optional<String> create() {
 		AtomicCounter currentCounter;
 		AtomicCounter nextCounter;
 		do {
 			currentCounter = counter.get();
 			nextCounter = currentCounter.next();
 		} while(!counter.compareAndSet(currentCounter, nextCounter));
-		return nextCounter.toString();
+		return Optional.of(nextCounter.toString());
 	}
 }
 
