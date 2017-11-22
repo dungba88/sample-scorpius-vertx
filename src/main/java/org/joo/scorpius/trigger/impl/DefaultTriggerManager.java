@@ -81,10 +81,10 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data, 
 																 DoneCallback<BaseResponse> doneCallback, 
 																 FailCallback<TriggerExecutionException> failCallback) {
-		if (!triggerConfigs.containsKey(name)) return resolveDefault();
+		if (!triggerConfigs.containsKey(name)) return resolveDefault(doneCallback);
 
 		List<TriggerConfig> configs = triggerConfigs.get(name);
-		if (configs.isEmpty()) return resolveDefault();
+		if (configs.isEmpty()) return resolveDefault(doneCallback);
 		
 		if (!data.verifyTraceId()) {
 			TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
@@ -97,7 +97,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 				
 		TriggerConfig config = findMatchingTrigger(configs, dummyExecutionContext);
 
-		if (config == null) return resolveDefault();
+		if (config == null) return resolveDefault(doneCallback);
 
 		TriggerExecutionContext executionContext = buildExecutionContext(name, data, configs.get(0), doneCallback, failCallback);
 		
@@ -115,7 +115,9 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 		return null;
 	}
 
-	private Promise<BaseResponse, TriggerExecutionException> resolveDefault() {
+	private Promise<BaseResponse, TriggerExecutionException> resolveDefault(DoneCallback<BaseResponse> doneCallback) {
+		if (doneCallback != null)
+			doneCallback.onDone(null);
 		return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
 	}
 	
