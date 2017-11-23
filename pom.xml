@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.dungba</groupId>
 	<artifactId>joo-scorpius</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<packaging>jar</packaging>
 
 	<name>Scorpius</name>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.dungba</groupId>
 			<artifactId>joo-libra</artifactId>
-			<version>1.0.1</version>
+			<version>1.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
