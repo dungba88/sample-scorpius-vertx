@@ -36,168 +36,168 @@ import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
-	
-	private final static Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
-	
-	private Map<String, List<TriggerConfig>> triggerConfigs;
-	
-	private ApplicationContext applicationContext;
-	
-	private TriggerHandlingStrategy handlingStrategy;
-	
-	private ScheduledExecutorService scheduledExecutors;
-	
-	private List<ScheduledFuture<?>> scheduledFutures;
-	
-	public DefaultTriggerManager(ApplicationContext applicationContext) {
-		this.triggerConfigs = new HashMap<>();
-		this.applicationContext = applicationContext;
-		this.handlingStrategy = applicationContext.getInstance(TriggerHandlingStrategyFactory.class).create();
-		this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
-		this.scheduledFutures = new ArrayList<>();
-	}
-	
-	@Override
-	public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException {
-		if (name == null)
-			throw new MalformedRequestException("Event name is null");
-		
-		if (!triggerConfigs.containsKey(name))
-			return null;
 
-		List<TriggerConfig> configs = triggerConfigs.get(name);
-		if (configs.isEmpty()) return null;
+    private final static Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
 
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			return (BaseRequest) mapper.readValue(data, configs.get(0).getRequestClass());
-		} catch (IOException e) {
-			throw new MalformedRequestException(e);
-		}
-	}
+    private Map<String, List<TriggerConfig>> triggerConfigs;
 
-	@Override
-	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data) {
-		return fire(name, data, null, null);
-	}
-	
-	@Override
-	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data, 
-																 DoneCallback<BaseResponse> doneCallback, 
-																 FailCallback<TriggerExecutionException> failCallback) {
-		if (!triggerConfigs.containsKey(name)) return resolveDefault(doneCallback);
+    private ApplicationContext applicationContext;
 
-		List<TriggerConfig> configs = triggerConfigs.get(name);
-		if (configs.isEmpty()) return resolveDefault(doneCallback);
-		
-		if (!data.verifyTraceId()) {
-			TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
-			if (failCallback != null)
-				failCallback.onFail(ex);
-			return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
-		}
-		
-		TriggerExecutionContext dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
-				
-		TriggerConfig config = findMatchingTrigger(configs, dummyExecutionContext);
+    private TriggerHandlingStrategy handlingStrategy;
 
-		if (config == null) return resolveDefault(doneCallback);
+    private ScheduledExecutorService scheduledExecutors;
 
-		TriggerExecutionContext executionContext = buildExecutionContext(name, data, configs.get(0), doneCallback, failCallback);
-		
-		
-		handlingStrategy.handle(executionContext);
-		return executionContext.promise();
-	}
-	
-	private TriggerConfig findMatchingTrigger(List<TriggerConfig> configs,
-			TriggerExecutionContext dummyExecutionContext) {
-		for(TriggerConfig config : configs) {
-			if (config.getCondition() == null || config.getCondition().satisfiedBy(dummyExecutionContext))
-				return config;
-		}
-		return null;
-	}
+    private List<ScheduledFuture<?>> scheduledFutures;
 
-	private Promise<BaseResponse, TriggerExecutionException> resolveDefault(DoneCallback<BaseResponse> doneCallback) {
-		if (doneCallback != null)
-			doneCallback.onDone(null);
-		return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
-	}
-	
-	private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, TriggerConfig config,
-														  DoneCallback<BaseResponse> doneCallback, 
-														  FailCallback<TriggerExecutionException> failCallback) {
-		TriggerExecutionContextBuilder builder = 
-				applicationContext.getInstance(TriggerExecutionContextBuilderFactory.class).create();
-		
-		builder.setManager(this).setConfig(config).setRequest(request)
-			   .setApplicationContext(applicationContext)
-			   .setDoneCallback(doneCallback)
-			   .setFailCallback(failCallback)
-			   .setEventName(name);
-		
-		return builder.build();
-	}
-	
-	@Override
-	public TriggerRegistration registerTrigger(String name) {
-		return registerTrigger(name, new TriggerConfig());
-	}
+    public DefaultTriggerManager(ApplicationContext applicationContext) {
+        this.triggerConfigs = new HashMap<>();
+        this.applicationContext = applicationContext;
+        this.handlingStrategy = applicationContext.getInstance(TriggerHandlingStrategyFactory.class).create();
+        this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
+        this.scheduledFutures = new ArrayList<>();
+    }
 
-	@Override
-	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
-		if (!triggerConfigs.containsKey(name))
-			triggerConfigs.put(name, new ArrayList<>());
-		triggerConfigs.get(name).add(triggerConfig);
-		return triggerConfig;
-	}
-	
-	@Override
-	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg) {
-		return registerPeriodicEvent(msg, new TriggerConfig());
-	}
+    @Override
+    public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException {
+        if (name == null)
+            throw new MalformedRequestException("Event name is null");
 
-	@Override
-	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig) {
-		String name = UUID.randomUUID().toString();
-		TriggerRegistration config = registerTrigger(name, triggerConfig);
-		ScheduledFuture<?> future = scheduledExecutors.scheduleAtFixedRate(() -> {
-			fire(name, msg.getRequest());
-		}, msg.getDelay(), msg.getPeriod(), TimeUnit.MILLISECONDS);
-		scheduledFutures.add(future);
-		return config;
-	}
+        if (!triggerConfigs.containsKey(name))
+            return null;
 
-	@Override
-	public TriggerHandlingStrategy getHandlingStrategy() {
-		return handlingStrategy;
-	}
-	
-	@Override
-	public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy) {
-		this.handlingStrategy = handlingStategy;
-	}
+        List<TriggerConfig> configs = triggerConfigs.get(name);
+        if (configs.isEmpty())
+            return null;
 
-	@Override
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return (BaseRequest) mapper.readValue(data, configs.get(0).getRequestClass());
+        } catch (IOException e) {
+            throw new MalformedRequestException(e);
+        }
+    }
 
-	@Override
-	public void shutdown() {
-		for(ScheduledFuture<?> future : scheduledFutures) {
-			future.cancel(true);
-		}
-		scheduledExecutors.shutdown();
-		try {
-			handlingStrategy.close();
-		} catch (Exception e) {
-			logger.warn("Exception occurred when closing handling strategy", e);
-		}
-	}
-	
-	public List<ScheduledFuture<?>> getScheduledFutures() {
-		return scheduledFutures;
-	}
+    @Override
+    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data) {
+        return fire(name, data, null, null);
+    }
+
+    @Override
+    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
+            DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback) {
+        if (!triggerConfigs.containsKey(name))
+            return resolveDefault(doneCallback);
+
+        List<TriggerConfig> configs = triggerConfigs.get(name);
+        if (configs.isEmpty())
+            return resolveDefault(doneCallback);
+
+        if (!data.verifyTraceId()) {
+            TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
+            if (failCallback != null)
+                failCallback.onFail(ex);
+            return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
+        }
+
+        TriggerExecutionContext dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext,
+                name);
+
+        TriggerConfig config = findMatchingTrigger(configs, dummyExecutionContext);
+
+        if (config == null)
+            return resolveDefault(doneCallback);
+
+        TriggerExecutionContext executionContext = buildExecutionContext(name, data, configs.get(0), doneCallback,
+                failCallback);
+
+        handlingStrategy.handle(executionContext);
+        return executionContext.promise();
+    }
+
+    private TriggerConfig findMatchingTrigger(List<TriggerConfig> configs,
+            TriggerExecutionContext dummyExecutionContext) {
+        for (TriggerConfig config : configs) {
+            if (config.getCondition() == null || config.getCondition().satisfiedBy(dummyExecutionContext))
+                return config;
+        }
+        return null;
+    }
+
+    private Promise<BaseResponse, TriggerExecutionException> resolveDefault(DoneCallback<BaseResponse> doneCallback) {
+        if (doneCallback != null)
+            doneCallback.onDone(null);
+        return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
+    }
+
+    private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, TriggerConfig config,
+            DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback) {
+        TriggerExecutionContextBuilder builder = applicationContext
+                .getInstance(TriggerExecutionContextBuilderFactory.class).create();
+
+        builder.setManager(this).setConfig(config).setRequest(request).setApplicationContext(applicationContext)
+                .setDoneCallback(doneCallback).setFailCallback(failCallback).setEventName(name);
+
+        return builder.build();
+    }
+
+    @Override
+    public TriggerRegistration registerTrigger(String name) {
+        return registerTrigger(name, new TriggerConfig());
+    }
+
+    @Override
+    public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
+        if (!triggerConfigs.containsKey(name))
+            triggerConfigs.put(name, new ArrayList<>());
+        triggerConfigs.get(name).add(triggerConfig);
+        return triggerConfig;
+    }
+
+    @Override
+    public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg) {
+        return registerPeriodicEvent(msg, new TriggerConfig());
+    }
+
+    @Override
+    public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig) {
+        String name = UUID.randomUUID().toString();
+        TriggerRegistration config = registerTrigger(name, triggerConfig);
+        ScheduledFuture<?> future = scheduledExecutors.scheduleAtFixedRate(() -> {
+            fire(name, msg.getRequest());
+        }, msg.getDelay(), msg.getPeriod(), TimeUnit.MILLISECONDS);
+        scheduledFutures.add(future);
+        return config;
+    }
+
+    @Override
+    public TriggerHandlingStrategy getHandlingStrategy() {
+        return handlingStrategy;
+    }
+
+    @Override
+    public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy) {
+        this.handlingStrategy = handlingStategy;
+    }
+
+    @Override
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    @Override
+    public void shutdown() {
+        for (ScheduledFuture<?> future : scheduledFutures) {
+            future.cancel(true);
+        }
+        scheduledExecutors.shutdown();
+        try {
+            handlingStrategy.close();
+        } catch (Exception e) {
+            logger.warn("Exception occurred when closing handling strategy", e);
+        }
+    }
+
+    public List<ScheduledFuture<?>> getScheduledFutures() {
+        return scheduledFutures;
+    }
 }

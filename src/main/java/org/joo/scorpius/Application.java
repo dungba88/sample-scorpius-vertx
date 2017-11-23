@@ -9,34 +9,34 @@ import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
 
 public class Application {
 
-	private TriggerManager triggerManager;
-	
-	private AtomicBoolean initialized;
-	
-	private ApplicationContext applicationContext;
+    private TriggerManager triggerManager;
 
-	public Application() {
-		this(new ApplicationContextBuilder());
-	}
-	
-	public Application(Builder<ApplicationContext> applicationContextBuilder) {
-		this.initialized = new AtomicBoolean(false);
-		this.applicationContext = applicationContextBuilder.build();
-	}
+    private AtomicBoolean initialized;
 
-	public void run(Bootstrap bootstrap) {
-		if (!initialized.compareAndSet(false, true))
-			throw new IllegalStateException("Application is already running");
+    private ApplicationContext applicationContext;
 
-		this.triggerManager = new DefaultTriggerManager(applicationContext);
-		bootstrap.setTriggerManager(triggerManager);
-		bootstrap.setApplicationContext(applicationContext);
-		bootstrap.run();
-		
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				triggerManager.shutdown();
-			}
-		});
-	}
+    public Application() {
+        this(new ApplicationContextBuilder());
+    }
+
+    public Application(Builder<ApplicationContext> applicationContextBuilder) {
+        this.initialized = new AtomicBoolean(false);
+        this.applicationContext = applicationContextBuilder.build();
+    }
+
+    public void run(Bootstrap bootstrap) {
+        if (!initialized.compareAndSet(false, true))
+            throw new IllegalStateException("Application is already running");
+
+        this.triggerManager = new DefaultTriggerManager(applicationContext);
+        bootstrap.setTriggerManager(triggerManager);
+        bootstrap.setApplicationContext(applicationContext);
+        bootstrap.run();
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                triggerManager.shutdown();
+            }
+        });
+    }
 }

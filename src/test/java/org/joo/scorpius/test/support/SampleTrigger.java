@@ -7,9 +7,9 @@ import org.joo.scorpius.trigger.impl.AbstractTrigger;
 
 public class SampleTrigger extends AbstractTrigger<SampleRequest, BaseResponse> {
 
-	@Override
-	public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
-		SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
-		executionContext.finish(new SampleResponse("Hi " + theRequest.getName()));
-	}
+    @Override
+    public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
+        SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
+        executionContext.finish(new SampleResponse("Hi " + theRequest.getName()));
+    }
 }

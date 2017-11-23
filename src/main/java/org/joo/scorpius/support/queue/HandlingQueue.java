@@ -4,9 +4,9 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public interface HandlingQueue {
 
-	public boolean enqueue(TriggerExecutionContext context);
-	
-	public TriggerExecutionContext dequeue();
+    public boolean enqueue(TriggerExecutionContext context);
 
-	public boolean isEmpty();
+    public TriggerExecutionContext dequeue();
+
+    public boolean isEmpty();
 }

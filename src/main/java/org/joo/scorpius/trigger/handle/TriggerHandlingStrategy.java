@@ -4,5 +4,5 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public interface TriggerHandlingStrategy extends AutoCloseable {
 
-	public void handle(TriggerExecutionContext context);
+    public void handle(TriggerExecutionContext context);
 }

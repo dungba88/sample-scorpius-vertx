@@ -14,94 +14,94 @@ import org.joo.scorpius.trigger.TriggerManager;
 
 public class SimpleTriggerExecutionContext implements TriggerExecutionContext {
 
-	private BaseRequest request;
+    private BaseRequest request;
 
-	private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-	private String eventName;
+    private String eventName;
 
-	public SimpleTriggerExecutionContext(BaseRequest request, ApplicationContext applicationContext, String eventName) {
-		this.eventName = eventName;
-		this.request = request;
-		this.applicationContext = applicationContext;
-	}
+    public SimpleTriggerExecutionContext(BaseRequest request, ApplicationContext applicationContext, String eventName) {
+        this.eventName = eventName;
+        this.request = request;
+        this.applicationContext = applicationContext;
+    }
 
-	@Override
-	public void pending() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void pending() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void execute() {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void execute() {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void finish(BaseResponse response) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void finish(BaseResponse response) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void fail(TriggerExecutionException ex) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    public void fail(TriggerExecutionException ex) {
+        throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public BaseRequest getRequest() {
-		return request;
-	}
+    @Override
+    public BaseRequest getRequest() {
+        return request;
+    }
 
-	@Override
-	public TriggerExecutionStatus getStatus() {
-		return null;
-	}
+    @Override
+    public TriggerExecutionStatus getStatus() {
+        return null;
+    }
 
-	@Override
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
+    @Override
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
-	@Override
-	public TriggerManager getTriggerManager() {
-		return null;
-	}
+    @Override
+    public TriggerManager getTriggerManager() {
+        return null;
+    }
 
-	@Override
-	public String getId() {
-		return null;
-	}
+    @Override
+    public String getId() {
+        return null;
+    }
 
-	@Override
-	public void attachTraceId(Optional<String> traceId) {
-		request.attachTraceId(traceId);
-	}
+    @Override
+    public void attachTraceId(Optional<String> traceId) {
+        request.attachTraceId(traceId);
+    }
 
-	@Override
-	public boolean verifyTraceId() {
-		return request.verifyTraceId();
-	}
+    @Override
+    public boolean verifyTraceId() {
+        return request.verifyTraceId();
+    }
 
-	@Override
-	public String getEventName() {
-		return eventName;
-	}
+    @Override
+    public String getEventName() {
+        return eventName;
+    }
 
-	@Override
-	public String getTraceId() {
-		return request.getTraceId();
-	}
+    @Override
+    public String getTraceId() {
+        return request.getTraceId();
+    }
 
-	@Override
-	public Optional<String> fetchRawTraceId() {
-		return request.fetchRawTraceId();
-	}
+    @Override
+    public Optional<String> fetchRawTraceId() {
+        return request.fetchRawTraceId();
+    }
 
-	public Promise<BaseResponse, TriggerExecutionException> promise() {
-		return null;
-	}
+    public Promise<BaseResponse, TriggerExecutionException> promise() {
+        return null;
+    }
 
-	@Override
-	public TriggerConfig getConfig() {
-		return null;
-	}
+    @Override
+    public TriggerConfig getConfig() {
+        return null;
+    }
 }
