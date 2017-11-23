@@ -63,20 +63,16 @@ public class AsyncDeferredObject<D, F extends Throwable> implements Deferred<D, 
 	@Override
 	public Promise<D, F> done(DoneCallback<D> callback) {
 		doneCallback = callback;
-		if (status == DeferredStatus.RESOLVED) {
-			if (alert.compareAndSet(false, true))
-				callback.onDone(result);
-		}
+		if (status == DeferredStatus.RESOLVED && alert.compareAndSet(false, true))
+			callback.onDone(result);
 		return this;
 	}
 
 	@Override
 	public Promise<D, F> fail(FailCallback<F> callback) {
 		this.failureCallback = callback;
-		if (status == DeferredStatus.REJECTED) {
-			if (alert.compareAndSet(false, true))
-				callback.onFail(failedCause);
-		}
+		if (status == DeferredStatus.REJECTED && alert.compareAndSet(false, true))
+			callback.onFail(failedCause);
 		return this;
 	}
 }
