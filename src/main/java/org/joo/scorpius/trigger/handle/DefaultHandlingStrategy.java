@@ -11,6 +11,6 @@ public class DefaultHandlingStrategy implements TriggerHandlingStrategy {
 
 	@Override
 	public void close() throws Exception {
-		
+		// nothing to close
 	}
 }

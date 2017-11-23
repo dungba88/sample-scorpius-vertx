@@ -33,7 +33,7 @@ public class SPSCRingBuffer implements HandlingQueue {
 
 	public SPSCRingBuffer(int maximumSize) {
 		if (!isPowerOf2(maximumSize)) {
-			throw new RuntimeException("Maximum size must be power of 2");
+			throw new IllegalArgumentException("Maximum size must be power of 2");
 		}
 		data = new TriggerExecutionContext[maximumSize];
 		mask = maximumSize - 1;

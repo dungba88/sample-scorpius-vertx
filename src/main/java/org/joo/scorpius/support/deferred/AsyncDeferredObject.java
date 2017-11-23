@@ -44,16 +44,14 @@ public class AsyncDeferredObject<D, F extends Throwable> implements Deferred<D, 
 	}
 
 	private void onComplete(D result) {
-		if (doneCallback != null) {
-			if (alert.compareAndSet(false, true))
-				doneCallback.onDone(result);
+		if (doneCallback != null && alert.compareAndSet(false, true)) {
+			doneCallback.onDone(result);
 		}
 	}
 
 	private void onFail(F failedCause) {
-		if (failureCallback != null) {
-			if (alert.compareAndSet(false, true))
-				failureCallback.onFail(failedCause);
+		if (failureCallback != null && alert.compareAndSet(false, true)) {
+			failureCallback.onFail(failedCause);
 		}
 	}
 

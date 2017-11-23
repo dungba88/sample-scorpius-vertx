@@ -21,7 +21,7 @@ public abstract class AbstractTriggerTest {
 	
 	protected TriggerManager manager;
 	
-	private ApplicationContext context;
+	protected ApplicationContext context;
 
 	@Parameters
 	public static List<Object[]> data() {
