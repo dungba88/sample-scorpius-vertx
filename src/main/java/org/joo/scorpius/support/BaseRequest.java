@@ -26,7 +26,9 @@ public class BaseRequest implements Traceable, Serializable {
 
     @Override
     public boolean verifyTraceId() {
-        if (traceId == null || !traceId.isPresent())
+        if (traceId == null)
+            return false;
+        if (!traceId.isPresent())
             return true;
         return !traceId.get().isEmpty();
     }
