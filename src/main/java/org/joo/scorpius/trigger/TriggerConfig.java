@@ -54,7 +54,7 @@ public class TriggerConfig implements TriggerRegistration {
 	}
 
 	@Override
-	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Class<Trigger<T, H>> clazz) 
+	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Class<? extends Trigger<T, H>> clazz) 
 			throws InstantiationException, IllegalAccessException {
 		return withAction(clazz.newInstance());
 	}
