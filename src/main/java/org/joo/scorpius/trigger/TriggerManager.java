@@ -1,11 +1,11 @@
 package org.joo.scorpius.trigger;
 
+import org.joo.promise4j.DoneCallback;
+import org.joo.promise4j.FailCallback;
+import org.joo.promise4j.Promise;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.deferred.DoneCallback;
-import org.joo.scorpius.support.deferred.FailCallback;
-import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.PeriodicTaskMessage;

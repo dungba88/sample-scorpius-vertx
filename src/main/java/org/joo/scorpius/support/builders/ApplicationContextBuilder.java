@@ -1,12 +1,12 @@
 package org.joo.scorpius.support.builders;
 
+import org.joo.promise4j.impl.AsyncDeferredObject;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.contracts.DeferredFactory;
 import org.joo.scorpius.support.builders.contracts.IdGenerator;
 import org.joo.scorpius.support.builders.contracts.TriggerExecutionContextBuilderFactory;
 import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
 import org.joo.scorpius.support.builders.id.VoidIdGenerator;
-import org.joo.scorpius.support.deferred.AsyncDeferredObject;
 import org.joo.scorpius.support.di.ApplicationModuleInjector;
 import org.joo.scorpius.support.di.SimpleApplicationModuleInjector;
 import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;

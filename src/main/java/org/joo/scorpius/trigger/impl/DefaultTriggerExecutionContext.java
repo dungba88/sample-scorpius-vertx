@@ -4,11 +4,11 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joo.promise4j.Deferred;
+import org.joo.promise4j.Promise;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.deferred.Deferred;
-import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
 import org.joo.scorpius.support.message.ExecutionContextFinishMessage;

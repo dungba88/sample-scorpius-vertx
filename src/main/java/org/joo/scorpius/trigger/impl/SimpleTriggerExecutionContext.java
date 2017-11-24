@@ -2,10 +2,10 @@ package org.joo.scorpius.trigger.impl;
 
 import java.util.Optional;
 
+import org.joo.promise4j.Promise;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.deferred.Promise;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;

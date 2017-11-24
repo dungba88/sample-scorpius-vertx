@@ -2,15 +2,15 @@ package org.joo.scorpius.support.builders;
 
 import java.util.Optional;
 
+import org.joo.promise4j.Deferred;
+import org.joo.promise4j.DoneCallback;
+import org.joo.promise4j.FailCallback;
+import org.joo.promise4j.impl.SimpleDeferredObject;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.builders.contracts.DeferredFactory;
 import org.joo.scorpius.support.builders.contracts.IdGenerator;
-import org.joo.scorpius.support.deferred.Deferred;
-import org.joo.scorpius.support.deferred.DoneCallback;
-import org.joo.scorpius.support.deferred.FailCallback;
-import org.joo.scorpius.support.deferred.SimpleDeferredObject;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
