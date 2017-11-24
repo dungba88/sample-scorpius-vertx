@@ -15,6 +15,6 @@ public interface TriggerRegistration {
 
 	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Supplier<Trigger<T, H>> supplier);
 	
-	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Class<Trigger<T, H>> clazz) 
+	public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Class<? extends Trigger<T, H>> clazz) 
 			throws InstantiationException, IllegalAccessException;
 }
