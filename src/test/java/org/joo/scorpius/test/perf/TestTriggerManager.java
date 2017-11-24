@@ -26,17 +26,15 @@ import org.junit.Test;
 
 public class TestTriggerManager {
     
-    private ApplicationContext context;
-
     private DefaultTriggerManager manager;
 
     public TestTriggerManager() {
-        this.context = new ApplicationContextBuilder().build();
-        this.context.override(IdGenerator.class, new TimeBasedIdGenerator());
-        this.context.override(TriggerHandlingStrategyFactory.class, () -> new DisruptorHandlingStrategy());
+        ApplicationContext context = new ApplicationContextBuilder().build();
+        context.override(IdGenerator.class, new TimeBasedIdGenerator());
+        context.override(TriggerHandlingStrategyFactory.class, () -> new DisruptorHandlingStrategy());
         this.manager = new DefaultTriggerManager(context);
-        this.manager.registerTrigger("greet_java", new TriggerConfig(new SampleTrigger())).withCondition(context -> context.getRequest() != null);
-        this.manager.registerTrigger("greet_java", new TriggerConfig(new BrokenTrigger())).withCondition(context -> context.getRequest() == null);
+        this.manager.registerTrigger("greet_java", new TriggerConfig(new SampleTrigger())).withCondition(execContext -> execContext.getRequest() != null);
+        this.manager.registerTrigger("greet_java", new TriggerConfig(new BrokenTrigger())).withCondition(execContext -> execContext.getRequest() == null);
         try {
             this.manager.registerTrigger("greet_java_2").withCondition("name is null").withAction(SampleTrigger.class);
         } catch (InstantiationException | IllegalAccessException e) {
