@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
+import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.trigger.TriggerManager;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
@@ -27,16 +28,16 @@ public abstract class AbstractTriggerTest {
 	public static List<Object[]> data() {
 		List<Object[]> list = new ArrayList<>();
 		list.add(new Object[] {1000});
-		list.add(new Object[] {10000});
-		list.add(new Object[] {100000});
-		list.add(new Object[] {1000000});
-		list.add(new Object[] {10000000});
+//		list.add(new Object[] {10000});
+//		list.add(new Object[] {100000});
+//		list.add(new Object[] {1000000});
+//		list.add(new Object[] {10000000});
 		return list;
 	}
 
 	public AbstractTriggerTest(long iterations, TriggerHandlingStrategy strategy) {
 		this.context = new ApplicationContextBuilder().build();
-		this.context.override(TriggerHandlingStrategy.class, strategy);
+		this.context.override(TriggerHandlingStrategyFactory.class, () -> strategy);
 		this.manager = new DefaultTriggerManager(context);
 		this.iterations = iterations;
 	}
