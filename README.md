@@ -66,6 +66,24 @@ public class SampleTrigger extends AbstractTrigger<SampleRequest, BaseResponse> 
 
 Because Java is strongly typed, a trigger needs to define its input (a class which extends `BaseRequest`) and output (a class which extends `BaseResponse`). The input is important because it is used by `TriggerManager` when trying to decode a JSON string request into the correct input of the trigger. The output is not as that important, but it will help to make the trigger contract clearer for other developers.
 
+You can also prematurely return the response to the caller and continue doing works independently:
+
+```java
+@Override
+public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
+	// get the request from executionContext
+	SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
+
+	// and return the response immediately
+	executionContext.finish(response));
+
+	// continue doing some works
+	// ...
+}
+```
+
+To make the most out of this, use some asynchronous `TriggerHandlingStrategy` like `DisruptorHandlingStrategy` or `ExecutorHandlingStrategy` (covered in [#extend](#extend) section). Whatever the case, you should note that the trigger itself should also be asynchronous, since it is running on shared limited resources.
+
 2. Register it with `TriggerManager`
 
 Register the trigger with event "greet"
