@@ -21,7 +21,7 @@ public class BaseRequest implements Traceable, Serializable {
 	public void attachTraceId(Optional<String> traceId) {
 		if (this.traceId != null)
 			throw new IllegalStateException("TraceId is already attached");
-		this.traceId  = traceId;
+		this.traceId = traceId;
 	}
 	
 	@Override
