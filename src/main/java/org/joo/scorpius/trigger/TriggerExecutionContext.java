@@ -9,27 +9,27 @@ import org.joo.scorpius.support.exception.TriggerExecutionException;
 
 public interface TriggerExecutionContext extends Traceable {
 
-	public void pending();
-	
-	public void execute();
-	
-	public void finish(BaseResponse response);
-	
-	public void fail(TriggerExecutionException ex);
-	
-	public Promise<BaseResponse, TriggerExecutionException> promise();
+    public void pending();
 
-	public TriggerConfig getConfig();
+    public void execute();
 
-	public BaseRequest getRequest();
+    public void finish(BaseResponse response);
 
-	public TriggerExecutionStatus getStatus();
+    public void fail(TriggerExecutionException ex);
 
-	public ApplicationContext getApplicationContext();
-	
-	public TriggerManager getTriggerManager();
-	
-	public String getId();
-	
-	public String getEventName();
+    public Promise<BaseResponse, TriggerExecutionException> promise();
+
+    public TriggerConfig getConfig();
+
+    public BaseRequest getRequest();
+
+    public TriggerExecutionStatus getStatus();
+
+    public ApplicationContext getApplicationContext();
+
+    public TriggerManager getTriggerManager();
+
+    public String getId();
+
+    public String getEventName();
 }

@@ -7,10 +7,10 @@ import org.joo.scorpius.trigger.impl.AbstractTrigger;
 
 public class PeriodicTrigger extends AbstractTrigger<SampleRequest, BaseResponse> {
 
-	@Override
-	public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
-		SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
-		System.out.println(theRequest.getName());
-		executionContext.finish(null);
-	}
+    @Override
+    public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
+        SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
+        System.out.println(theRequest.getName());
+        executionContext.finish(null);
+    }
 }

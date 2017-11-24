@@ -4,13 +4,13 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public class ExecutionContextEvent {
 
-	private TriggerExecutionContext executionContext;
-	
-	public TriggerExecutionContext getExecutionContext() {
-		return executionContext;
-	}
+    private TriggerExecutionContext executionContext;
 
-	public void setExecutionContext(TriggerExecutionContext executionContext) {
-		this.executionContext = executionContext;
-	}
+    public TriggerExecutionContext getExecutionContext() {
+        return executionContext;
+    }
+
+    public void setExecutionContext(TriggerExecutionContext executionContext) {
+        this.executionContext = executionContext;
+    }
 }

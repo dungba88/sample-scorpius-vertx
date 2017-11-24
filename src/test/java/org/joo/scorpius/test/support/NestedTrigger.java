@@ -7,13 +7,12 @@ import org.joo.scorpius.trigger.impl.AbstractTrigger;
 
 public class NestedTrigger extends AbstractTrigger<NestedRequest, BaseResponse> {
 
-	@Override
-	public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
-		final NestedRequest request = (NestedRequest) executionContext.getRequest();
-		final SampleRequest fireRequest = new SampleRequest("World");
-		fireRequest.attachTraceId(request.fetchRawTraceId());
-		executionContext.getTriggerManager().fire(request.getName(), fireRequest, 
-				response -> executionContext.finish(response),
-				ex -> executionContext.fail(ex));
-	}
+    @Override
+    public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException {
+        final NestedRequest request = (NestedRequest) executionContext.getRequest();
+        final SampleRequest fireRequest = new SampleRequest("World");
+        fireRequest.attachTraceId(request.fetchRawTraceId());
+        executionContext.getTriggerManager().fire(request.getName(), fireRequest,
+                response -> executionContext.finish(response), ex -> executionContext.fail(ex));
+    }
 }

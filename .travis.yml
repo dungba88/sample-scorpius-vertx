@@ -1,4 +1,9 @@
 language: java
 jdk:
-    - oraclejdk8
-    - openjdk8
+- oraclejdk8
+- openjdk8
+after_success:
+- mvn clean test jacoco:report coveralls:report -DrepoToken=$RepoToken
+env:
+  global:
+    secure: FzOwqcQhS3iBFuk/H2uo0XqA+9QPXhF7oSQJgxkld+0NvtOEny9szwvZuF/+ld6h+KHVrMZg7Q94OYjvu4mpOtBnOTR1hgVVX+ZG8DHgbQOJ2IrLOeoN0dyDHWJ7i2/y8u9k/A/tzc6Ai6yPiaribLC7GWA897ng1ee6mKDHN/1SiZp20BHfgBbw2JOpcpJLXQP7oV3pBcpr1EqnzFZZm0vLXfxHPm+SMLvCg7+Sv6dqG7UAL+WvcjXoyS/BCMEst5swOGCrIXLSa0QOVHxyf9G8iADr4pR/8tr96MB/vRAEDuMFfgFwX52v6aZdAtxqJTVgSBgv0tPULHLR+bB2MOjqu2Ne0CGBUmgzKZD5haTjE6HAWjGDDA7E81k0EDTGlDn+O3cKb8vYRTH4Iey8QGie0TZQX4p8UfrYtnxM2lu95y1XJb2LjV2EL/uhXl+JgmDZxgmisGgEQp4lpoR1FFVQkKBldnCUE86m49UgNh0bUi2oZYduU/I0S0cOP3P4OGdyDD7MHFIrvmUb51ui5j8Hz49wqlyTtjVyA9fTRNbckzaGFI4sOTEYRznHv+V/cI/GX0Xlbu+nf1Uc7Ov6R+q06HUei9e7WnikJTrnLap5GuAqz5gvvOC1oUa1++h2akLJEd8UDduKnNRuzVDOkS0JJXSJlX49AKe7XI3ikrc=

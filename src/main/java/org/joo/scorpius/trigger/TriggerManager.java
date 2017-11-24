@@ -13,26 +13,26 @@ import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 public interface TriggerManager extends TriggerEventDispatcher {
 
-	public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException;
+    public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException;
 
-	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data);
+    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data);
 
-	public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
-			DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback);
-	
-	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg);
-	
-	public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig);
+    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
+            DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback);
 
-	public TriggerRegistration registerTrigger(String name);
+    public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg);
 
-	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
-	
-	public ApplicationContext getApplicationContext();
+    public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig);
 
-	public TriggerHandlingStrategy getHandlingStrategy();
+    public TriggerRegistration registerTrigger(String name);
 
-	public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy);
+    public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
 
-	public void shutdown();
+    public ApplicationContext getApplicationContext();
+
+    public TriggerHandlingStrategy getHandlingStrategy();
+
+    public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy);
+
+    public void shutdown();
 }

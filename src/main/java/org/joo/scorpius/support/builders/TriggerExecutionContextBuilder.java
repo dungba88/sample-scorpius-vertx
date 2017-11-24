@@ -18,85 +18,86 @@ import org.joo.scorpius.trigger.TriggerManager;
 import org.joo.scorpius.trigger.impl.DefaultTriggerExecutionContext;
 
 public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionContext> {
-	
-	private TriggerConfig config;
-	
-	private BaseRequest request;
 
-	private ApplicationContext applicationContext;
-	
-	private FailCallback<TriggerExecutionException> failCallback;
+    private TriggerConfig config;
 
-	private DoneCallback<BaseResponse> doneCallback;
-	
-	private TriggerManager manager;
-	
-	private String eventName;
-	
-	@Override
-	public TriggerExecutionContext build() {
-		Deferred<BaseResponse, TriggerExecutionException> deferred = null;
-		if (doneCallback != null || failCallback != null) {
-			deferred = new SimpleDeferredObject<BaseResponse, TriggerExecutionException>(doneCallback, failCallback);
-		} else {
-			deferred = applicationContext.getInstance(DeferredFactory.class).create();
-		}
-		Optional<String> id = applicationContext.getInstance(IdGenerator.class).create();
-		return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred, id.orElse(null), getEventName());
-	}
+    private BaseRequest request;
 
-	public BaseRequest getRequest() {
-		return request;
-	}
+    private ApplicationContext applicationContext;
 
-	public TriggerExecutionContextBuilder setRequest(BaseRequest request) {
-		this.request = request;
-		return this;
-	}
+    private FailCallback<TriggerExecutionException> failCallback;
 
-	public TriggerConfig getConfig() {
-		return config;
-	}
+    private DoneCallback<BaseResponse> doneCallback;
 
-	public TriggerExecutionContextBuilder setConfig(TriggerConfig config) {
-		this.config = config;
-		return this;
-	}
+    private TriggerManager manager;
 
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
+    private String eventName;
 
-	public TriggerExecutionContextBuilder setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-		return this;
-	}
+    @Override
+    public TriggerExecutionContext build() {
+        Deferred<BaseResponse, TriggerExecutionException> deferred = null;
+        if (doneCallback != null || failCallback != null) {
+            deferred = new SimpleDeferredObject<BaseResponse, TriggerExecutionException>(doneCallback, failCallback);
+        } else {
+            deferred = applicationContext.getInstance(DeferredFactory.class).create();
+        }
+        Optional<String> id = applicationContext.getInstance(IdGenerator.class).create();
+        return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred,
+                id.orElse(null), getEventName());
+    }
 
-	public TriggerExecutionContextBuilder setDoneCallback(DoneCallback<BaseResponse> doneCallback) {
-		this.doneCallback = doneCallback;
-		return this;
-	}
+    public BaseRequest getRequest() {
+        return request;
+    }
 
-	public TriggerExecutionContextBuilder setFailCallback(FailCallback<TriggerExecutionException> failCallback) {
-		this.failCallback = failCallback;
-		return this;
-	}
+    public TriggerExecutionContextBuilder setRequest(BaseRequest request) {
+        this.request = request;
+        return this;
+    }
 
-	public TriggerManager getManager() {
-		return manager;
-	}
+    public TriggerConfig getConfig() {
+        return config;
+    }
 
-	public TriggerExecutionContextBuilder setManager(TriggerManager manager) {
-		this.manager = manager;
-		return this;
-	}
+    public TriggerExecutionContextBuilder setConfig(TriggerConfig config) {
+        this.config = config;
+        return this;
+    }
 
-	public String getEventName() {
-		return eventName;
-	}
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
-	public TriggerExecutionContextBuilder setEventName(String eventName) {
-		this.eventName = eventName;
-		return this;
-	}
+    public TriggerExecutionContextBuilder setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+        return this;
+    }
+
+    public TriggerExecutionContextBuilder setDoneCallback(DoneCallback<BaseResponse> doneCallback) {
+        this.doneCallback = doneCallback;
+        return this;
+    }
+
+    public TriggerExecutionContextBuilder setFailCallback(FailCallback<TriggerExecutionException> failCallback) {
+        this.failCallback = failCallback;
+        return this;
+    }
+
+    public TriggerManager getManager() {
+        return manager;
+    }
+
+    public TriggerExecutionContextBuilder setManager(TriggerManager manager) {
+        this.manager = manager;
+        return this;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public TriggerExecutionContextBuilder setEventName(String eventName) {
+        this.eventName = eventName;
+        return this;
+    }
 }

@@ -6,24 +6,24 @@ import org.apache.logging.log4j.Logger;
 import com.lmax.disruptor.ExceptionHandler;
 
 public class DisruptorExceptionHandler implements ExceptionHandler {
-	
-	private final static Logger logger = LogManager.getLogger(DisruptorExceptionHandler.class);
-	
-	@Override
-	public void handleEventException(Throwable ex, long sequence, Object event) {
-		if (event == null || !(event instanceof ExecutionContextEvent))
-			return;
 
-		logger.error("Exception on disruptor worker pool", ex);
-	}
+    private final static Logger logger = LogManager.getLogger(DisruptorExceptionHandler.class);
 
-	@Override
-	public void handleOnStartException(Throwable ex) {
+    @Override
+    public void handleEventException(Throwable ex, long sequence, Object event) {
+        if (event == null || !(event instanceof ExecutionContextEvent))
+            return;
 
-	}
+        logger.error("Exception on disruptor worker pool", ex);
+    }
 
-	@Override
-	public void handleOnShutdownException(Throwable ex) {
+    @Override
+    public void handleOnStartException(Throwable ex) {
+        // doesn't care
+    }
 
-	}
+    @Override
+    public void handleOnShutdownException(Throwable ex) {
+        // doesn't care
+    }
 }
