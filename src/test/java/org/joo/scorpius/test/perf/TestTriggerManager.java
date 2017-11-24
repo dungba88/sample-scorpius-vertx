@@ -58,13 +58,22 @@ public class TestTriggerManager {
     
     @Test
     public void testFireWrongEvent() {
+        CountDownLatch latch = new CountDownLatch(2);
         manager.fire("wrongEvent", null, response -> {
             Assert.assertNull(response);
+            latch.countDown();
         }, null);
         
         manager.fire("greet_java_2", null, response -> {
             Assert.assertNull(response);
+            latch.countDown();
         }, null);
+        
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
     }
     
     @Test
