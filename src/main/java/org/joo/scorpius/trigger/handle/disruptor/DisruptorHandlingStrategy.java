@@ -13,13 +13,15 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
+    
+    private final static int DEFAULT_BUFFER_SIZE = 1024;
 
     private ExecutorService executor;
 
     private Disruptor<ExecutionContextEvent> disruptor;
 
     public DisruptorHandlingStrategy() {
-        this(1024, Executors.newCachedThreadPool());
+        this(DEFAULT_BUFFER_SIZE, Executors.newCachedThreadPool());
     }
 
     public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor) {
