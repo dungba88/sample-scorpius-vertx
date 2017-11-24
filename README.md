@@ -111,14 +111,15 @@ triggerManager.fireEvent("greet", new SampleRequest())
 
 The above example uses a concept called `Promise`. The `fireEvent` doesn't actually return the trigger result, since it needs to be asynchronous. Instead, it will return a `Promise`, which is assured to return something in the future. Your code can register the `done` and `fail` callback to handle the result or failure respectively.
 
-But `Promise` is not free, it comes with a price: extra computation, spinlock, Atomic instructions and all. So there is another way to register the callback:
+But `Promise` is not free, it comes with a price: extra computation, spinlock and atomic instructions. There is another way to register the callback with less overheads:
 
 ```java
 triggerManager.fireEvent("greet", new SampleRequest(),
                           response -> // handle the response,
                           ex -> // handle the failure);
 ```
-This is almost identical to the previous example, except that you register the callback directly inside the `fireEvent` call. This will use a `SimplePromise` which doesn't needs all those extra cost you have on previous example. Of course, if you need to handle the result only after finishing some works, then you will need to stick to the real `Promise`, like this:
+
+This is almost identical to the previous example, except that you register the callback directly inside the `fireEvent` call. This will use a `SimplePromise` which doesn't have all those extra cost you have on previous example. Of course, if you need to handle the result only after finishing some works, then you will need to stick to the real `Promise`, like this:
 
 ```java
 Promise<BaseResponse, TriggerExecutionException> promise = 
