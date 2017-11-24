@@ -1,6 +1,8 @@
 package org.joo.scorpius.test.perf;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 
 import org.joo.scorpius.ApplicationContext;
@@ -8,11 +10,13 @@ import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.support.builders.contracts.IdGenerator;
 import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
+import org.joo.scorpius.support.builders.id.AtomicIdGenerator;
 import org.joo.scorpius.support.builders.id.TimeBasedIdGenerator;
 import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.test.support.BrokenTrigger;
 import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.test.support.SampleTrigger;
+import org.joo.scorpius.test.support.TraceIdRequiredRequest;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.handle.disruptor.DisruptorHandlingStrategy;
 import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
@@ -78,11 +82,17 @@ public class TestTriggerManager {
     
     @Test
     public void testException() {
-        CountDownLatch latch = new CountDownLatch(1);
+        CountDownLatch latch = new CountDownLatch(2);
         manager.fire("greet_java", null).fail(ex -> {
             Assert.assertTrue(ex.getCause() instanceof UnsupportedOperationException && ex.getCause().getMessage().equals("broken"));
             latch.countDown();
         });
+        
+        manager.fire("greet_java", null, null, ex -> {
+            Assert.assertTrue(ex.getCause() instanceof UnsupportedOperationException && ex.getCause().getMessage().equals("broken"));
+            latch.countDown();
+        });
+        
         try {
             latch.await();
         } catch (InterruptedException e) {
@@ -108,6 +118,41 @@ public class TestTriggerManager {
         
         Assert.assertEquals(id.orElse(null), request.getTraceId());
         Assert.assertTrue(request.verifyTraceId());
+        
+        TraceIdRequiredRequest requiredRequest = new TraceIdRequiredRequest();
+        
+        CountDownLatch latch = new CountDownLatch(1);
+        manager.fire("greet_java", requiredRequest, null, ex -> {
+            Assert.assertEquals("TraceId has not been attached", ex.getMessage());
+            latch.countDown();
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void testAtomicId() {
+        testIdGenerator(new AtomicIdGenerator());
+    }
+
+    @Test
+    public void testTimeBasedId() {
+        testIdGenerator(new TimeBasedIdGenerator());
+    }
+
+    private void testIdGenerator(IdGenerator generator) {
+        Set<String> set = new HashSet<>();
+        for(int i=0; i<1000000; i++) {
+            String id = generator.create().get();
+            if (set.contains(id)) {
+                Assert.fail("UUID collision detected");
+                return;
+            }
+            set.add(id);
+        }
     }
 
     @After
