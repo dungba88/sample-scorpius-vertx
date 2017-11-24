@@ -90,7 +90,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 		List<TriggerConfig> configs = triggerConfigs.get(name);
 		if (configs.isEmpty()) return resolveDefault(doneCallback);
 		
-		if (!data.verifyTraceId()) {
+		if (data != null && !data.verifyTraceId()) {
 			TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
 			if (failCallback != null)
 				failCallback.onFail(ex);
@@ -103,8 +103,8 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
 		if (config == null) return resolveDefault(doneCallback);
 
-		TriggerExecutionContext executionContext = buildExecutionContext(name, data, configs.get(0), doneCallback, failCallback);
-		
+		TriggerExecutionContext executionContext = buildExecutionContext(name, data, config, doneCallback, failCallback);
+		executionContext.pending();
 		
 		handlingStrategy.handle(executionContext);
 		return executionContext.promise();
