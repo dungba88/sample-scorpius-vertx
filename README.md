@@ -64,7 +64,7 @@ public class SampleTrigger extends AbstractTrigger<SampleRequest, BaseResponse> 
 }
 ```
 
-Because Java is strongly typed, a trigger needs to define its input (a class which extends `BaseRequest`) and output (a class which extends `BaseResponse`). The input is important because it is used by `TriggerManager` when trying to decode a JSON string request into the correct input of the trigger.
+Because Java is strongly typed, a trigger needs to define its input (a class which extends `BaseRequest`) and output (a class which extends `BaseResponse`). The input is important because it is used by `TriggerManager` when trying to decode a JSON string request into the correct input of the trigger. The output is not as that important, but it will help to make the trigger contract clearer for other developers.
 
 2. Register it with `TriggerManager`
 
