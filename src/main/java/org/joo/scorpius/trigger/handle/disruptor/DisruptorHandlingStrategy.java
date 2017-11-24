@@ -39,13 +39,10 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 	public void handle(TriggerExecutionContext context) {
 		RingBuffer<ExecutionContextEvent> ringBuffer = disruptor.getRingBuffer(); 
 		long sequence = ringBuffer.next();
-        try
-        {
+        try {
         	ExecutionContextEvent event = ringBuffer.get(sequence);
             event.setExecutionContext(context);
-        }
-        finally
-        {
+        } finally {
             ringBuffer.publish(sequence);
         }
 	}
