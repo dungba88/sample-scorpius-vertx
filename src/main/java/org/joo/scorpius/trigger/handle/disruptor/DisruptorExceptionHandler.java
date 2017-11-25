@@ -18,12 +18,12 @@ public class DisruptorExceptionHandler implements ExceptionHandler {
     }
 
     @Override
-    public void handleOnStartException(Throwable ex) {
+    public void handleOnStartException(final Throwable ex) {
         // doesn't care
     }
 
     @Override
-    public void handleOnShutdownException(Throwable ex) {
+    public void handleOnShutdownException(final Throwable ex) {
         // doesn't care
     }
 }
