@@ -8,12 +8,12 @@ public class MPSCRingBuffer extends SPSCRingBuffer {
 
     protected AtomicBoolean lock = new AtomicBoolean(false);
 
-    public MPSCRingBuffer(int maximumSize) {
+    public MPSCRingBuffer(final int maximumSize) {
         super(maximumSize);
     }
 
     @Override
-    public boolean enqueue(TriggerExecutionContext executionContext) {
+    public boolean enqueue(final TriggerExecutionContext executionContext) {
         while (!lock.compareAndSet(false, true)) {
         }
         try {

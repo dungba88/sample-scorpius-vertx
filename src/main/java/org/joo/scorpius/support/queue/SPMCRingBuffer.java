@@ -8,7 +8,7 @@ public class SPMCRingBuffer extends SPSCRingBuffer {
 
     protected AtomicBoolean lock = new AtomicBoolean(false);
 
-    public SPMCRingBuffer(int maximumSize) {
+    public SPMCRingBuffer(final int maximumSize) {
         super(maximumSize);
     }
 

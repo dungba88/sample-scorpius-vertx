@@ -7,6 +7,11 @@ import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.trigger.impl.SqlTriggerCondition;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class TriggerConfig implements TriggerRegistration {
 
     private Trigger<? extends BaseRequest, ? extends BaseResponse> trigger;
@@ -19,28 +24,28 @@ public class TriggerConfig implements TriggerRegistration {
 
     }
 
-    public TriggerConfig(Trigger<? extends BaseRequest, ? extends BaseResponse> trigger) {
+    public TriggerConfig(final Trigger<? extends BaseRequest, ? extends BaseResponse> trigger) {
         this.withAction(trigger);
     }
 
-    private Class<?> getRequestClassFor(Trigger<? extends BaseRequest, ? extends BaseResponse> trigger) {
+    private Class<?> getRequestClassFor(final Trigger<? extends BaseRequest, ? extends BaseResponse> trigger) {
         return ((Class<?>) ((ParameterizedType) trigger.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
     }
 
     @Override
-    public TriggerRegistration withCondition(String condition) {
+    public TriggerRegistration withCondition(final String condition) {
         this.condition = new SqlTriggerCondition(condition);
         return this;
     }
 
     @Override
-    public TriggerRegistration withCondition(TriggerCondition condition) {
+    public TriggerRegistration withCondition(final TriggerCondition condition) {
         this.condition = condition;
         return this;
     }
 
     @Override
-    public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(Trigger<T, H> trigger) {
+    public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(final Trigger<T, H> trigger) {
         this.trigger = trigger;
         this.requestClass = getRequestClassFor(trigger);
         return this;
@@ -48,25 +53,13 @@ public class TriggerConfig implements TriggerRegistration {
 
     @Override
     public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(
-            Supplier<Trigger<T, H>> supplier) {
+            final Supplier<Trigger<T, H>> supplier) {
         return withAction(supplier.get());
     }
 
     @Override
     public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(
-            Class<? extends Trigger<T, H>> clazz) throws InstantiationException, IllegalAccessException {
+            final Class<? extends Trigger<T, H>> clazz) throws InstantiationException, IllegalAccessException {
         return withAction(clazz.newInstance());
-    }
-
-    public TriggerCondition getCondition() {
-        return condition;
-    }
-
-    public Trigger<? extends BaseRequest, ? extends BaseResponse> getTrigger() {
-        return trigger;
-    }
-
-    public Class<?> getRequestClass() {
-        return requestClass;
     }
 }

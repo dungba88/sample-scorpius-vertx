@@ -4,7 +4,7 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public interface HandlingQueue {
 
-    public boolean enqueue(TriggerExecutionContext context);
+    public boolean enqueue(final TriggerExecutionContext context);
 
     public TriggerExecutionContext dequeue();
 

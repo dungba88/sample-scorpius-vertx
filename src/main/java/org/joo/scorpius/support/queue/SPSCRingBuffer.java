@@ -31,7 +31,7 @@ public class SPSCRingBuffer implements HandlingQueue {
         }
     }
 
-    public SPSCRingBuffer(int maximumSize) {
+    public SPSCRingBuffer(final int maximumSize) {
         if (!isPowerOf2(maximumSize)) {
             throw new IllegalArgumentException("Maximum size must be power of 2");
         }
@@ -40,12 +40,12 @@ public class SPSCRingBuffer implements HandlingQueue {
         head = tail = 0;
     }
 
-    private boolean isPowerOf2(int maximumSize) {
+    private boolean isPowerOf2(final int maximumSize) {
         return (maximumSize & (maximumSize - 1)) == 0;
     }
 
     @Override
-    public boolean enqueue(TriggerExecutionContext context) {
+    public boolean enqueue(final TriggerExecutionContext context) {
         int nextTail = (tail + indexScale) & mask;
         if (nextTail == head)
             return false;
