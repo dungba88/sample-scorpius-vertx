@@ -9,7 +9,8 @@ public class ExecutionContextFinishMessage extends ExecutionContextStartMessage 
 
     private final BaseResponse response;
 
-    public ExecutionContextFinishMessage(String id, String eventName, BaseRequest request, BaseResponse response) {
+    public ExecutionContextFinishMessage(final String id, final String eventName, final BaseRequest request,
+            final BaseResponse response) {
         super(id, eventName, request);
         this.response = response;
     }

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joo.libra.support.PredicateExecutionException;
 import org.joo.promise4j.DoneCallback;
 import org.joo.promise4j.FailCallback;
 import org.joo.promise4j.Promise;
@@ -35,21 +36,24 @@ import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
 
     private final static Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
 
     private Map<String, List<TriggerConfig>> triggerConfigs;
 
-    private ApplicationContext applicationContext;
+    private @Getter ApplicationContext applicationContext;
 
-    private TriggerHandlingStrategy handlingStrategy;
+    private @Getter @Setter TriggerHandlingStrategy handlingStrategy;
 
     private ScheduledExecutorService scheduledExecutors;
 
     private List<ScheduledFuture<?>> scheduledFutures;
 
-    public DefaultTriggerManager(ApplicationContext applicationContext) {
+    public DefaultTriggerManager(final ApplicationContext applicationContext) {
         this.triggerConfigs = new HashMap<>();
         this.applicationContext = applicationContext;
         this.handlingStrategy = applicationContext.getInstance(TriggerHandlingStrategyFactory.class).create();
@@ -58,7 +62,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     }
 
     @Override
-    public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException {
+    public BaseRequest decodeRequestForEvent(final String name, final String data) throws MalformedRequestException {
         if (name == null)
             throw new MalformedRequestException("Event name is null");
 
@@ -78,13 +82,13 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     }
 
     @Override
-    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data) {
+    public Promise<BaseResponse, TriggerExecutionException> fire(final String name, final BaseRequest data) {
         return fire(name, data, null, null);
     }
 
     @Override
-    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
-            DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback) {
+    public Promise<BaseResponse, TriggerExecutionException> fire(final String name, final BaseRequest data,
+            final DoneCallback<BaseResponse> doneCallback, final FailCallback<TriggerExecutionException> failCallback) {
         if (!triggerConfigs.containsKey(name))
             return resolveDefault(doneCallback);
 
@@ -99,23 +103,33 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
             return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
         }
 
-        TriggerExecutionContext dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
+        TriggerExecutionContext dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext,
+                name);
 
-        TriggerConfig config = findMatchingTrigger(configs, dummyExecutionContext);
+        TriggerConfig config;
+        try {
+            config = findMatchingTrigger(configs, dummyExecutionContext);
+        } catch (PredicateExecutionException e) {
+            TriggerExecutionException ex = new TriggerExecutionException("Condition evaluation failed", e);
+            if (failCallback != null)
+                failCallback.onFail(ex);
+            return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
+        }
 
         if (config == null)
             return resolveDefault(doneCallback);
 
-        TriggerExecutionContext executionContext = buildExecutionContext(name, data, config, doneCallback, failCallback);
-        
+        TriggerExecutionContext executionContext = buildExecutionContext(name, data, config, doneCallback,
+                failCallback);
+
         executionContext.pending();
 
         handlingStrategy.handle(executionContext);
         return executionContext.promise();
     }
 
-    private TriggerConfig findMatchingTrigger(List<TriggerConfig> configs,
-            TriggerExecutionContext dummyExecutionContext) {
+    private TriggerConfig findMatchingTrigger(final List<TriggerConfig> configs,
+            final TriggerExecutionContext dummyExecutionContext) throws PredicateExecutionException {
         for (TriggerConfig config : configs) {
             if (config.getCondition() == null || config.getCondition().satisfiedBy(dummyExecutionContext))
                 return config;
@@ -123,14 +137,16 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         return null;
     }
 
-    private Promise<BaseResponse, TriggerExecutionException> resolveDefault(DoneCallback<BaseResponse> doneCallback) {
+    private Promise<BaseResponse, TriggerExecutionException> resolveDefault(
+            final DoneCallback<BaseResponse> doneCallback) {
         if (doneCallback != null)
             doneCallback.onDone(null);
         return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
     }
 
-    private TriggerExecutionContext buildExecutionContext(String name, BaseRequest request, TriggerConfig config,
-            DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback) {
+    private TriggerExecutionContext buildExecutionContext(final String name, final BaseRequest request,
+            final TriggerConfig config, final DoneCallback<BaseResponse> doneCallback,
+            final FailCallback<TriggerExecutionException> failCallback) {
         TriggerExecutionContextBuilder builder = applicationContext
                 .getInstance(TriggerExecutionContextBuilderFactory.class).create();
 
@@ -141,12 +157,12 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     }
 
     @Override
-    public TriggerRegistration registerTrigger(String name) {
+    public TriggerRegistration registerTrigger(final String name) {
         return registerTrigger(name, new TriggerConfig());
     }
 
     @Override
-    public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
+    public TriggerRegistration registerTrigger(final String name, final TriggerConfig triggerConfig) {
         if (!triggerConfigs.containsKey(name))
             triggerConfigs.put(name, new ArrayList<>());
         triggerConfigs.get(name).add(triggerConfig);
@@ -154,12 +170,12 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     }
 
     @Override
-    public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg) {
+    public TriggerRegistration registerPeriodicEvent(final PeriodicTaskMessage msg) {
         return registerPeriodicEvent(msg, new TriggerConfig());
     }
 
     @Override
-    public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig) {
+    public TriggerRegistration registerPeriodicEvent(final PeriodicTaskMessage msg, final TriggerConfig triggerConfig) {
         String name = UUID.randomUUID().toString();
         TriggerRegistration config = registerTrigger(name, triggerConfig);
         ScheduledFuture<?> future = scheduledExecutors.scheduleAtFixedRate(() -> {
@@ -167,21 +183,6 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         }, msg.getDelay(), msg.getPeriod(), TimeUnit.MILLISECONDS);
         scheduledFutures.add(future);
         return config;
-    }
-
-    @Override
-    public TriggerHandlingStrategy getHandlingStrategy() {
-        return handlingStrategy;
-    }
-
-    @Override
-    public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy) {
-        this.handlingStrategy = handlingStategy;
-    }
-
-    @Override
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
     }
 
     @Override

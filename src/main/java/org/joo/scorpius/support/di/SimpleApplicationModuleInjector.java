@@ -11,11 +11,11 @@ public class SimpleApplicationModuleInjector implements ApplicationModuleInjecto
         this.instancesMap = new HashMap<>();
     }
 
-    public SimpleApplicationModuleInjector(Map<Class<?>, Object> instancesMap) {
+    public SimpleApplicationModuleInjector(final Map<Class<?>, Object> instancesMap) {
         this.instancesMap = new HashMap<>(instancesMap);
     }
 
-    public SimpleApplicationModuleInjector(MappedInjectionModule... modules) {
+    public SimpleApplicationModuleInjector(final MappedInjectionModule... modules) {
         this.instancesMap = new HashMap<>();
         for (MappedInjectionModule module : modules) {
             module.configure(this.instancesMap);
@@ -24,12 +24,12 @@ public class SimpleApplicationModuleInjector implements ApplicationModuleInjecto
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getInstance(Class<T> clazz) {
+    public <T> T getInstance(final Class<T> clazz) {
         return (T) instancesMap.get(clazz);
     }
 
     @Override
-    public <T> void override(Class<T> clazz, T instance) {
+    public <T> void override(final Class<T> clazz, final T instance) {
         this.instancesMap.put(clazz, instance);
     }
 }

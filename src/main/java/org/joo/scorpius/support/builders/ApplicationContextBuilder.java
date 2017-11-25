@@ -11,6 +11,11 @@ import org.joo.scorpius.support.di.ApplicationModuleInjector;
 import org.joo.scorpius.support.di.SimpleApplicationModuleInjector;
 import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter 
 public class ApplicationContextBuilder implements Builder<ApplicationContext> {
 
     private ApplicationModuleInjector injector;
@@ -29,14 +34,5 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
     @Override
     public ApplicationContext build() {
         return new ApplicationContext(injector);
-    }
-
-    public ApplicationModuleInjector getInjector() {
-        return injector;
-    }
-
-    public ApplicationContextBuilder setInjector(ApplicationModuleInjector injector) {
-        this.injector = injector;
-        return this;
     }
 }

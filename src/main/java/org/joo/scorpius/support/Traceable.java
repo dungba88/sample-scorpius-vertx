@@ -8,7 +8,7 @@ public interface Traceable {
 
     public Optional<String> fetchRawTraceId();
 
-    public void attachTraceId(Optional<String> traceId);
+    public void attachTraceId(final Optional<String> traceId);
 
     public boolean verifyTraceId();
 }

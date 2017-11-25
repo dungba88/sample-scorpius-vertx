@@ -19,6 +19,9 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerExecutionStatus;
 import org.joo.scorpius.trigger.TriggerManager;
 
+import lombok.Getter;
+
+@Getter
 public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
     private final static Logger logger = LogManager.getLogger(DefaultTriggerExecutionContext.class);
@@ -37,14 +40,14 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
     private Deferred<BaseResponse, TriggerExecutionException> deferred;
 
-    private TriggerManager manager;
+    private TriggerManager triggerManager;
 
-    public DefaultTriggerExecutionContext(TriggerManager manager, TriggerConfig config, BaseRequest request,
-            ApplicationContext applicationContext, Deferred<BaseResponse, TriggerExecutionException> deferred,
-            String id, String eventName) {
+    public DefaultTriggerExecutionContext(final TriggerManager manager, final TriggerConfig config, final BaseRequest request,
+            final ApplicationContext applicationContext, final Deferred<BaseResponse, TriggerExecutionException> deferred,
+            final String id, final String eventName) {
         this.id = id;
         this.eventName = eventName;
-        this.manager = manager;
+        this.triggerManager = manager;
         this.config = config;
         this.request = request;
         this.applicationContext = applicationContext;
@@ -52,10 +55,12 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
         this.deferred = deferred;
     }
 
+    @Override
     public void pending() {
         status = TriggerExecutionStatus.PENDING;
     }
 
+    @Override
     public void execute() {
         if (status == TriggerExecutionStatus.EXECUTING || status == TriggerExecutionStatus.FINISHED) {
             throw new IllegalStateException("Trigger is already running or finished");
@@ -63,8 +68,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
         if (config.getTrigger() == null)
             return;
 
-        if (manager.isEventEnabled(TriggerEvent.START))
-            manager.notifyEvent(TriggerEvent.START, new ExecutionContextStartMessage(id, eventName, request));
+        if (triggerManager.isEventEnabled(TriggerEvent.START))
+            triggerManager.notifyEvent(TriggerEvent.START, new ExecutionContextStartMessage(id, eventName, request));
 
         try {
             config.getTrigger().execute(this);
@@ -75,7 +80,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
         }
     }
 
-    public void finish(BaseResponse response) {
+    @Override
+    public void finish(final BaseResponse response) {
         if (status == TriggerExecutionStatus.FINISHED)
             throw new IllegalStateException("Trigger is already finished");
 
@@ -83,12 +89,13 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
         status = TriggerExecutionStatus.FINISHED;
 
-        if (manager.isEventEnabled(TriggerEvent.FINISH))
-            manager.notifyEvent(TriggerEvent.FINISH,
+        if (triggerManager.isEventEnabled(TriggerEvent.FINISH))
+            triggerManager.notifyEvent(TriggerEvent.FINISH,
                     new ExecutionContextFinishMessage(id, eventName, request, response));
     }
 
-    public void fail(TriggerExecutionException ex) {
+    @Override
+    public void fail(final TriggerExecutionException ex) {
         logException(ex);
 
         if (status == TriggerExecutionStatus.FINISHED)
@@ -99,58 +106,28 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
         status = TriggerExecutionStatus.FINISHED;
     }
 
-    private void logException(TriggerExecutionException ex) {
+    public void logException(final TriggerExecutionException ex) {
         if (logger.isErrorEnabled()) {
             logger.error("Exception occured while executing trigger with event name {}", eventName, ex);
         }
-        if (manager.isEventEnabled(TriggerEvent.EXCEPTION))
-            manager.notifyEvent(TriggerEvent.EXCEPTION,
+        if (triggerManager.isEventEnabled(TriggerEvent.EXCEPTION))
+            triggerManager.notifyEvent(TriggerEvent.EXCEPTION,
                     new ExecutionContextExceptionMessage(id, eventName, request, ex));
     }
 
+    @Override
     public Promise<BaseResponse, TriggerExecutionException> promise() {
         return deferred.promise();
     }
 
-    public TriggerConfig getConfig() {
-        return config;
-    }
-
-    public BaseRequest getRequest() {
-        return request;
-    }
-
-    public TriggerExecutionStatus getStatus() {
-        return status;
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
     @Override
-    public TriggerManager getTriggerManager() {
-        return manager;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void attachTraceId(Optional<String> traceId) {
+    public void attachTraceId(final Optional<String> traceId) {
         request.attachTraceId(traceId);
     }
 
     @Override
     public boolean verifyTraceId() {
         return request.verifyTraceId();
-    }
-
-    @Override
-    public String getEventName() {
-        return eventName;
     }
 
     @Override

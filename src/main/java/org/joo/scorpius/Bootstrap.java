@@ -4,9 +4,9 @@ import org.joo.scorpius.trigger.TriggerManager;
 
 public interface Bootstrap {
 
-    public void setTriggerManager(TriggerManager triggerManager);
+    public void setTriggerManager(final TriggerManager triggerManager);
 
-    public void setApplicationContext(ApplicationContext applicationContext);
+    public void setApplicationContext(final ApplicationContext applicationContext);
 
     public void run();
 }

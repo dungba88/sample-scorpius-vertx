@@ -20,7 +20,8 @@ public class SimpleTriggerExecutionContext implements TriggerExecutionContext {
 
     private String eventName;
 
-    public SimpleTriggerExecutionContext(BaseRequest request, ApplicationContext applicationContext, String eventName) {
+    public SimpleTriggerExecutionContext(final BaseRequest request, final ApplicationContext applicationContext,
+            final String eventName) {
         this.eventName = eventName;
         this.request = request;
         this.applicationContext = applicationContext;

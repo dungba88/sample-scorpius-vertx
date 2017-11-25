@@ -15,7 +15,7 @@ public class AbstractTriggerEventDispatcher implements TriggerEventDispatcher {
     private Map<TriggerEvent, List<TriggerEventHandler>> handlerMap = new HashMap<>();
 
     @Override
-    public void addEventHandler(TriggerEvent event, TriggerEventHandler handler) {
+    public void addEventHandler(final TriggerEvent event, final TriggerEventHandler handler) {
         if (!handlerMap.containsKey(event)) {
             handlerMap.put(event, new ArrayList<>());
         }
@@ -23,7 +23,7 @@ public class AbstractTriggerEventDispatcher implements TriggerEventDispatcher {
     }
 
     @Override
-    public void notifyEvent(TriggerEvent event, Serializable msg) {
+    public void notifyEvent(final TriggerEvent event, final Serializable msg) {
         if (!handlerMap.containsKey(event))
             return;
         for (TriggerEventHandler handler : handlerMap.get(event)) {
@@ -32,7 +32,7 @@ public class AbstractTriggerEventDispatcher implements TriggerEventDispatcher {
     }
 
     @Override
-    public boolean isEventEnabled(TriggerEvent event) {
+    public boolean isEventEnabled(final TriggerEvent event) {
         return handlerMap.containsKey(event);
     }
 }

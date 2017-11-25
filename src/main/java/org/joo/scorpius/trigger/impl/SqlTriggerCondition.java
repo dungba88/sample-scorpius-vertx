@@ -10,18 +10,13 @@ public class SqlTriggerCondition implements TriggerCondition {
 
     private SqlPredicate predicate;
 
-    public SqlTriggerCondition(String condition) {
+    public SqlTriggerCondition(final String condition) {
         this.predicate = new SqlPredicate(condition);
         this.predicate.checkForErrorAndThrow();
     }
 
     @Override
-    public boolean satisfiedBy(TriggerExecutionContext executionContext) {
-        try {
-            return this.predicate.satisfiedBy(new PredicateContext(executionContext));
-        } catch (PredicateExecutionException e) {
-            // TODO log error
-            return false;
-        }
+    public boolean satisfiedBy(final TriggerExecutionContext executionContext) throws PredicateExecutionException {
+        return this.predicate.satisfiedBy(new PredicateContext(executionContext));
     }
 }

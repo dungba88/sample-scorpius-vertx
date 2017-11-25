@@ -15,11 +15,11 @@ public class GuiceApplicationModuleInjector implements ApplicationModuleInjector
 
     private boolean cache;
 
-    public GuiceApplicationModuleInjector(Module... modules) {
+    public GuiceApplicationModuleInjector(final Module... modules) {
         this(true, modules);
     }
 
-    public GuiceApplicationModuleInjector(boolean cache, Module... modules) {
+    public GuiceApplicationModuleInjector(final boolean cache, final Module... modules) {
         this.cache = cache;
         this.injector = Guice.createInjector(modules);
         this.instancesMap = new ThreadLocal<Map<Class<?>, Object>>() {
@@ -32,7 +32,7 @@ public class GuiceApplicationModuleInjector implements ApplicationModuleInjector
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T getInstance(Class<T> clazz) {
+    public <T> T getInstance(final Class<T> clazz) {
         if (!cache)
             return injector.getInstance(clazz);
 
@@ -51,7 +51,7 @@ public class GuiceApplicationModuleInjector implements ApplicationModuleInjector
     }
 
     @Override
-    public <T> void override(Class<T> clazz, T instance) {
+    public <T> void override(final Class<T> clazz, final T instance) {
         throw new UnsupportedOperationException();
     }
 }

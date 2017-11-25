@@ -17,6 +17,13 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerManager;
 import org.joo.scorpius.trigger.impl.DefaultTriggerExecutionContext;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Getter
+@Setter
+@Accessors(chain = true)
 public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionContext> {
 
     private TriggerConfig config;
@@ -43,61 +50,6 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
         }
         Optional<String> id = applicationContext.getInstance(IdGenerator.class).create();
         return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred,
-                id.orElse(null), getEventName());
-    }
-
-    public BaseRequest getRequest() {
-        return request;
-    }
-
-    public TriggerExecutionContextBuilder setRequest(BaseRequest request) {
-        this.request = request;
-        return this;
-    }
-
-    public TriggerConfig getConfig() {
-        return config;
-    }
-
-    public TriggerExecutionContextBuilder setConfig(TriggerConfig config) {
-        this.config = config;
-        return this;
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    public TriggerExecutionContextBuilder setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-        return this;
-    }
-
-    public TriggerExecutionContextBuilder setDoneCallback(DoneCallback<BaseResponse> doneCallback) {
-        this.doneCallback = doneCallback;
-        return this;
-    }
-
-    public TriggerExecutionContextBuilder setFailCallback(FailCallback<TriggerExecutionException> failCallback) {
-        this.failCallback = failCallback;
-        return this;
-    }
-
-    public TriggerManager getManager() {
-        return manager;
-    }
-
-    public TriggerExecutionContextBuilder setManager(TriggerManager manager) {
-        this.manager = manager;
-        return this;
-    }
-
-    public String getEventName() {
-        return eventName;
-    }
-
-    public TriggerExecutionContextBuilder setEventName(String eventName) {
-        this.eventName = eventName;
-        return this;
+                id.orElse(null), eventName);
     }
 }

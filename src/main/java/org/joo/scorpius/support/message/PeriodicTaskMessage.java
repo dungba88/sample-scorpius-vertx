@@ -14,7 +14,7 @@ public class PeriodicTaskMessage implements Serializable {
 
     private final BaseRequest request;
 
-    public PeriodicTaskMessage(long delay, long period, BaseRequest request) {
+    public PeriodicTaskMessage(final long delay, final long period, final BaseRequest request) {
         this.delay = delay;
         this.period = period;
         this.request = request;

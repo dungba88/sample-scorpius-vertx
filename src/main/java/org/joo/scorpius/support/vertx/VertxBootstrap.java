@@ -9,16 +9,17 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import lombok.Setter;
 
 public abstract class VertxBootstrap implements Bootstrap {
 
-    protected ApplicationContext applicationContext;
+    protected @Setter ApplicationContext applicationContext;
 
-    protected TriggerManager triggerManager;
+    protected @Setter TriggerManager triggerManager;
 
     protected VertxMessageController msgController;
 
-    protected void configureServer(VertxOptions options, int port) {
+    protected void configureServer(final VertxOptions options, final int port) {
         msgController = new VertxMessageController(triggerManager);
 
         Vertx vertx = Vertx.vertx(options);
@@ -29,20 +30,10 @@ public abstract class VertxBootstrap implements Bootstrap {
         server.requestHandler(restAPI::accept).listen(port);
     }
 
-    protected Router configureRoutes(Vertx vertx) {
+    protected Router configureRoutes(final Vertx vertx) {
         Router restAPI = Router.router(vertx);
         restAPI.post("/*").handler(BodyHandler.create());
         restAPI.post("/msg").handler(msgController::handle);
         return restAPI;
-    }
-
-    @Override
-    public void setTriggerManager(TriggerManager triggerManager) {
-        this.triggerManager = triggerManager;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 }

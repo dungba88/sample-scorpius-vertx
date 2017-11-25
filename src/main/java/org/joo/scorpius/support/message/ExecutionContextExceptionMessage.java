@@ -17,8 +17,8 @@ public class ExecutionContextExceptionMessage implements Serializable {
 
     private final TriggerExecutionException ex;
 
-    public ExecutionContextExceptionMessage(String id, String eventName, BaseRequest request,
-            TriggerExecutionException ex) {
+    public ExecutionContextExceptionMessage(final String id, final String eventName, final BaseRequest request,
+            final TriggerExecutionException ex) {
         this.id = id;
         this.eventName = eventName;
         this.request = request;

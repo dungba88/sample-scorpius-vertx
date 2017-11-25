@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface MappedInjectionModule {
 
-    public void configure(Map<Class<?>, Object> instancesMap);
+    public void configure(final Map<Class<?>, Object> instancesMap);
 }

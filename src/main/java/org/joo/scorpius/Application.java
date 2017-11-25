@@ -19,12 +19,12 @@ public class Application {
         this(new ApplicationContextBuilder());
     }
 
-    public Application(Builder<ApplicationContext> applicationContextBuilder) {
+    public Application(final Builder<ApplicationContext> applicationContextBuilder) {
         this.initialized = new AtomicBoolean(false);
         this.applicationContext = applicationContextBuilder.build();
     }
 
-    public void run(Bootstrap bootstrap) {
+    public void run(final Bootstrap bootstrap) {
         if (!initialized.compareAndSet(false, true))
             throw new IllegalStateException("Application is already running");
 

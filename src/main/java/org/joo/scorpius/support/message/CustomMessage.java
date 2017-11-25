@@ -10,7 +10,7 @@ public class CustomMessage implements Serializable {
 
     private final Serializable customObject;
 
-    public CustomMessage(String name, Serializable customObject) {
+    public CustomMessage(final String name, final Serializable customObject) {
         this.name = name;
         this.customObject = customObject;
     }

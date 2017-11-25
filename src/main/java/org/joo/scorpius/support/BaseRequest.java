@@ -13,12 +13,12 @@ public class BaseRequest implements Traceable, Serializable {
 
     }
 
-    public BaseRequest(Optional<String> traceId) {
+    public BaseRequest(final Optional<String> traceId) {
         attachTraceId(traceId);
     }
 
     @Override
-    public void attachTraceId(Optional<String> traceId) {
+    public void attachTraceId(final Optional<String> traceId) {
         if (this.traceId != null)
             throw new IllegalStateException("TraceId is already attached");
         this.traceId = traceId;

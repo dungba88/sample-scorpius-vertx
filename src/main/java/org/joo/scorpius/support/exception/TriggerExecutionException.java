@@ -4,15 +4,15 @@ public class TriggerExecutionException extends Exception {
 
     private static final long serialVersionUID = 5651707579614655859L;
 
-    public TriggerExecutionException(String msg) {
+    public TriggerExecutionException(final String msg) {
         super(msg);
     }
 
-    public TriggerExecutionException(Throwable cause) {
+    public TriggerExecutionException(final Throwable cause) {
         super(cause);
     }
 
-    public TriggerExecutionException(String msg, Throwable cause) {
+    public TriggerExecutionException(final String msg, final Throwable cause) {
         super(msg, cause);
     }
 }

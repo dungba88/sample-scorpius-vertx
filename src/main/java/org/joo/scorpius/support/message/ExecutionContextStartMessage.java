@@ -14,7 +14,7 @@ public class ExecutionContextStartMessage implements Serializable {
 
     private final BaseRequest request;
 
-    public ExecutionContextStartMessage(String id, String eventName, BaseRequest request) {
+    public ExecutionContextStartMessage(final String id, final String eventName, final BaseRequest request) {
         this.id = id;
         this.eventName = eventName;
         this.request = request;

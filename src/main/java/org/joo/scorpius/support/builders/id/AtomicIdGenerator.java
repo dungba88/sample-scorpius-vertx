@@ -31,7 +31,7 @@ class AtomicCounter {
 
     private long counter;
 
-    public AtomicCounter(long prefix, long counter) {
+    public AtomicCounter(final long prefix, final long counter) {
         this.prefix = prefix;
         this.counter = counter;
     }

@@ -23,11 +23,11 @@ public class VertxMessageController implements Handler<RoutingContext> {
 
     protected final TriggerManager triggerManager;
 
-    public VertxMessageController(TriggerManager triggerManager) {
+    public VertxMessageController(final TriggerManager triggerManager) {
         this.triggerManager = triggerManager;
     }
 
-    public void handle(RoutingContext rc) {
+    public void handle(final RoutingContext rc) {
         HttpServerResponse response = rc.response();
         response.putHeader("Content-Type", "application/json");
 
@@ -52,7 +52,7 @@ public class VertxMessageController implements Handler<RoutingContext> {
         });
     }
 
-    protected Optional<String> getTraceId(RoutingContext rc, ApplicationContext applicationContext) {
+    protected Optional<String> getTraceId(final RoutingContext rc, final ApplicationContext applicationContext) {
         String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
         if (traceId == null || traceId.isEmpty()) {
             return triggerManager.getApplicationContext().getInstance(IdGenerator.class).create();
@@ -60,11 +60,12 @@ public class VertxMessageController implements Handler<RoutingContext> {
         return Optional.of(traceId);
     }
 
-    protected void onFail(Throwable exception, HttpServerResponse response, RoutingContext rc) {
+    protected void onFail(final Throwable exception, final HttpServerResponse response, final RoutingContext rc) {
         rc.fail(exception);
     }
 
-    protected void onDone(BaseResponse triggerResponse, HttpServerResponse response, RoutingContext rc) {
+    protected void onDone(final BaseResponse triggerResponse, final HttpServerResponse response,
+            final RoutingContext rc) {
         if (triggerResponse == null) {
             response.end();
             return;
