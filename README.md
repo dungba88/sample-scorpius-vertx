@@ -37,7 +37,7 @@ Scorpius can be installed easily with Maven:
 <dependency>
     <groupId>org.dungba</groupId>
     <artifactId>joo-libra</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
