@@ -1,6 +1,6 @@
 package org.joo.scorpius.support.builders;
 
-import org.joo.promise4j.impl.AsyncDeferredObject;
+import org.joo.promise4j.impl.CompletableDeferredObject;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.builders.contracts.DeferredFactory;
 import org.joo.scorpius.support.builders.contracts.IdGenerator;
@@ -18,7 +18,7 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
     public ApplicationContextBuilder() {
         injector = new SimpleApplicationModuleInjector(map -> {
             map.put(IdGenerator.class, new VoidIdGenerator());
-            map.put(DeferredFactory.class, (DeferredFactory) (() -> new AsyncDeferredObject<>()));
+            map.put(DeferredFactory.class, (DeferredFactory) (() -> new CompletableDeferredObject<>()));
             map.put(TriggerExecutionContextBuilderFactory.class,
                     (TriggerExecutionContextBuilderFactory) (() -> new TriggerExecutionContextBuilder()));
             map.put(TriggerHandlingStrategyFactory.class,
