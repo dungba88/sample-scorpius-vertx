@@ -36,7 +36,7 @@ public class TestTriggerManager {
         this.manager.registerTrigger("greet_java", new TriggerConfig(new SampleTrigger())).withCondition(execContext -> execContext.getRequest() != null);
         this.manager.registerTrigger("greet_java", new TriggerConfig(new BrokenTrigger())).withCondition(execContext -> execContext.getRequest() == null);
         try {
-            this.manager.registerTrigger("greet_java_2").withCondition("name is null").withAction(SampleTrigger.class);
+            this.manager.registerTrigger("greet_java_2").withCondition("request is not null").withAction(SampleTrigger.class);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
