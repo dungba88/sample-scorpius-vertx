@@ -11,17 +11,17 @@ public class ExecutorHandlingStrategy implements TriggerHandlingStrategy, AutoCl
 
     private ExecutorService executor;
 
-    public ExecutorHandlingStrategy(int noThreads) {
+    public ExecutorHandlingStrategy(final int noThreads) {
         this.executor = Executors.newFixedThreadPool(noThreads);
         this.ownedExecutor = true;
     }
 
-    public ExecutorHandlingStrategy(ExecutorService executor) {
+    public ExecutorHandlingStrategy(final ExecutorService executor) {
         this.executor = executor;
     }
 
     @Override
-    public void handle(TriggerExecutionContext context) {
+    public void handle(final TriggerExecutionContext context) {
         executor.submit(() -> context.execute());
     }
 

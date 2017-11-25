@@ -5,7 +5,7 @@ import org.joo.scorpius.trigger.TriggerExecutionContext;
 public class DefaultHandlingStrategy implements TriggerHandlingStrategy {
 
     @Override
-    public void handle(TriggerExecutionContext context) {
+    public void handle(final TriggerExecutionContext context) {
         context.execute();
     }
 

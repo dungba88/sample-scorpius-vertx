@@ -13,7 +13,7 @@ import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
 public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
-    
+
     private final static int DEFAULT_BUFFER_SIZE = 1024;
 
     private ExecutorService executor;
@@ -24,13 +24,13 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
         this(DEFAULT_BUFFER_SIZE, Executors.newCachedThreadPool());
     }
 
-    public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor) {
+    public DisruptorHandlingStrategy(final int bufferSize, final ExecutorService executor) {
         this(bufferSize, executor, ProducerType.MULTI, new YieldingWaitStrategy());
     }
 
     @SuppressWarnings("unchecked")
-    public DisruptorHandlingStrategy(int bufferSize, ExecutorService executor, ProducerType producerType,
-            WaitStrategy waitStategy) {
+    public DisruptorHandlingStrategy(final int bufferSize, final ExecutorService executor,
+            final ProducerType producerType, final WaitStrategy waitStategy) {
         this.executor = executor;
         this.disruptor = new Disruptor<>(new ExecutionContextEventFactory(), bufferSize, executor, producerType,
                 waitStategy);
@@ -40,7 +40,7 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
     }
 
     @Override
-    public void handle(TriggerExecutionContext context) {
+    public void handle(final TriggerExecutionContext context) {
         RingBuffer<ExecutionContextEvent> ringBuffer = disruptor.getRingBuffer();
         long sequence = ringBuffer.next();
         try {
@@ -51,7 +51,7 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
         }
     }
 
-    private void onEvent(ExecutionContextEvent event) throws Exception {
+    private void onEvent(final ExecutionContextEvent event) throws Exception {
         event.getExecutionContext().execute();
     }
 

@@ -38,12 +38,12 @@ public class SimpleTriggerExecutionContext implements TriggerExecutionContext {
     }
 
     @Override
-    public void finish(BaseResponse response) {
+    public void finish(final BaseResponse response) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void fail(TriggerExecutionException ex) {
+    public void fail(final TriggerExecutionException ex) {
         throw new UnsupportedOperationException();
     }
 
@@ -73,7 +73,7 @@ public class SimpleTriggerExecutionContext implements TriggerExecutionContext {
     }
 
     @Override
-    public void attachTraceId(Optional<String> traceId) {
+    public void attachTraceId(final Optional<String> traceId) {
         request.attachTraceId(traceId);
     }
 

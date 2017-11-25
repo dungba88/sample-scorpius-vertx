@@ -2,15 +2,10 @@ package org.joo.scorpius.trigger.handle.disruptor;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class ExecutionContextEvent {
 
-    private TriggerExecutionContext executionContext;
-
-    public TriggerExecutionContext getExecutionContext() {
-        return executionContext;
-    }
-
-    public void setExecutionContext(TriggerExecutionContext executionContext) {
-        this.executionContext = executionContext;
-    }
+    private @Getter @Setter TriggerExecutionContext executionContext;
 }

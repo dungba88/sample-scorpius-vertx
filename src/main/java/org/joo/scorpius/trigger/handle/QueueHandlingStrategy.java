@@ -9,7 +9,7 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
 
     private ConsumerThread[] consumerThreads;
 
-    public QueueHandlingStrategy(HandlingQueue queue, int noConsumers) {
+    public QueueHandlingStrategy(final HandlingQueue queue, final int noConsumers) {
         this.queue = queue;
         this.consumerThreads = new ConsumerThread[noConsumers];
         for (int i = 0; i < noConsumers; i++) {
@@ -21,8 +21,9 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void handle(TriggerExecutionContext context) {
+    public void handle(final TriggerExecutionContext context) {
         while (!queue.enqueue(context)) {
+            // Do nothing
         }
     }
 
@@ -44,7 +45,7 @@ class ConsumerThread extends Thread {
 
     private HandlingQueue queue;
 
-    public ConsumerThread(HandlingQueue queue) {
+    public ConsumerThread(final HandlingQueue queue) {
         this.queue = queue;
     }
 

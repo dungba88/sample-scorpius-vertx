@@ -10,7 +10,7 @@ public class DisruptorExceptionHandler implements ExceptionHandler {
     private final static Logger logger = LogManager.getLogger(DisruptorExceptionHandler.class);
 
     @Override
-    public void handleEventException(Throwable ex, long sequence, Object event) {
+    public void handleEventException(final Throwable ex, final long sequence, final Object event) {
         if (event == null || !(event instanceof ExecutionContextEvent))
             return;
 
