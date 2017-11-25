@@ -1,6 +1,6 @@
 # scorpius
 [![License](https://img.shields.io/github/license/dungba88/scorpius.svg?maxAge=2592000)](LICENSE)
-[![Maven Central](https://img.shields.io/maven-central/v/org.dungba/joo-scorpius.svg?maxAge=2592000)](http://mvnrepository.com/artifact/org.dungba/joo-scorpius)
+[![Maven Central](https://img.shields.io/maven-central/v/org.dungba/joo-scorpius.svg?maxAge=604800)](http://mvnrepository.com/artifact/org.dungba/joo-scorpius)
 [![Build Status](https://travis-ci.org/dungba88/scorpius.svg?branch=master)](https://travis-ci.org/dungba88/scorpius)
 [![Coverage Status](https://coveralls.io/repos/github/dungba88/scorpius/badge.svg?branch=master)](https://coveralls.io/github/dungba88/scorpius?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/26ea58b6bf0f47149f376feb311d679b)](https://www.codacy.com/app/dungba88/scorpius?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=dungba88/scorpius&amp;utm_campaign=Badge_Grade)
