@@ -19,7 +19,7 @@ import io.vertx.ext.web.RoutingContext;
 
 public class VertxMessageController implements Handler<RoutingContext> {
 
-    private final static ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     protected final TriggerManager triggerManager;
 
@@ -45,11 +45,9 @@ public class VertxMessageController implements Handler<RoutingContext> {
 
         request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
 
-        triggerManager.fire(msgName, request).done(triggerResponse -> {
-            onDone(triggerResponse, response, rc);
-        }).fail(exception -> {
-            onFail(exception, response, rc);
-        });
+        triggerManager.fire(msgName, request)
+                .done(triggerResponse -> onDone(triggerResponse, response, rc))
+                .fail(exception -> onFail(exception, response, rc));
     }
 
     protected Optional<String> getTraceId(final RoutingContext rc, final ApplicationContext applicationContext) {

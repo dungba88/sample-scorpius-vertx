@@ -22,7 +22,7 @@ public class ExecutorHandlingStrategy implements TriggerHandlingStrategy, AutoCl
 
     @Override
     public void handle(final TriggerExecutionContext context) {
-        executor.submit(() -> context.execute());
+        executor.submit(context::execute);
     }
 
     @Override

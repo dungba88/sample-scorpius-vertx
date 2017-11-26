@@ -17,7 +17,7 @@ import com.lmax.disruptor.dsl.ProducerType;
 
 public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
 
-    private final static int DEFAULT_BUFFER_SIZE = 1024;
+    private static final int DEFAULT_BUFFER_SIZE = 1024;
 
     private ExecutorService producerExecutor;
 

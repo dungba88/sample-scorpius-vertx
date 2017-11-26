@@ -22,12 +22,7 @@ public class GuiceApplicationModuleInjector implements ApplicationModuleInjector
     public GuiceApplicationModuleInjector(final boolean cache, final Module... modules) {
         this.cache = cache;
         this.injector = Guice.createInjector(modules);
-        this.instancesMap = new ThreadLocal<Map<Class<?>, Object>>() {
-            @Override
-            public Map<Class<?>, Object> initialValue() {
-                return new HashMap<>();
-            }
-        };
+        this.instancesMap = ThreadLocal.withInitial(HashMap::new);
     }
 
     @SuppressWarnings("unchecked")

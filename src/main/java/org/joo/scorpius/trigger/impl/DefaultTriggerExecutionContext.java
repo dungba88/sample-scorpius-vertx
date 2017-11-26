@@ -24,7 +24,7 @@ import lombok.Getter;
 @Getter
 public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
-    private final static Logger logger = LogManager.getLogger(DefaultTriggerExecutionContext.class);
+    private static final Logger logger = LogManager.getLogger(DefaultTriggerExecutionContext.class);
 
     private String id;
 

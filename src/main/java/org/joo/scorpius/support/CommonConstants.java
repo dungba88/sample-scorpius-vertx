@@ -6,5 +6,5 @@ public class CommonConstants {
         
     }
 
-    public final static String TRACE_ID_HEADER = "X-Scorpius-Trace-Id";
+    public static final String TRACE_ID_HEADER = "X-Scorpius-Trace-Id";
 }

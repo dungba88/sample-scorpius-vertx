@@ -10,7 +10,7 @@ public class AtomicIdGenerator implements IdGenerator {
     private AtomicReference<AtomicCounter> counter;
 
     public AtomicIdGenerator() {
-        counter = new AtomicReference<AtomicCounter>(new AtomicCounter(System.currentTimeMillis(), 0));
+        counter = new AtomicReference<>(new AtomicCounter(System.currentTimeMillis(), 0));
     }
 
     @Override

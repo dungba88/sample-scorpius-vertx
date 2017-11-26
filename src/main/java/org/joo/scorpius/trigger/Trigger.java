@@ -8,7 +8,7 @@ public interface Trigger<T extends BaseRequest, H extends BaseResponse> {
 
     public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException;
 
-    default public String getName() {
+    public default String getName() {
         return getClass().getName();
     }
 }

@@ -7,7 +7,7 @@ import com.lmax.disruptor.ExceptionHandler;
 
 public class DisruptorExceptionHandler implements ExceptionHandler<ExecutionContextEvent> {
 
-    private final static Logger logger = LogManager.getLogger(DisruptorExceptionHandler.class);
+    private static final Logger logger = LogManager.getLogger(DisruptorExceptionHandler.class);
 
     @Override
     public void handleEventException(final Throwable ex, final long sequence, final ExecutionContextEvent event) {

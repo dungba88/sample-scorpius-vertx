@@ -41,7 +41,7 @@ import lombok.Setter;
 
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
 
-    private final static Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
+    private static final Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
 
     private Map<String, List<TriggerConfig>> triggerConfigs;
 

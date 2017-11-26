@@ -44,7 +44,7 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
     public TriggerExecutionContext build() {
         Deferred<BaseResponse, TriggerExecutionException> deferred = null;
         if (doneCallback != null || failCallback != null) {
-            deferred = new SimpleDeferredObject<BaseResponse, TriggerExecutionException>(doneCallback, failCallback);
+            deferred = new SimpleDeferredObject<>(doneCallback, failCallback);
         } else {
             deferred = applicationContext.getInstance(DeferredFactory.class).create();
         }

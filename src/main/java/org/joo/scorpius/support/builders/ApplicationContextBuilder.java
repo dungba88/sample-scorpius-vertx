@@ -23,11 +23,11 @@ public class ApplicationContextBuilder implements Builder<ApplicationContext> {
     public ApplicationContextBuilder() {
         injector = new SimpleApplicationModuleInjector(map -> {
             map.put(IdGenerator.class, new VoidIdGenerator());
-            map.put(DeferredFactory.class, (DeferredFactory) (() -> new CompletableDeferredObject<>()));
+            map.put(DeferredFactory.class, (DeferredFactory) (CompletableDeferredObject::new));
             map.put(TriggerExecutionContextBuilderFactory.class,
-                    (TriggerExecutionContextBuilderFactory) (() -> new TriggerExecutionContextBuilder()));
+                    (TriggerExecutionContextBuilderFactory) (TriggerExecutionContextBuilder::new));
             map.put(TriggerHandlingStrategyFactory.class,
-                    (TriggerHandlingStrategyFactory) (() -> new DefaultHandlingStrategy()));
+                    (TriggerHandlingStrategyFactory) (DefaultHandlingStrategy::new));
         });
     }
 
