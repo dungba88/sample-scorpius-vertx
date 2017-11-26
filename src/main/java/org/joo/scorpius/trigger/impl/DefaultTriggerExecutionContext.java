@@ -77,7 +77,7 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
             config.getTrigger().execute(this);
         } catch (TriggerExecutionException e) {
             fail(e);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             fail(new TriggerExecutionException(e));
         }
     }

@@ -1,5 +1,6 @@
 package org.joo.scorpius.support.queue;
 
+import org.joo.scorpius.support.exception.QueueInitializationException;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
 public class SPSCRingBuffer implements HandlingQueue {
@@ -27,7 +28,7 @@ public class SPSCRingBuffer implements HandlingQueue {
             DATA_BASE_OFFSET = UnsafeUtils.arrayBaseOffset(TriggerExecutionContext[].class);
             INDEX_SCALE = UnsafeUtils.arrayIndexScale(TriggerExecutionContext[].class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new QueueInitializationException(e);
         }
     }
 

@@ -34,6 +34,8 @@ public class Application {
         bootstrap.run();
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
+            
+            @Override
             public void run() {
                 triggerManager.shutdown();
             }

@@ -55,7 +55,7 @@ public class VertxMessageController implements Handler<RoutingContext> {
     protected Optional<String> getTraceId(final RoutingContext rc, final ApplicationContext applicationContext) {
         String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
         if (traceId == null || traceId.isEmpty()) {
-            return triggerManager.getApplicationContext().getInstance(IdGenerator.class).create();
+            return applicationContext.getInstance(IdGenerator.class).create();
         }
         return Optional.of(traceId);
     }

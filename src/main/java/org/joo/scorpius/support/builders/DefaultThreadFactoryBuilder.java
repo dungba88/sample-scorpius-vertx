@@ -8,26 +8,22 @@ import lombok.experimental.Accessors;
 
 @Getter
 @Setter
-@Accessors(chain=true)
+@Accessors(chain = true)
 public class DefaultThreadFactoryBuilder implements Builder<ThreadFactory> {
-    
+
     private boolean daemon;
-    
+
     private int priority = Thread.NORM_PRIORITY;
-    
+
     @Override
     public ThreadFactory build() {
-        return new ThreadFactory() {
-            
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = new Thread(r);
-                if (t.isDaemon() != daemon)
-                    t.setDaemon(daemon);
-                if (t.getPriority() != priority)
-                    t.setPriority(priority);
-                return t;
-            }
+        return runnable -> {
+            Thread t = new Thread(runnable);
+            if (t.isDaemon() != daemon)
+                t.setDaemon(daemon);
+            if (t.getPriority() != priority)
+                t.setPriority(priority);
+            return t;
         };
     }
 }

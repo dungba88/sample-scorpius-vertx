@@ -2,6 +2,8 @@ package org.joo.scorpius.support.queue;
 
 import java.lang.reflect.Field;
 
+import org.joo.scorpius.support.exception.QueueInitializationException;
+
 import sun.misc.Unsafe;
 
 @SuppressWarnings("restriction")
@@ -15,8 +17,12 @@ public class UnsafeUtils {
             field.setAccessible(true);
             UNSAFE = (Unsafe) field.get(null);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new QueueInitializationException(e);
         }
+    }
+    
+    private UnsafeUtils() {
+        
     }
 
     public static void putObject(final Object o, final long offset, final Object value) {
