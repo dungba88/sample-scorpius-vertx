@@ -2,5 +2,5 @@ package org.joo.scorpius.trigger;
 
 public enum TriggerEvent {
 
-    EXCEPTION, START, FINISH, CUSTOM;
+    EXCEPTION, CREATED, START, FINISH, CUSTOM;
 }
