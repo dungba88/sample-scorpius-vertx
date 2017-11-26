@@ -12,20 +12,20 @@ public class SPSCRingBuffer implements HandlingQueue {
 
     private volatile int tail;
 
-    private static final long headOffset;
+    private static final long HEAD_OFFSET;
 
-    private static final long tailOffset;
+    private static final long TAIL_OFFSET;
 
-    private static final int dataBaseOffset;
+    private static final int DATA_BASE_OFFSET;
 
-    private static final int indexScale;
+    private static final int INDEX_SCALE;
 
     static {
         try {
-            headOffset = UnsafeUtils.objectFieldOffset(SPSCRingBuffer.class.getDeclaredField("head"));
-            tailOffset = UnsafeUtils.objectFieldOffset(SPSCRingBuffer.class.getDeclaredField("tail"));
-            dataBaseOffset = UnsafeUtils.arrayBaseOffset(TriggerExecutionContext[].class);
-            indexScale = UnsafeUtils.arrayIndexScale(TriggerExecutionContext[].class);
+            HEAD_OFFSET = UnsafeUtils.objectFieldOffset(SPSCRingBuffer.class.getDeclaredField("head"));
+            TAIL_OFFSET = UnsafeUtils.objectFieldOffset(SPSCRingBuffer.class.getDeclaredField("tail"));
+            DATA_BASE_OFFSET = UnsafeUtils.arrayBaseOffset(TriggerExecutionContext[].class);
+            INDEX_SCALE = UnsafeUtils.arrayIndexScale(TriggerExecutionContext[].class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,11 +46,11 @@ public class SPSCRingBuffer implements HandlingQueue {
 
     @Override
     public boolean enqueue(final TriggerExecutionContext context) {
-        int nextTail = (tail + indexScale) & mask;
+        int nextTail = (tail + INDEX_SCALE) & mask;
         if (nextTail == head)
             return false;
-        UnsafeUtils.putObject(data, dataBaseOffset + tail, context);
-        UnsafeUtils.putOrderedInt(this, tailOffset, nextTail);
+        UnsafeUtils.putObject(data, DATA_BASE_OFFSET + tail, context);
+        UnsafeUtils.putOrderedInt(this, TAIL_OFFSET, nextTail);
         return true;
     }
 
@@ -58,8 +58,8 @@ public class SPSCRingBuffer implements HandlingQueue {
     public TriggerExecutionContext dequeue() {
         if (isEmpty())
             return null;
-        TriggerExecutionContext result = (TriggerExecutionContext) UnsafeUtils.getObject(data, dataBaseOffset + head);
-        UnsafeUtils.putOrderedInt(this, headOffset, (head + indexScale) & mask);
+        TriggerExecutionContext result = (TriggerExecutionContext) UnsafeUtils.getObject(data, DATA_BASE_OFFSET + head);
+        UnsafeUtils.putOrderedInt(this, HEAD_OFFSET, (head + INDEX_SCALE) & mask);
         return result;
     }
 

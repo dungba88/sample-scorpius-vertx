@@ -7,7 +7,7 @@ public class BaseRequest implements Traceable, Serializable {
 
     private static final long serialVersionUID = 2115391882186882706L;
 
-    private Optional<String> traceId;
+    private transient Optional<String> traceId;
 
     public BaseRequest() {
 
