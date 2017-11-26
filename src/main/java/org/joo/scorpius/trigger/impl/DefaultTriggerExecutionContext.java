@@ -57,6 +57,8 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
     @Override
     public void pending() {
+        if (triggerManager.isEventEnabled(TriggerEvent.CREATED))
+            triggerManager.notifyEvent(TriggerEvent.CREATED, new ExecutionContextStartMessage(id, eventName, request));
         status = TriggerExecutionStatus.PENDING;
     }
 
