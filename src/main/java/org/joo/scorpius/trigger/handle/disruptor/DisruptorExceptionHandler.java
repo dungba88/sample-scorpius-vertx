@@ -5,15 +5,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.lmax.disruptor.ExceptionHandler;
 
-public class DisruptorExceptionHandler implements ExceptionHandler {
+public class DisruptorExceptionHandler implements ExceptionHandler<ExecutionContextEvent> {
 
     private final static Logger logger = LogManager.getLogger(DisruptorExceptionHandler.class);
 
     @Override
-    public void handleEventException(final Throwable ex, final long sequence, final Object event) {
-        if (event == null || !(event instanceof ExecutionContextEvent))
-            return;
-
+    public void handleEventException(final Throwable ex, final long sequence, final ExecutionContextEvent event) {
         logger.error("Exception on disruptor worker pool", ex);
     }
 

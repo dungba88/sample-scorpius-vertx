@@ -1,7 +1,6 @@
 package org.joo.scorpius.test.perf;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,8 +16,7 @@ public class DisruptorNonDeferredTriggerHandlingTest extends AbstractTriggerTest
     private AtomicInteger processed = new AtomicInteger(0);
 
     public DisruptorNonDeferredTriggerHandlingTest(long iterations) {
-        super(iterations, new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3), ProducerType.SINGLE,
-                new YieldingWaitStrategy()));
+        super(iterations, new DisruptorHandlingStrategy(1024, ProducerType.SINGLE, new YieldingWaitStrategy()));
     }
 
     @Override

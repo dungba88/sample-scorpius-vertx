@@ -1,7 +1,5 @@
 package org.joo.scorpius.test.vertx;
 
-import java.util.concurrent.Executors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
@@ -34,8 +32,8 @@ public class SampleVertxBootstrap extends VertxBootstrap {
     }
 
     private void configureTriggers() {
-        triggerManager.setHandlingStrategy(new DisruptorHandlingStrategy(1024, Executors.newFixedThreadPool(3),
-                ProducerType.MULTI, new YieldingWaitStrategy()));
+        triggerManager.setHandlingStrategy(
+                new DisruptorHandlingStrategy(1024, ProducerType.MULTI, new YieldingWaitStrategy()));
 
         triggerManager.addEventHandler(TriggerEvent.EXCEPTION, (event, msg) -> {
             ExecutionContextExceptionMessage exceptionMsg = (ExecutionContextExceptionMessage) msg;
