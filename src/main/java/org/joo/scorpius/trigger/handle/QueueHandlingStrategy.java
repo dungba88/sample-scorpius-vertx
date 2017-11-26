@@ -36,6 +36,7 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
             try {
                 thread.join();
             } catch (InterruptedException e) {
+                thread.interrupt();
             }
         }
     }
