@@ -14,7 +14,6 @@ import org.joo.scorpius.trigger.handle.disruptor.DisruptorHandlingStrategy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lmax.disruptor.YieldingWaitStrategy;
-import com.lmax.disruptor.dsl.ProducerType;
 
 import io.vertx.core.VertxOptions;
 
@@ -32,8 +31,7 @@ public class SampleVertxBootstrap extends VertxBootstrap {
     }
 
     private void configureTriggers() {
-        triggerManager.setHandlingStrategy(
-                new DisruptorHandlingStrategy(1024, ProducerType.MULTI, new YieldingWaitStrategy()));
+        triggerManager.setHandlingStrategy(new DisruptorHandlingStrategy(1024, new YieldingWaitStrategy()));
 
         triggerManager.addEventHandler(TriggerEvent.EXCEPTION, (event, msg) -> {
             ExecutionContextExceptionMessage exceptionMsg = (ExecutionContextExceptionMessage) msg;
