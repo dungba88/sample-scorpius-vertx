@@ -179,3 +179,7 @@ Almost everything in Scorpius is extensible, or configurable. The most prominien
 Well, it depends on the situation. With the default one, the caller will be blocked until the trigger fulfills its job or fails with an exception. So this strategy will be faster and more favorable if all of your triggers doesn't block (i.e they are asynchronous) and their executions is very fast.
 
 If you want your trigger to prematurely return result to caller, and continue doing it job independently, then `DisruptorHandlingStrategy` is more favorable. You will have more throughputs at the cost of slightly increased latency.
+
+## note on DisruptorHandlingStrategy
+
+Because the ring buffer used by disruptor has a maximum size, in some cases where you raise the event inside the trigger itself will cause deadlock if the ring buffer is full (the trigger cannot raise new event, and therefore cannot finish and release the ring buffer sequence). As of `1.3.0`, this issue has been fixed by using a separate thread to raise the event. By default it will use separate thread if the event is raised *inside* the consumer (trigger) thread. This is achieved by check the thread name.
