@@ -103,12 +103,11 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
             return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
         }
 
-        TriggerExecutionContext dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext,
-                name);
+        TriggerExecutionContext dummyContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
 
         TriggerConfig config;
         try {
-            config = findMatchingTrigger(configs, dummyExecutionContext);
+            config = findMatchingTrigger(configs, dummyContext);
         } catch (PredicateExecutionException e) {
             TriggerExecutionException ex = new TriggerExecutionException("Condition evaluation failed", e);
             if (failCallback != null)
