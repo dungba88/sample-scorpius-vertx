@@ -12,6 +12,7 @@ import org.joo.scorpius.support.builders.contracts.IdGenerator;
 import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
 import org.joo.scorpius.support.builders.id.AtomicIdGenerator;
 import org.joo.scorpius.support.builders.id.TimeBasedIdGenerator;
+import org.joo.scorpius.support.builders.id.UUIDGenerator;
 import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.test.support.BrokenTrigger;
 import org.joo.scorpius.test.support.SampleRequest;
@@ -139,6 +140,11 @@ public class TestTriggerManager {
     @Test
     public void testTimeBasedId() {
         testIdGenerator(new TimeBasedIdGenerator());
+    }
+    
+    @Test
+    public void testUUID() {
+        testIdGenerator(new UUIDGenerator());
     }
 
     private void testIdGenerator(IdGenerator generator) {
