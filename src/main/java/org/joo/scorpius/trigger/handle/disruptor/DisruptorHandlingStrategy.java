@@ -26,6 +26,8 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 
     private TriggerThreadFactory threadFactory;
 
+    private boolean useSeparateProducerThread;
+
     private ProducerType producerType;
 
     public DisruptorHandlingStrategy() {
@@ -42,14 +44,21 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 
     public DisruptorHandlingStrategy(final int bufferSize, final WaitStrategy waitStrategy,
             final ProducerType producerType) {
-        this(bufferSize, waitStrategy, producerType, new DefaultThreadFactoryBuilder().build());
+        this(bufferSize, waitStrategy, producerType, true);
+    }
+
+    public DisruptorHandlingStrategy(final int bufferSize, final WaitStrategy waitStrategy,
+            final ProducerType producerType, final boolean useSeparateProducerThread) {
+        this(bufferSize, waitStrategy, producerType, true, new DefaultThreadFactoryBuilder().build());
     }
 
     @SuppressWarnings("unchecked")
     public DisruptorHandlingStrategy(final int bufferSize, final WaitStrategy waitStrategy,
-            final ProducerType producerType, final TriggerThreadFactory threadFactory) {
+            final ProducerType producerType, boolean useSeparateProducerThread,
+            final TriggerThreadFactory threadFactory) {
         this.producerExecutor = Executors.newSingleThreadExecutor();
         this.producerType = producerType;
+        this.useSeparateProducerThread = useSeparateProducerThread;
         this.threadFactory = threadFactory;
         this.disruptor = new Disruptor<>(new ExecutionContextEventFactory(), bufferSize, threadFactory, producerType,
                 waitStrategy);
@@ -60,9 +69,13 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
 
     @Override
     public void handle(final TriggerExecutionContext context) {
-        boolean useAsync = producerType == ProducerType.MULTI && threadFactory.isConsumerThread(Thread.currentThread());
-        Consumer<TriggerExecutionContext> handler = useAsync ? this::asyncPublishEvent : this::syncPublishEvent;
+        Consumer<TriggerExecutionContext> handler = shouldUseAsync() ? this::asyncPublishEvent : this::syncPublishEvent;
         handler.accept(context);
+    }
+
+    private boolean shouldUseAsync() {
+        return useSeparateProducerThread
+                && (producerType == ProducerType.SINGLE || threadFactory.isConsumerThread(Thread.currentThread()));
     }
 
     protected void asyncPublishEvent(final TriggerExecutionContext context) {

@@ -16,7 +16,7 @@ public class DisruptorTriggerHandlingTest extends AbstractTriggerTest {
     private AtomicInteger processed = new AtomicInteger(0);
 
     public DisruptorTriggerHandlingTest(long iterations) {
-        super(iterations, new DisruptorHandlingStrategy(1024, new YieldingWaitStrategy(), ProducerType.SINGLE));
+        super(iterations, new DisruptorHandlingStrategy(1024, new YieldingWaitStrategy(), ProducerType.SINGLE, false));
     }
 
     @Override
