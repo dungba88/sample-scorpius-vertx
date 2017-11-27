@@ -9,8 +9,6 @@ import org.joo.promise4j.impl.SimpleDeferredObject;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
-import org.joo.scorpius.support.builders.contracts.DeferredFactory;
-import org.joo.scorpius.support.builders.contracts.IdGenerator;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
@@ -46,9 +44,9 @@ public class TriggerExecutionContextBuilder implements Builder<TriggerExecutionC
         if (doneCallback != null || failCallback != null) {
             deferred = new SimpleDeferredObject<>(doneCallback, failCallback);
         } else {
-            deferred = applicationContext.getInstance(DeferredFactory.class).create();
+            deferred = applicationContext.getDeferredFactory().create();
         }
-        Optional<String> id = applicationContext.getInstance(IdGenerator.class).create();
+        Optional<String> id = applicationContext.getIdGenerator().create();
         return new DefaultTriggerExecutionContext(manager, config, request, applicationContext, deferred,
                 id.orElse(null), eventName);
     }
