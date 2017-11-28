@@ -30,7 +30,7 @@ public class ApplicationContext implements ApplicationModuleInjector {
         refreshCachedProperties();
     }
 
-    private void refreshCachedProperties() {
+    protected void refreshCachedProperties() {
         this.idGenerator = injector.getInstance(IdGenerator.class);
         this.deferredFactory = injector.getInstance(DeferredFactory.class);
     }
