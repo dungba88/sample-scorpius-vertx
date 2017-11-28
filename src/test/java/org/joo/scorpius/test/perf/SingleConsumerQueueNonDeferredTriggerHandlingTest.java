@@ -14,7 +14,7 @@ public class SingleConsumerQueueNonDeferredTriggerHandlingTest extends AbstractT
     private AtomicInteger processed = new AtomicInteger(0);
 
     public SingleConsumerQueueNonDeferredTriggerHandlingTest(long iterations) {
-        super(iterations, new QueueHandlingStrategy(new SPSCRingBuffer(1024 * 1024 * 16), 1));
+        super(iterations, new QueueHandlingStrategy(new SPSCRingBuffer(1024 * 16), 1));
     }
 
     @Override
