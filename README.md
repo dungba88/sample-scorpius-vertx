@@ -7,6 +7,18 @@
 
 Scorpius is an asynchronous framework for defining and executing trigger in Java. Trigger is a type of event-driven programming, which you define an independent handler and register it with an event. When that event is fired, the associated trigger will be executed. A trigger can have an optional condition, to specify whether the trigger should be executed for a specific event payload.
 
+## table of contents
+
+- [trigger in scorpius](#trigger-in-scorpius)
+- [benefit of triggers](#benefit-of-triggers)
+- [install](#install)
+- [how to use](#how-to-use)
+- [advanced topics](#advanced-topics)
+	- [trigger execution flow](#trigger-execution-flow)
+	- [extend](#extend)
+	- [note on DisruptorHandlingStrategy](#note-on-disruptorhandlingstrategy)
+- [license](#license)
+
 ## trigger in scorpius
 
 A trigger in Scorpius is a Java class which implements `Trigger` interface and has one single method:
@@ -151,7 +163,9 @@ promise.done(response -> // handle the response)
        .fail(ex -> // handle the failure);
 ```
 
-## trigger execution flow
+## advanced topics
+
+### trigger execution flow
 
 Put it altogether, the flow when you raising an event is as below:
 
@@ -163,7 +177,7 @@ Put it altogether, the flow when you raising an event is as below:
 
 The `TriggerHandlingStrategy` is a concept to decouple the `TriggerManager` and the execution of the triggers, more will be covered on section [#extend](#extend)
 
-## extend
+### extend
 
 Almost everything in Scorpius is extensible, or configurable. The most prominient one is the `TriggerHandlingStrategy`.
 
@@ -180,6 +194,10 @@ Well, it depends on the situation. With the default one, the caller will be bloc
 
 If you want your trigger to prematurely return result to caller, and continue doing it job independently, then `DisruptorHandlingStrategy` is more favorable. You will have more throughputs at the cost of slightly increased latency.
 
-## note on DisruptorHandlingStrategy
+### note on DisruptorHandlingStrategy
 
 Because the ring buffer used by disruptor has a maximum size, in some cases where you raise the event inside the trigger itself will cause deadlock if the ring buffer is full (the trigger cannot raise new event, and therefore cannot finish and release the ring buffer sequence). As of `1.3.0`, this issue has been fixed by using a separate thread to raise the event. By default it will use separate thread if the event is raised *inside* the consumer (trigger) thread. This is achieved by check the thread name. You can bypass this behavior by passing the useSeparateProducerThread in constructor parameter.
+
+## license
+
+This library is distributed under MIT license, see [LICENSE](LICENSE)
