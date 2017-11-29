@@ -17,6 +17,7 @@ import org.joo.libra.support.PredicateExecutionException;
 import org.joo.promise4j.DoneCallback;
 import org.joo.promise4j.FailCallback;
 import org.joo.promise4j.Promise;
+import org.joo.promise4j.impl.FailSafePromise;
 import org.joo.promise4j.impl.SimpleDonePromise;
 import org.joo.promise4j.impl.SimpleFailurePromise;
 import org.joo.scorpius.ApplicationContext;
@@ -38,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.jodah.failsafe.SyncFailsafe;
 
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
 
@@ -125,6 +127,14 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
         handlingStrategy.handle(executionContext);
         return executionContext.promise();
+    }
+
+    @Override
+    public Promise<BaseResponse, TriggerExecutionException> fireAndRetry(String name, BaseRequest data,
+            SyncFailsafe<Object> failSafe) {
+        return FailSafePromise.fromPromise(() -> {
+            return fire(name, data);
+        }, failSafe.with(scheduledExecutors));
     }
 
     private TriggerConfig findMatchingTrigger(final List<TriggerConfig> configs,

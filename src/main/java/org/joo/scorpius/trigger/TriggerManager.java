@@ -11,6 +11,8 @@ import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.PeriodicTaskMessage;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
+import net.jodah.failsafe.SyncFailsafe;
+
 public interface TriggerManager extends TriggerEventDispatcher {
 
     public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException;
@@ -19,6 +21,9 @@ public interface TriggerManager extends TriggerEventDispatcher {
 
     public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
             DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback);
+
+    public Promise<BaseResponse, TriggerExecutionException> fireAndRetry(String name, BaseRequest data,
+            SyncFailsafe<Object> failSafe);
 
     public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg);
 
