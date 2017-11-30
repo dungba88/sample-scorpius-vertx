@@ -5,14 +5,13 @@ import java.util.function.Supplier;
 
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
+import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 import org.joo.scorpius.trigger.impl.SqlTriggerCondition;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.jodah.failsafe.SyncFailsafe;
 
 @Getter
-@Setter
 public class TriggerConfig implements TriggerRegistration {
 
     private Trigger<? extends BaseRequest, ? extends BaseResponse> trigger;
@@ -22,6 +21,8 @@ public class TriggerConfig implements TriggerRegistration {
     private TriggerCondition condition;
 
     private SyncFailsafe<Object> failSafe;
+
+    private TriggerHandlingStrategy strategy;
 
     public TriggerConfig() {
 
@@ -67,8 +68,14 @@ public class TriggerConfig implements TriggerRegistration {
     }
 
     @Override
-    public TriggerRegistration withFailSafe(SyncFailsafe<Object> failSafe) {
+    public TriggerRegistration withFailSafe(final SyncFailsafe<Object> failSafe) {
         this.failSafe = failSafe;
+        return this;
+    }
+
+    @Override
+    public TriggerRegistration withHandlingStrategy(final TriggerHandlingStrategy strategy) {
+        this.strategy = strategy;
         return this;
     }
 }

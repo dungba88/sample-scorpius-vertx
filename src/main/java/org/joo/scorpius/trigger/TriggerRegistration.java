@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
+import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import net.jodah.failsafe.SyncFailsafe;
 
@@ -22,4 +23,6 @@ public interface TriggerRegistration {
             Class<? extends Trigger<T, H>> clazz) throws InstantiationException, IllegalAccessException;
 
     public TriggerRegistration withFailSafe(SyncFailsafe<Object> failSafe);
+    
+    public TriggerRegistration withHandlingStrategy(TriggerHandlingStrategy strategy);
 }

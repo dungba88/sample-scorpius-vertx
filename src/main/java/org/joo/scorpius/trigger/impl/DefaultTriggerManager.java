@@ -70,14 +70,14 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
         if (name == null)
             throw new MalformedRequestException("Event name is null");
-        
+
         if (!triggerConfigs.containsKey(name))
             return null;
 
         List<TriggerConfig> configs = triggerConfigs.get(name);
         if (configs.isEmpty())
             return null;
-        
+
         ObjectMapper mapper = new ObjectMapper();
         try {
             return (BaseRequest) mapper.readValue(data, configs.get(0).getRequestClass());
@@ -102,7 +102,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
             SyncFailsafe<Object> failSafe) {
         return fireWithFailSafe(name, data, null, null, failSafe);
     }
-    
+
     private Promise<BaseResponse, TriggerExecutionException> fireWithFailSafe(final String name, final BaseRequest data,
             final DoneCallback<BaseResponse> doneCallback, final FailCallback<TriggerExecutionException> failCallback,
             SyncFailsafe<Object> failSafe) {
@@ -143,7 +143,10 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         TriggerExecutionContext executionContext = buildExecutionContext(name, data, config, doneCallback,
                 failCallback);
         executionContext.pending();
-        handlingStrategy.handle(executionContext);
+        TriggerHandlingStrategy effectiveStrategy = config.getStrategy();
+        if (effectiveStrategy == null)
+            effectiveStrategy = handlingStrategy;
+        effectiveStrategy.handle(executionContext);
         return executionContext.promise();
     }
 
