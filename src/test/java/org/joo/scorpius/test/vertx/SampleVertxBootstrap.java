@@ -3,10 +3,7 @@ package org.joo.scorpius.test.vertx;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
-import org.joo.scorpius.support.message.PeriodicTaskMessage;
 import org.joo.scorpius.support.vertx.VertxBootstrap;
-import org.joo.scorpius.test.support.PeriodicTrigger;
-import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.trigger.TriggerEvent;
 import org.joo.scorpius.trigger.handle.disruptor.DisruptorHandlingStrategy;
@@ -42,7 +39,7 @@ public class SampleVertxBootstrap extends VertxBootstrap {
         });
 
         triggerManager.registerTrigger("greet_java").withAction(SampleTrigger::new);
-        triggerManager.registerPeriodicEvent(new PeriodicTaskMessage(1000, 1000, new SampleRequest()))
-                .withAction(PeriodicTrigger::new);
+//        triggerManager.registerPeriodicEvent(new PeriodicTaskMessage(1000, 1000, new SampleRequest()))
+//                .withAction(PeriodicTrigger::new);
     }
 }
