@@ -9,6 +9,7 @@ import org.joo.scorpius.trigger.impl.SqlTriggerCondition;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.jodah.failsafe.SyncFailsafe;
 
 @Getter
 @Setter
@@ -19,6 +20,8 @@ public class TriggerConfig implements TriggerRegistration {
     private Class<?> requestClass;
 
     private TriggerCondition condition;
+
+    private SyncFailsafe<Object> failSafe;
 
     public TriggerConfig() {
 
@@ -61,5 +64,11 @@ public class TriggerConfig implements TriggerRegistration {
     public <T extends BaseRequest, H extends BaseResponse> TriggerRegistration withAction(
             final Class<? extends Trigger<T, H>> clazz) throws InstantiationException, IllegalAccessException {
         return withAction(clazz.newInstance());
+    }
+
+    @Override
+    public TriggerRegistration withFailSafe(SyncFailsafe<Object> failSafe) {
+        this.failSafe = failSafe;
+        return this;
     }
 }

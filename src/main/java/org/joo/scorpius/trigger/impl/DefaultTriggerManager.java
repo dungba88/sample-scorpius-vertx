@@ -53,7 +53,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
     private ScheduledExecutorService scheduledExecutors;
 
-    private List<ScheduledFuture<?>> scheduledFutures;
+    private @Getter List<ScheduledFuture<?>> scheduledFutures;
 
     public DefaultTriggerManager(final ApplicationContext applicationContext) {
         this.triggerConfigs = new HashMap<>();
@@ -91,6 +91,18 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     @Override
     public Promise<BaseResponse, TriggerExecutionException> fire(final String name, final BaseRequest data,
             final DoneCallback<BaseResponse> doneCallback, final FailCallback<TriggerExecutionException> failCallback) {
+        return fireWithFailSafe(name, data, doneCallback, failCallback, null);
+    }
+
+    @Override
+    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
+            SyncFailsafe<Object> failSafe) {
+        return fireWithFailSafe(name, data, null, null, failSafe);
+    }
+    
+    private Promise<BaseResponse, TriggerExecutionException> fireWithFailSafe(final String name, final BaseRequest data,
+            final DoneCallback<BaseResponse> doneCallback, final FailCallback<TriggerExecutionException> failCallback,
+            SyncFailsafe<Object> failSafe) {
         if (!triggerConfigs.containsKey(name))
             return resolveDefault(doneCallback);
 
@@ -100,9 +112,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
         if (data != null && !data.verifyTraceId()) {
             TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
-            if (failCallback != null)
-                failCallback.onFail(ex);
-            return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
+            return rejectDefault(failCallback, ex);
         }
 
         TriggerExecutionContext dummyContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
@@ -112,29 +122,28 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
             config = findMatchingTrigger(configs, dummyContext);
         } catch (PredicateExecutionException e) {
             TriggerExecutionException ex = new TriggerExecutionException("Condition evaluation failed", e);
-            if (failCallback != null)
-                failCallback.onFail(ex);
-            return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
+            return rejectDefault(failCallback, ex);
         }
 
         if (config == null)
             return resolveDefault(doneCallback);
 
-        TriggerExecutionContext executionContext = buildExecutionContext(name, data, config, doneCallback,
-                failCallback);
-
-        executionContext.pending();
-
-        handlingStrategy.handle(executionContext);
-        return executionContext.promise();
+        failSafe = (failSafe != null) ? failSafe : config.getFailSafe();
+        if (failSafe == null)
+            return handleTrigger(name, data, doneCallback, failCallback, config);
+        return FailSafePromise.fromPromise(() -> {
+            return handleTrigger(name, data, doneCallback, failCallback, config);
+        }, failSafe.with(scheduledExecutors));
     }
 
-    @Override
-    public Promise<BaseResponse, TriggerExecutionException> fireAndRetry(String name, BaseRequest data,
-            SyncFailsafe<Object> failSafe) {
-        return FailSafePromise.fromPromise(() -> {
-            return fire(name, data);
-        }, failSafe.with(scheduledExecutors));
+    private Promise<BaseResponse, TriggerExecutionException> handleTrigger(final String name, final BaseRequest data,
+            final DoneCallback<BaseResponse> doneCallback, final FailCallback<TriggerExecutionException> failCallback,
+            final TriggerConfig config) {
+        TriggerExecutionContext executionContext = buildExecutionContext(name, data, config, doneCallback,
+                failCallback);
+        executionContext.pending();
+        handlingStrategy.handle(executionContext);
+        return executionContext.promise();
     }
 
     private TriggerConfig findMatchingTrigger(final List<TriggerConfig> configs,
@@ -151,6 +160,13 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         if (doneCallback != null)
             doneCallback.onDone(null);
         return new SimpleDonePromise<BaseResponse, TriggerExecutionException>(null);
+    }
+
+    private Promise<BaseResponse, TriggerExecutionException> rejectDefault(
+            final FailCallback<TriggerExecutionException> failCallback, final TriggerExecutionException ex) {
+        if (failCallback != null)
+            failCallback.onFail(ex);
+        return new SimpleFailurePromise<BaseResponse, TriggerExecutionException>(ex);
     }
 
     private TriggerExecutionContext buildExecutionContext(final String name, final BaseRequest request,
@@ -205,9 +221,5 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         } catch (Exception e) {
             logger.warn("Exception occurred when closing handling strategy", e);
         }
-    }
-
-    public List<ScheduledFuture<?>> getScheduledFutures() {
-        return scheduledFutures;
     }
 }

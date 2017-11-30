@@ -22,7 +22,7 @@ public interface TriggerManager extends TriggerEventDispatcher {
     public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
             DoneCallback<BaseResponse> doneCallback, FailCallback<TriggerExecutionException> failCallback);
 
-    public Promise<BaseResponse, TriggerExecutionException> fireAndRetry(String name, BaseRequest data,
+    public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
             SyncFailsafe<Object> failSafe);
 
     public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg);

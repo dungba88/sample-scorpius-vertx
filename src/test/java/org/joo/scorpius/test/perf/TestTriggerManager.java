@@ -46,7 +46,11 @@ public class TestTriggerManager {
                 .withCondition(execContext -> execContext.getRequest() != null);
         this.manager.registerTrigger("greet_java", new TriggerConfig(new BrokenTrigger()))
                 .withCondition(execContext -> execContext.getRequest() == null);
-        this.manager.registerTrigger("retryable").withAction(retryTrigger);
+        this.manager.registerTrigger("retryable_consumer").withAction(retryTrigger);
+        RetryPolicy retryPolicy = new RetryPolicy().retryOn(TriggerExecutionException.class)
+                .withDelay(100, TimeUnit.MILLISECONDS).withMaxRetries(3);
+        this.manager.registerTrigger("retryable_registration").withAction(retryTrigger)
+                .withFailSafe(Failsafe.with(retryPolicy));
         try {
             this.manager.registerTrigger("greet_java_2").withCondition("request is not null")
                     .withAction(SampleTrigger.class);
@@ -174,11 +178,49 @@ public class TestTriggerManager {
     }
 
     @Test
-    public void testRetry() {
+    public void testRetryFromConsumer() {
+        Assert.assertEquals(0, retryTrigger.getRetries());
+
         CountDownLatch latch = new CountDownLatch(1);
         RetryPolicy retryPolicy = new RetryPolicy().retryOn(TriggerExecutionException.class)
-                .withDelay(100, TimeUnit.MILLISECONDS).withMaxRetries(3);
-        manager.fireAndRetry("retryable", new SampleRequest(), Failsafe.with(retryPolicy)).fail(ex -> {
+                .withDelay(100, TimeUnit.MILLISECONDS).withMaxRetries(6);
+        manager.fire("retryable_consumer", new SampleRequest(), Failsafe.with(retryPolicy)).fail(ex -> {
+            latch.countDown();
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        Assert.assertEquals(7, retryTrigger.getRetries());
+    }
+
+    @Test
+    public void testRetryFromOverridenRegistration() {
+        Assert.assertEquals(0, retryTrigger.getRetries());
+
+        CountDownLatch latch = new CountDownLatch(1);
+        RetryPolicy retryPolicy = new RetryPolicy().retryOn(TriggerExecutionException.class)
+                .withDelay(100, TimeUnit.MILLISECONDS).withMaxRetries(6);
+        manager.fire("retryable_registration", new SampleRequest(), Failsafe.with(retryPolicy)).fail(ex -> {
+            latch.countDown();
+        });
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        Assert.assertEquals(7, retryTrigger.getRetries());
+    }
+
+    @Test
+    public void testRetryFromRegistration() {
+        Assert.assertEquals(0, retryTrigger.getRetries());
+
+        CountDownLatch latch = new CountDownLatch(1);
+        manager.fire("retryable_registration", new SampleRequest()).fail(ex -> {
             latch.countDown();
         });
         try {
