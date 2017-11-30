@@ -43,10 +43,10 @@ public class VertxMessageController implements Handler<RoutingContext> {
             return;
         }
 
-        request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
+        if (request != null)
+            request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
 
-        triggerManager.fire(msgName, request)
-                .done(triggerResponse -> onDone(triggerResponse, response, rc))
+        triggerManager.fire(msgName, request).done(triggerResponse -> onDone(triggerResponse, response, rc))
                 .fail(exception -> onFail(exception, response, rc));
     }
 

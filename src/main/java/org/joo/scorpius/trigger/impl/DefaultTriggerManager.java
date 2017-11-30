@@ -65,16 +65,19 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
     @Override
     public BaseRequest decodeRequestForEvent(final String name, final String data) throws MalformedRequestException {
+        if (data == null || data.isEmpty())
+            return null;
+
         if (name == null)
             throw new MalformedRequestException("Event name is null");
-
+        
         if (!triggerConfigs.containsKey(name))
             return null;
 
         List<TriggerConfig> configs = triggerConfigs.get(name);
         if (configs.isEmpty())
             return null;
-
+        
         ObjectMapper mapper = new ObjectMapper();
         try {
             return (BaseRequest) mapper.readValue(data, configs.get(0).getRequestClass());
