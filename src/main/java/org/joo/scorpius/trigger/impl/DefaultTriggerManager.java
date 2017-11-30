@@ -107,8 +107,6 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
             return resolveDefault(doneCallback);
 
         List<TriggerConfig> configs = triggerConfigs.get(name);
-        if (configs.isEmpty())
-            return resolveDefault(doneCallback);
 
         if (data != null && !data.verifyTraceId()) {
             TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
