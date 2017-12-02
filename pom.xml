@@ -13,6 +13,7 @@
 	
 	<modules>
 		<module>scorpius-core</module>
+		<module>scorpius-vertx</module>
 	</modules>
 
 	<licenses>
