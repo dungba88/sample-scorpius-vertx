@@ -2,18 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.dungba</groupId>
-	<artifactId>joo-scorpius</artifactId>
-	<version>1.3.0</version>
-	<packaging>pom</packaging>
+	<parent>
+		<groupId>org.dungba</groupId>
+		<artifactId>joo-scorpius</artifactId>
+		<version>1.3.0</version>
+	</parent>
 
-	<name>Scorpius</name>
+	<artifactId>joo-scorpius-core</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Scorpius Core</name>
 	<description>Trigger framework for Java</description>
 	<url>https://github.com/dungba88/scorpius</url>
-	
-	<modules>
-		<module>scorpius-core</module>
-	</modules>
 
 	<licenses>
 		<license>
@@ -27,6 +27,62 @@
 		<url>https://github.com/dungba88/scorpius.git</url>
 		<developerConnection>scm:git:[fetch=]https://github.com/dungba88/scorpius.git</developerConnection>
 	</scm>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-web</artifactId>
+			<version>3.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<version>3.3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dungba</groupId>
+			<artifactId>joo-libra</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dungba</groupId>
+			<artifactId>joo-promise4j</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.uuid</groupId>
+			<artifactId>java-uuid-generator</artifactId>
+			<version>3.1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.18</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpasyncclient</artifactId>
+			<version>4.1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
