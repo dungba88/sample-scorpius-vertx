@@ -36,7 +36,7 @@ Before a trigger can be used, it needs to be registered with `TriggerManager`, a
 Because triggers are event-driven, so you will have a loosely coupled code, where each trigger can be developed, registered and executed independently without affect other components. Besides, there are couple of benefits:
 
 - Integrating is easy, just raise the event with correct payload.
-- Testing is easy, just construct a payload and use it to raise the event.
+- Testing is easy, just construct a payload and use it to raise the event and check the response.
 - Logging is easy, just log the payload, result and any possible exception occurred while executing the trigger.
 
 If you have played with *Amazon Lambda*, then this will be more or less the same.
