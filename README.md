@@ -47,7 +47,7 @@ Scorpius can be installed easily with Maven:
 
 *Prior to 2.0.0*
 
-```
+```xml
 <dependency>
     <groupId>org.dungba</groupId>
     <artifactId>joo-scorpius</artifactId>
@@ -59,7 +59,7 @@ Scorpius can be installed easily with Maven:
 
 Since `2.0.0`, Scorpius will be divided into multiple subprojects. You can import all dependencies like this:
 
-```
+```xml
 <dependency>
     <groupId>org.dungba</groupId>
     <artifactId>joo-scorpius-bom</artifactId>
