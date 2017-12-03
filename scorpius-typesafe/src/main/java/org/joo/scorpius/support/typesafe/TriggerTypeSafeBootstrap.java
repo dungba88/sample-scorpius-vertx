@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
-import org.joo.scorpius.support.typesafe.exception.TriggerInitializationException;
+import org.joo.scorpius.support.exception.BootstrapInitializationException;
 import org.joo.scorpius.trigger.Trigger;
 import org.joo.scorpius.trigger.TriggerConfig;
 
@@ -48,7 +48,7 @@ public class TriggerTypeSafeBootstrap extends AbstractBootstrap {
         try {
             config = parseTriggerConfig(condition, action);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new TriggerInitializationException(e);
+            throw new BootstrapInitializationException(e);
         }
 
         return new TriggerConfigWrapper(cfg.getString("event"), config);
