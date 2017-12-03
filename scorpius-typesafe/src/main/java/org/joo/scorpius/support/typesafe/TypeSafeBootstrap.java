@@ -1,4 +1,4 @@
-package org.joo.scorpius.support.config;
+package org.joo.scorpius.support.typesafe;
 
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 
