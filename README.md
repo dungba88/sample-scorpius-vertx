@@ -45,11 +45,26 @@ If you have played with *Amazon Lambda*, then this will be more or less the same
 
 Scorpius can be installed easily with Maven:
 
+*Prior to 2.0.0*
+
 ```
 <dependency>
     <groupId>org.dungba</groupId>
-    <artifactId>joo-libra</artifactId>
-    <version>1.2.2</version>
+    <artifactId>joo-scorpius</artifactId>
+    <version>1.2.3</version>
+</dependency>
+```
+
+*Since 2.0.0*
+
+Since `2.0.0`, Scorpius will be divided into multiple subprojects. You can import all dependencies like this:
+
+```
+<dependency>
+    <groupId>org.dungba</groupId>
+    <artifactId>joo-scorpius-bom</artifactId>
+    <version>2.0.0</version>
+    <type>pom</type>
 </dependency>
 ```
 
