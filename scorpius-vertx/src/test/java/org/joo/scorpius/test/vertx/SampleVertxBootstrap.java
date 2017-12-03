@@ -1,7 +1,12 @@
 package org.joo.scorpius.test.vertx;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joo.scorpius.Bootstrap;
+import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
+import org.joo.scorpius.support.bootstrap.CompositionBootstrap;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
 import org.joo.scorpius.support.vertx.VertxBootstrap;
 import org.joo.scorpius.test.support.SampleTrigger;
@@ -14,17 +19,15 @@ import com.lmax.disruptor.YieldingWaitStrategy;
 
 import io.vertx.core.VertxOptions;
 
-public class SampleVertxBootstrap extends VertxBootstrap {
+public class SampleVertxBootstrap extends CompositionBootstrap {
 
     private final static Logger logger = LogManager.getLogger(SampleVertxBootstrap.class);
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    public void run() {
-        configureTriggers();
-
-        VertxOptions options = new VertxOptions().setEventLoopPoolSize(8);
-        configureServer(options, 8080);
+    protected void configureBootstraps(List<Bootstrap> bootstrap) {
+        bootstrap.add(new VertxBootstrap(new VertxOptions().setEventLoopPoolSize(8), 8080));
+        bootstrap.add(AbstractBootstrap.from(this::configureTriggers));
     }
 
     private void configureTriggers() {
@@ -39,7 +42,5 @@ public class SampleVertxBootstrap extends VertxBootstrap {
         });
 
         triggerManager.registerTrigger("greet_java").withAction(SampleTrigger::new);
-//        triggerManager.registerPeriodicEvent(new PeriodicTaskMessage(1000, 1000, new SampleRequest()))
-//                .withAction(PeriodicTrigger::new);
     }
 }

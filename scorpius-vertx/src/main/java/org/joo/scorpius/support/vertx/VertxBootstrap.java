@@ -1,39 +1,54 @@
 package org.joo.scorpius.support.vertx;
 
-import org.joo.scorpius.ApplicationContext;
-import org.joo.scorpius.Bootstrap;
-import org.joo.scorpius.trigger.TriggerManager;
+import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
-import lombok.Setter;
 
-public abstract class VertxBootstrap implements Bootstrap {
+public class VertxBootstrap extends AbstractBootstrap {
 
-    protected @Setter ApplicationContext applicationContext;
+    private static final String DEFAULT_ENDPOINT = "/msg";
 
-    protected @Setter TriggerManager triggerManager;
+    private VertxMessageController msgController;
 
-    protected VertxMessageController msgController;
+    private Vertx vertx;
 
-    protected void configureServer(final VertxOptions options, final int port) {
+    private HttpServer server;
+
+    private String endpoint;
+
+    private int port;
+    
+    public VertxBootstrap(final VertxOptions vertxOptions, final int port) {
+        this(vertxOptions, new HttpServerOptions(), port);
+    }
+
+    public VertxBootstrap(final VertxOptions vertxOptions, final HttpServerOptions httpOptions, final int port) {
+        this(vertxOptions, httpOptions, port, DEFAULT_ENDPOINT);
+    }
+
+    public VertxBootstrap(final VertxOptions vertxOptions, final HttpServerOptions httpOptions, final int port,
+            String endpoint) {
+        this.vertx = Vertx.vertx(vertxOptions);
+        this.server = vertx.createHttpServer(httpOptions);
+        this.port = port;
+        this.endpoint = endpoint;
+    }
+
+    public void run() {
         msgController = new VertxMessageController(triggerManager);
-
-        Vertx vertx = Vertx.vertx(options);
-        HttpServer server = vertx.createHttpServer();
-
         Router restAPI = configureRoutes(vertx);
-
         server.requestHandler(restAPI::accept).listen(port);
     }
 
     protected Router configureRoutes(final Vertx vertx) {
         Router restAPI = Router.router(vertx);
         restAPI.post("/*").handler(BodyHandler.create());
-        restAPI.post("/msg").handler(msgController::handle);
+        restAPI.post(endpoint).handler(msgController::handle);
         return restAPI;
     }
 }
