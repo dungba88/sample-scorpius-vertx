@@ -14,6 +14,7 @@
 	<modules>
 		<module>scorpius-core</module>
 		<module>scorpius-vertx</module>
+		<module>scorpius-config</module>
 		<module>scorpius-bom</module>
 	</modules>
 
