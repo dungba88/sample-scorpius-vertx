@@ -15,6 +15,7 @@
 		<module>scorpius-core</module>
 		<module>scorpius-vertx</module>
 		<module>scorpius-typesafe</module>
+		<module>scorpius-graylog</module>
 		<module>scorpius-bom</module>
 	</modules>
 
