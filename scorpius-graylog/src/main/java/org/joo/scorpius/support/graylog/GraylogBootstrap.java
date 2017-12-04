@@ -13,6 +13,8 @@ import org.joo.scorpius.support.graylog.msg.AnnotatedExecutionContextCreatedMess
 import org.joo.scorpius.support.graylog.msg.AnnotatedExecutionContextExceptionMessage;
 import org.joo.scorpius.support.graylog.msg.AnnotatedExecutionContextFinishMessage;
 import org.joo.scorpius.support.graylog.msg.AnnotatedExecutionContextStartMessage;
+import org.joo.scorpius.support.graylog.msg.AnnotatedGelfMessage;
+import org.joo.scorpius.support.message.CustomMessage;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
 import org.joo.scorpius.support.message.ExecutionContextFinishMessage;
 import org.joo.scorpius.support.message.ExecutionContextStartMessage;
@@ -58,6 +60,9 @@ public class GraylogBootstrap extends AbstractBootstrap {
 
         if (events.contains(TriggerEvent.FINISH))
             registerTriggerFinishHandler();
+        
+        if (events.contains(TriggerEvent.CUSTOM))
+            registerTriggerCustomHandler();
     }
 
     protected void registerTriggerExceptionHandler(ApplicationContext applicationContext) {
@@ -89,6 +94,18 @@ public class GraylogBootstrap extends AbstractBootstrap {
             ExecutionContextFinishMessage finishMessage = (ExecutionContextFinishMessage) msg;
             if (logger.isDebugEnabled())
                 logger.debug(new AnnotatedExecutionContextFinishMessage(mapper, finishMessage));
+        });
+    }
+
+    protected void registerTriggerCustomHandler() {
+        triggerManager.addEventHandler(TriggerEvent.CUSTOM, (event, msg) -> {
+            CustomMessage customMsg = (CustomMessage) msg;
+            if (!(customMsg.getCustomObject() instanceof AnnotatedGelfMessage))
+                return;
+            AnnotatedGelfMessage annotatedMsg = (AnnotatedGelfMessage) customMsg.getCustomObject();
+            annotatedMsg.putField("eventName", customMsg.getName());
+            if (logger.isDebugEnabled())
+                logger.debug(annotatedMsg);
         });
     }
 }
