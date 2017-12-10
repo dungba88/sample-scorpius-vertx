@@ -32,6 +32,10 @@ public class VertxBootstrap extends AbstractBootstrap {
 
 	private Function<Vertx, Router> routingConfig;
 
+	public VertxBootstrap(final int port) {
+		this(new VertxOptions(), port);
+	}
+
 	public VertxBootstrap(final VertxOptions vertxOptions, final int port) {
 		this(vertxOptions, new HttpServerOptions(), port);
 	}
@@ -41,14 +45,14 @@ public class VertxBootstrap extends AbstractBootstrap {
 	}
 
 	public VertxBootstrap(final VertxOptions vertxOptions, final HttpServerOptions httpOptions, final int port,
-			String endpoint) {
+			final String endpoint) {
 		this.vertx = Vertx.vertx(vertxOptions);
 		this.server = vertx.createHttpServer(httpOptions);
 		this.port = port;
 		this.endpoint = endpoint;
 	}
 
-	public VertxBootstrap withRoutingConfig(Function<Vertx, Router> routingConfig) {
+	public VertxBootstrap withRoutingConfig(final Function<Vertx, Router> routingConfig) {
 		this.routingConfig = routingConfig;
 		return this;
 	}
@@ -75,7 +79,7 @@ public class VertxBootstrap extends AbstractBootstrap {
 		restAPI.post(endpoint).handler(msgController::handle);
 		return restAPI;
 	}
-	
+
 	@Override
 	public void shutdown() {
 		server.close();
