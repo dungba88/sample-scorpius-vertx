@@ -15,91 +15,106 @@ import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
 
 public class TestClient {
+	
+	private int maxThreads = 20;
+	
+	private int noConnections = 10000;
+	
+	public TestClient() {
+		
+	}
+	
+	public TestClient(int maxThreads, int noConnections) {
+		this.maxThreads = maxThreads;
+		this.noConnections = noConnections;
+	}
 
-    public static void main(String[] args) {
-        int maxThreads = 20;
-        int noConnections = 10000;
-        CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault();
-        httpClient.start();
-        ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
-        HttpPost request = new HttpPost("http://localhost:8080/msg?name=greet_java");
-        String xml = "{\"name\": \"Anh Dung\"}";
-        HttpEntity entity = new ByteArrayEntity(xml.getBytes());
-        request.setEntity(entity);
+	public void test() {
+		CloseableHttpAsyncClient httpClient = HttpAsyncClients.createDefault();
+		httpClient.start();
+		ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
+		HttpPost request = new HttpPost("http://localhost:8080/msg?name=greet_java");
+		String xml = "{\"name\": \"Anh Dung\"}";
+		HttpEntity entity = new ByteArrayEntity(xml.getBytes());
+		request.setEntity(entity);
 
-        CountDownLatch latch = new CountDownLatch(1);
+		CountDownLatch latch = new CountDownLatch(1);
 
-        Handler handler = new Handler(latch, noConnections);
+		Handler handler = new Handler(latch, noConnections);
 
-        long start = System.currentTimeMillis();
+		long start = System.currentTimeMillis();
 
-        for (int i = 0; i < noConnections; i++) {
-            executor.submit(() -> {
-                httpClient.execute(request, handler);
-            });
-        }
+		for (int i = 0; i < noConnections; i++) {
+			executor.submit(() -> {
+				httpClient.execute(request, handler);
+			});
+		}
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+		try {
+			latch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
-        long elapsed = System.currentTimeMillis() - start;
-        long pace = noConnections * 1000 / elapsed;
+		long elapsed = System.currentTimeMillis() - start;
+		long pace = noConnections * 1000 / elapsed;
 
-        System.out.println("Elapsed: " + elapsed + "ms");
-        System.out.println("Pace: " + pace + " connections/sec");
-        System.out.println("Success: " + handler.getCounter());
-        System.out.println("Failed: " + handler.getFailed());
+		System.out.println("Elapsed: " + elapsed + "ms");
+		System.out.println("Pace: " + pace + " connections/sec");
+		System.out.println("Success: " + handler.getCounter());
+		System.out.println("Failed: " + handler.getFailed());
 
-        try {
-            httpClient.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        executor.shutdown();
-    }
+		try {
+			httpClient.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		executor.shutdown();
+	}
+
+	public static void main(String[] args) {
+		new TestClient().test();
+	}
 }
 
 class Handler implements FutureCallback<HttpResponse> {
 
-    private AtomicInteger counter = new AtomicInteger(0);
+	private AtomicInteger counter = new AtomicInteger(0);
 
-    private AtomicInteger failed = new AtomicInteger(0);
+	private AtomicInteger failed = new AtomicInteger(0);
 
-    private int noConnections = 0;
+	private int noConnections = 0;
 
-    private CountDownLatch latch;
+	private CountDownLatch latch;
 
-    public Handler(CountDownLatch latch, int noConnections) {
-        this.latch = latch;
-        this.noConnections = noConnections;
-    }
+	public Handler(CountDownLatch latch, int noConnections) {
+		this.latch = latch;
+		this.noConnections = noConnections;
+	}
 
-    @Override
-    public void completed(HttpResponse result) {
-        if (counter.incrementAndGet() + failed.get() == noConnections)
-            latch.countDown();
-    }
+	@Override
+	public void completed(HttpResponse result) {
+		if (counter.incrementAndGet() + failed.get() == noConnections)
+			latch.countDown();
+	}
 
-    @Override
-    public void failed(Exception ex) {
-        if (counter.get() + failed.incrementAndGet() == noConnections)
-            latch.countDown();
-    }
+	@Override
+	public void failed(Exception ex) {
+		if (counter.get() + failed.incrementAndGet() == noConnections)
+			latch.countDown();
+	}
 
-    @Override
-    public void cancelled() {
-        if (counter.get() + failed.incrementAndGet() == noConnections)
-            latch.countDown();
-    }
+	@Override
+	public void cancelled() {
+		if (counter.get() + failed.incrementAndGet() == noConnections)
+			latch.countDown();
+	}
 
-    public int getCounter() {
-        return counter.get();
-    }
+	public int getCounter() {
+		return counter.get();
+	}
 
-    public int getFailed() {
-        return failed.get();
-    }
+	public int getFailed() {
+		return failed.get();
+	}
 }
