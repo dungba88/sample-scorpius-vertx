@@ -30,7 +30,7 @@ public class VertxBootstrap extends AbstractBootstrap {
 	private int port;
 
 	private Function<Vertx, Router> routingConfig;
-
+	
 	public VertxBootstrap(final VertxOptions vertxOptions, final int port) {
 		this(vertxOptions, new HttpServerOptions(), port);
 	}
@@ -46,13 +46,10 @@ public class VertxBootstrap extends AbstractBootstrap {
 		this.port = port;
 		this.endpoint = endpoint;
 	}
-
-	public VertxBootstrap(final VertxOptions vertxOptions, final HttpServerOptions httpOptions, final int port,
-			Function<Vertx, Router> routingConfig) {
-		this.vertx = Vertx.vertx(vertxOptions);
-		this.server = vertx.createHttpServer(httpOptions);
-		this.port = port;
+	
+	public VertxBootstrap withRoutingConfig(Function<Vertx, Router> routingConfig) {
 		this.routingConfig = routingConfig;
+		return this;
 	}
 
 	public void run() {
