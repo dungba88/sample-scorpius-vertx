@@ -9,4 +9,6 @@ public interface Bootstrap {
     public void setApplicationContext(final ApplicationContext applicationContext);
 
     public void run();
+    
+    public void shutdown();
 }

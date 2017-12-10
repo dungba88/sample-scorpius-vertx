@@ -21,26 +21,26 @@ import io.vertx.core.VertxOptions;
 
 public class SampleVertxBootstrap extends CompositionBootstrap {
 
-    private final static Logger logger = LogManager.getLogger(SampleVertxBootstrap.class);
+	private final static Logger logger = LogManager.getLogger(SampleVertxBootstrap.class);
 
-    private ObjectMapper mapper = new ObjectMapper();
+	private ObjectMapper mapper = new ObjectMapper();
 
-    protected void configureBootstraps(List<Bootstrap> bootstrap) {
-        bootstrap.add(new VertxBootstrap(new VertxOptions().setEventLoopPoolSize(8), 8080));
-        bootstrap.add(AbstractBootstrap.from(this::configureTriggers));
-    }
+	protected void configureBootstraps(List<Bootstrap> bootstrap) {
+		bootstrap.add(new VertxBootstrap(new VertxOptions().setEventLoopPoolSize(8), 8080));
+		bootstrap.add(AbstractBootstrap.from(this::configureTriggers));
+	}
 
-    private void configureTriggers() {
-        triggerManager.setHandlingStrategy(new DisruptorHandlingStrategy(1024, new YieldingWaitStrategy()));
+	private void configureTriggers() {
+		triggerManager.setHandlingStrategy(new DisruptorHandlingStrategy(1024, new YieldingWaitStrategy()));
 
-        triggerManager.addEventHandler(TriggerEvent.EXCEPTION, (event, msg) -> {
-            ExecutionContextExceptionMessage exceptionMsg = (ExecutionContextExceptionMessage) msg;
-            try {
-                logger.debug(mapper.writeValueAsString(exceptionMsg.getRequest()));
-            } catch (JsonProcessingException e) {
-            }
-        });
+		triggerManager.addEventHandler(TriggerEvent.EXCEPTION, (event, msg) -> {
+			ExecutionContextExceptionMessage exceptionMsg = (ExecutionContextExceptionMessage) msg;
+			try {
+				logger.debug(mapper.writeValueAsString(exceptionMsg.getRequest()));
+			} catch (JsonProcessingException e) {
+			}
+		});
 
-        triggerManager.registerTrigger("greet_java").withAction(SampleTrigger::new);
-    }
+		triggerManager.registerTrigger("greet_java").withAction(SampleTrigger::new);
+	}
 }

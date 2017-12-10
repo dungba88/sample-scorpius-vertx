@@ -21,4 +21,8 @@ public abstract class AbstractBootstrap implements Bootstrap {
             }
         };
     }
+    
+    public void shutdown() {
+    		// do nothing
+    }
 }

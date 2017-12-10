@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
@@ -30,7 +31,7 @@ public class VertxBootstrap extends AbstractBootstrap {
 	private int port;
 
 	private Function<Vertx, Router> routingConfig;
-	
+
 	public VertxBootstrap(final VertxOptions vertxOptions, final int port) {
 		this(vertxOptions, new HttpServerOptions(), port);
 	}
@@ -46,7 +47,7 @@ public class VertxBootstrap extends AbstractBootstrap {
 		this.port = port;
 		this.endpoint = endpoint;
 	}
-	
+
 	public VertxBootstrap withRoutingConfig(Function<Vertx, Router> routingConfig) {
 		this.routingConfig = routingConfig;
 		return this;
@@ -55,15 +56,17 @@ public class VertxBootstrap extends AbstractBootstrap {
 	public void run() {
 		msgController = new VertxMessageController(triggerManager);
 		Router restAPI = routingConfig != null ? routingConfig.apply(vertx) : configureRoutes(vertx);
-		server.requestHandler(restAPI::accept).listen(port, res -> {
-			if (res.failed()) {
-				if (logger.isFatalEnabled())
-					logger.fatal("Exception occurred while initializing Vertx Web", res.cause());
-				server.close();
-			} else if (logger.isInfoEnabled()) {
-				logger.info("Vertx Web started listening at port " + port);
-			}
-		});
+		server.requestHandler(restAPI::accept).listen(port, this::serverListener);
+	}
+
+	private void serverListener(AsyncResult<HttpServer> res) {
+		if (res.failed()) {
+			if (logger.isFatalEnabled())
+				logger.fatal("Exception occurred while initializing Vertx Web", res.cause());
+			shutdown();
+		} else if (logger.isInfoEnabled()) {
+			logger.info("Vertx Web started listening at port " + port);
+		}
 	}
 
 	protected Router configureRoutes(final Vertx vertx) {
@@ -71,5 +74,11 @@ public class VertxBootstrap extends AbstractBootstrap {
 		restAPI.post("/*").handler(BodyHandler.create());
 		restAPI.post(endpoint).handler(msgController::handle);
 		return restAPI;
+	}
+	
+	@Override
+	public void shutdown() {
+		server.close();
+		vertx.close();
 	}
 }

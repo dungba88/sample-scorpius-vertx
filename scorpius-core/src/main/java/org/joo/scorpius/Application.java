@@ -9,36 +9,40 @@ import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
 
 public class Application {
 
-    private TriggerManager triggerManager;
+	private TriggerManager triggerManager;
 
-    private AtomicBoolean initialized;
+	private AtomicBoolean initialized;
 
-    private ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 
-    public Application() {
-        this(new ApplicationContextBuilder());
-    }
+	private Bootstrap bootstrap;
 
-    public Application(final Builder<ApplicationContext> applicationContextBuilder) {
-        this.initialized = new AtomicBoolean(false);
-        this.applicationContext = applicationContextBuilder.build();
-    }
+	public Application() {
+		this(new ApplicationContextBuilder());
+	}
 
-    public void run(final Bootstrap bootstrap) {
-        if (!initialized.compareAndSet(false, true))
-            throw new IllegalStateException("Application is already running");
+	public Application(final Builder<ApplicationContext> applicationContextBuilder) {
+		this.initialized = new AtomicBoolean(false);
+		this.applicationContext = applicationContextBuilder.build();
+	}
 
-        this.triggerManager = new DefaultTriggerManager(applicationContext);
-        bootstrap.setTriggerManager(triggerManager);
-        bootstrap.setApplicationContext(applicationContext);
-        bootstrap.run();
+	public void run(final Bootstrap bootstrap) {
+		if (!initialized.compareAndSet(false, true))
+			throw new IllegalStateException("Application is already running");
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            
-            @Override
-            public void run() {
-                triggerManager.shutdown();
-            }
-        });
-    }
+		this.bootstrap = bootstrap;
+		this.triggerManager = new DefaultTriggerManager(applicationContext);
+		bootstrap.setTriggerManager(triggerManager);
+		bootstrap.setApplicationContext(applicationContext);
+		bootstrap.run();
+
+		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+	}
+
+	public void shutdown() {
+		if (triggerManager != null)
+			triggerManager.shutdown();
+		if (bootstrap != null)
+			bootstrap.shutdown();
+	}
 }
