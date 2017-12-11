@@ -12,6 +12,7 @@ import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.ExecutionContextExceptionMessage;
 import org.joo.scorpius.support.message.ExecutionContextFinishMessage;
+import org.joo.scorpius.support.message.ExecutionContextMessage;
 import org.joo.scorpius.support.message.ExecutionContextStartMessage;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerEvent;
@@ -141,4 +142,9 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
     public Optional<String> fetchRawTraceId() {
         return request.fetchRawTraceId();
     }
+
+	@Override
+	public ExecutionContextMessage toMessage() {
+		return new ExecutionContextMessage(id, eventName, request);
+	}
 }

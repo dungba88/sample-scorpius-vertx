@@ -7,6 +7,7 @@ import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
+import org.joo.scorpius.support.message.ExecutionContextMessage;
 import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerExecutionStatus;
@@ -105,4 +106,9 @@ public class SimpleTriggerExecutionContext implements TriggerExecutionContext {
     public TriggerConfig getConfig() {
         return null;
     }
+
+	@Override
+	public ExecutionContextMessage toMessage() {
+		return null;
+	}
 }

@@ -6,6 +6,7 @@ import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.Traceable;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
+import org.joo.scorpius.support.message.ExecutionContextMessage;
 
 public interface TriggerExecutionContext extends Traceable {
 
@@ -32,4 +33,6 @@ public interface TriggerExecutionContext extends Traceable {
     public String getId();
 
     public String getEventName();
+
+	public ExecutionContextMessage toMessage();
 }
