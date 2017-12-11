@@ -3,6 +3,8 @@ package org.joo.scorpius.support.typesafe;
 import java.util.List;
 import java.util.Objects;
 
+import org.joo.promise4j.Promise;
+import org.joo.promise4j.impl.SimpleDonePromise;
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 import org.joo.scorpius.support.exception.BootstrapInitializationException;
 import org.joo.scorpius.trigger.Trigger;
@@ -27,7 +29,7 @@ public class TriggerTypeSafeBootstrap extends AbstractBootstrap {
     }
 
     @Override
-    public void run() {
+    public Promise<?, Throwable> run() {
         Config config = applicationContext.getInstance(Config.class);
         if (config == null) {
             throw new IllegalStateException(
@@ -38,6 +40,7 @@ public class TriggerTypeSafeBootstrap extends AbstractBootstrap {
 
         configList.stream().map(this::parseTriggerConfig).filter(Objects::nonNull)
                 .forEach(cfg -> triggerManager.registerTrigger(cfg.getEvent(), cfg.getConfig()));
+        return new SimpleDonePromise<>(null);
     }
     
     private TriggerConfigWrapper parseTriggerConfig(Config cfg) {

@@ -216,6 +216,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
     @Override
     public void shutdown() {
+    		clearEventHandlers();
         for (ScheduledFuture<?> future : scheduledFutures) {
             future.cancel(true);
         }

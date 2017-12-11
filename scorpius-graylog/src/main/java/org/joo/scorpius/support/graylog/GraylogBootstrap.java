@@ -7,6 +7,8 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginManager;
+import org.joo.promise4j.Promise;
+import org.joo.promise4j.impl.SimpleDonePromise;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 import org.joo.scorpius.support.graylog.msg.AnnotatedExecutionContextCreatedMessage;
@@ -44,8 +46,9 @@ public class GraylogBootstrap extends AbstractBootstrap {
     }
 
     @Override
-    public void run() {
+    public Promise<?, Throwable> run() {
         registerEventHandlers();
+        return new SimpleDonePromise<>(null);
     }
 
     protected void registerEventHandlers() {

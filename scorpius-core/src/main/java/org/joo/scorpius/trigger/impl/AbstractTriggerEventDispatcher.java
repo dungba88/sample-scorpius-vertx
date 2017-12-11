@@ -13,6 +13,10 @@ import org.joo.scorpius.trigger.TriggerEventHandler;
 public class AbstractTriggerEventDispatcher implements TriggerEventDispatcher {
 
     private Map<TriggerEvent, List<TriggerEventHandler>> handlerMap = new HashMap<>();
+    
+    public void clearEventHandlers() {
+    		handlerMap = new HashMap<>();
+    }
 
     @Override
     public void addEventHandler(final TriggerEvent event, final TriggerEventHandler handler) {

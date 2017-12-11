@@ -25,7 +25,7 @@ public class SampleVertxBootstrap extends CompositionBootstrap {
 
 	private ObjectMapper mapper = new ObjectMapper();
 
-	protected void configureBootstraps(List<Bootstrap> bootstrap) {
+	protected void configureBootstraps(List<Bootstrap<?>> bootstrap) {
 		bootstrap.add(new VertxBootstrap(new VertxOptions().setEventLoopPoolSize(8), 8080));
 		bootstrap.add(AbstractBootstrap.from(this::configureTriggers));
 	}

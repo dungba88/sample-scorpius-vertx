@@ -1,5 +1,7 @@
 package org.joo.scorpius.support.typesafe;
 
+import org.joo.promise4j.Promise;
+import org.joo.promise4j.impl.SimpleDonePromise;
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 
 import com.typesafe.config.Config;
@@ -22,8 +24,9 @@ public class TypeSafeBootstrap extends AbstractBootstrap {
     }
 
     @Override
-    public void run() {
+    public Promise<?, Throwable> run() {
         config.checkValid(ConfigFactory.defaultReference());
         applicationContext.override(Config.class, config);
+        return new SimpleDonePromise<>(config);
     }
 }

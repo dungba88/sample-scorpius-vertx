@@ -4,6 +4,9 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.joo.promise4j.Deferred;
+import org.joo.promise4j.Promise;
+import org.joo.promise4j.impl.CompletableDeferredObject;
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 
 import io.vertx.core.AsyncResult;
@@ -57,19 +60,24 @@ public class VertxBootstrap extends AbstractBootstrap {
 		return this;
 	}
 
-	public void run() {
+	public Promise<?, Throwable> run() {
 		msgController = new VertxMessageController(triggerManager);
 		Router restAPI = routingConfig != null ? routingConfig.apply(vertx) : configureRoutes(vertx);
-		server.requestHandler(restAPI::accept).listen(port, this::serverListener);
+		Deferred<?, Throwable> deferred = new CompletableDeferredObject<>();
+		server.requestHandler(restAPI::accept).listen(port, res -> serverListener(res, deferred));
+		return deferred.promise();
 	}
 
-	private void serverListener(AsyncResult<HttpServer> res) {
+	private void serverListener(AsyncResult<HttpServer> res, Deferred<?, Throwable> deferred) {
 		if (res.failed()) {
 			if (logger.isFatalEnabled())
 				logger.fatal("Exception occurred while initializing Vertx Web", res.cause());
 			shutdown();
-		} else if (logger.isInfoEnabled()) {
-			logger.info("Vertx Web started listening at port " + port);
+			deferred.reject(res.cause());
+		} else {
+			if (logger.isInfoEnabled())
+				logger.info("Vertx Web started listening at port " + port);
+			deferred.resolve(null);
 		}
 	}
 

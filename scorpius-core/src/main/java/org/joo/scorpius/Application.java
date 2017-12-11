@@ -2,6 +2,7 @@ package org.joo.scorpius;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.joo.promise4j.Promise;
 import org.joo.scorpius.support.builders.ApplicationContextBuilder;
 import org.joo.scorpius.support.builders.Builder;
 import org.joo.scorpius.trigger.TriggerManager;
@@ -15,7 +16,7 @@ public class Application {
 
 	private ApplicationContext applicationContext;
 
-	private Bootstrap bootstrap;
+	private Bootstrap<?> bootstrap;
 
 	public Application() {
 		this(new ApplicationContextBuilder());
@@ -26,7 +27,7 @@ public class Application {
 		this.applicationContext = applicationContextBuilder.build();
 	}
 
-	public void run(final Bootstrap bootstrap) {
+	public <T> Promise<T, Throwable> run(final Bootstrap<T> bootstrap) {
 		if (!initialized.compareAndSet(false, true))
 			throw new IllegalStateException("Application is already running");
 
@@ -34,9 +35,10 @@ public class Application {
 		this.triggerManager = new DefaultTriggerManager(applicationContext);
 		bootstrap.setTriggerManager(triggerManager);
 		bootstrap.setApplicationContext(applicationContext);
-		bootstrap.run();
+		Promise<T, Throwable> promise = bootstrap.run();
 
 		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+		return promise;
 	}
 
 	public void shutdown() {
