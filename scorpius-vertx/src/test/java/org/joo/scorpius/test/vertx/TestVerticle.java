@@ -25,7 +25,7 @@ public class TestVerticle {
 	public void test() {
 		Vertx vertx = Vertx.vertx();
 
-		CountDownLatch latch = new CountDownLatch(1);
+		CountDownLatch latch = new CountDownLatch(2);
 
 		vertx.deployVerticle(verticle1, res -> {
 			if (res.failed())
