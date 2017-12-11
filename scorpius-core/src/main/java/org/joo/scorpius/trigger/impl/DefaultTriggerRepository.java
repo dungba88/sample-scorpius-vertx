@@ -13,42 +13,45 @@ import org.joo.scorpius.trigger.TriggerRepository;
 
 public class DefaultTriggerRepository implements TriggerRepository {
 
-    private Map<String, List<TriggerConfig>> preStartTriggerConfigs;
+	private Map<String, List<TriggerConfig>> preStartTriggerConfigs;
 
-    private Map<String, List<TriggerConfig>> postStartTriggerConfigs;
-    
-    private AtomicBoolean started = new AtomicBoolean(false);
+	private Map<String, TriggerConfig[]> postStartTriggerConfigs;
 
-    public DefaultTriggerRepository() {
-        this.preStartTriggerConfigs = new ConcurrentHashMap<>();
-    }
+	private AtomicBoolean started = new AtomicBoolean(false);
 
-    @Override
-    public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
-        if (started.get())
-            throw new IllegalStateException("Repository is already started");
-        
-        if (!preStartTriggerConfigs.containsKey(name))
-            preStartTriggerConfigs.put(name, new ArrayList<>());
-        preStartTriggerConfigs.get(name).add(triggerConfig);
-        return triggerConfig;
-    }
+	public DefaultTriggerRepository() {
+		this.preStartTriggerConfigs = new ConcurrentHashMap<>();
+	}
 
-    @Override
-    public List<TriggerConfig> getTriggerConfigs(String name) {
-        return postStartTriggerConfigs.get(name);
-    }
+	@Override
+	public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig) {
+		if (started.get())
+			throw new IllegalStateException("Repository is already started");
 
-    @Override
-    public void start() {
-        if (!started.compareAndSet(false, true))
-            throw new IllegalStateException("Repository is already started");
-        
-        postStartTriggerConfigs = new HashMap<>(preStartTriggerConfigs);
-    }
+		if (!preStartTriggerConfigs.containsKey(name))
+			preStartTriggerConfigs.put(name, new ArrayList<>());
+		preStartTriggerConfigs.get(name).add(triggerConfig);
+		return triggerConfig;
+	}
 
-    @Override
-    public void shutdown() {
-        
-    }
+	@Override
+	public TriggerConfig[] getTriggerConfigs(String name) {
+		return postStartTriggerConfigs.get(name);
+	}
+
+	@Override
+	public void start() {
+		if (!started.compareAndSet(false, true))
+			throw new IllegalStateException("Repository is already started");
+
+		postStartTriggerConfigs = new HashMap<>();
+		for (String key : preStartTriggerConfigs.keySet()) {
+			postStartTriggerConfigs.put(key, preStartTriggerConfigs.get(key).toArray(new TriggerConfig[0]));
+		}
+	}
+
+	@Override
+	public void shutdown() {
+
+	}
 }
