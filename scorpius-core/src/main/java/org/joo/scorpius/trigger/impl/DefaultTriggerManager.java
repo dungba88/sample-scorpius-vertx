@@ -45,7 +45,7 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
     private @Getter @Setter TriggerRepository triggerRepository;
 
-    private @Getter TriggerHandlingStrategy handlingStrategy;
+    private @Getter @Setter TriggerHandlingStrategy handlingStrategy;
 
     private ScheduledExecutorService scheduledExecutors;
 
@@ -219,11 +219,5 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         scheduledExecutors.shutdown();
         triggerRepository.shutdown();
         handlingStrategy.shutdown();
-    }
-
-    @Override
-    public void setHandlingStrategy(TriggerHandlingStrategy handlingStrategy) {
-        handlingStrategy.start();
-        this.handlingStrategy = handlingStrategy;
     }
 }
