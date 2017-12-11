@@ -18,47 +18,46 @@ import io.vertx.ext.web.RoutingContext;
 
 public abstract class AbstractVertxController implements Handler<RoutingContext> {
 
-	private final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
-	protected final TriggerManager triggerManager;
+    protected final TriggerManager triggerManager;
 
-	public AbstractVertxController(final TriggerManager triggerManager) {
-		this.triggerManager = triggerManager;
-		ObjectMapper configuredMapper = this.triggerManager.getApplicationContext().getInstance(ObjectMapper.class);
-		this.mapper = configuredMapper != null ? configuredMapper : new ObjectMapper();
-	}
-	
-	protected void doFireEvent(RoutingContext rc, String msgName, BaseRequest request) {
-		if (request != null && request.fetchRawTraceId() != null)
-			request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
+    public AbstractVertxController(final TriggerManager triggerManager) {
+        this.triggerManager = triggerManager;
+        ObjectMapper configuredMapper = this.triggerManager.getApplicationContext().getInstance(ObjectMapper.class);
+        this.mapper = configuredMapper != null ? configuredMapper : new ObjectMapper();
+    }
 
-		triggerManager.fire(msgName, request).done(triggerResponse -> onDone(triggerResponse, rc.response(), rc))
-				.fail(exception -> onFail(exception, rc.response(), rc));
-	}
+    protected void doFireEvent(RoutingContext rc, String msgName, BaseRequest request) {
+        if (request != null && request.fetchRawTraceId() != null)
+            request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
 
-	protected Optional<String> getTraceId(final RoutingContext rc, final ApplicationContext applicationContext) {
-		String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
-		if (traceId == null || traceId.isEmpty()) {
-			return applicationContext.getInstance(IdGenerator.class).create();
-		}
-		return Optional.of(traceId);
-	}
+        triggerManager.fire(msgName, request).done(triggerResponse -> onDone(triggerResponse, rc.response(), rc))
+                .fail(exception -> onFail(exception, rc.response(), rc));
+    }
 
-	protected void onFail(final Throwable exception, final HttpServerResponse response, final RoutingContext rc) {
-		rc.fail(exception);
-	}
+    protected Optional<String> getTraceId(final RoutingContext rc, final ApplicationContext applicationContext) {
+        String traceId = rc.request().getHeader(CommonConstants.TRACE_ID_HEADER);
+        if (traceId == null || traceId.isEmpty())
+            return applicationContext.getInstance(IdGenerator.class).create();
+        return Optional.of(traceId);
+    }
 
-	protected void onDone(final BaseResponse triggerResponse, final HttpServerResponse response,
-			final RoutingContext rc) {
-		if (triggerResponse == null) {
-			response.end();
-			return;
-		}
-		try {
-			String strResponse = mapper.writeValueAsString(triggerResponse);
-			response.end(strResponse);
-		} catch (JsonProcessingException e) {
-			rc.fail(e);
-		}
-	}
+    protected void onFail(final Throwable exception, final HttpServerResponse response, final RoutingContext rc) {
+        rc.fail(exception);
+    }
+
+    protected void onDone(final BaseResponse triggerResponse, final HttpServerResponse response,
+            final RoutingContext rc) {
+        if (triggerResponse == null) {
+            response.end();
+            return;
+        }
+        try {
+            String strResponse = mapper.writeValueAsString(triggerResponse);
+            response.end(strResponse);
+        } catch (JsonProcessingException e) {
+            rc.fail(e);
+        }
+    }
 }

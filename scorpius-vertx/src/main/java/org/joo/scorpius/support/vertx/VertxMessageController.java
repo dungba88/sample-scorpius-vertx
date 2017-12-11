@@ -18,6 +18,9 @@ public class VertxMessageController extends AbstractVertxController {
 		response.putHeader("Content-Type", "application/json");
 
 		String msgName = rc.request().getParam("name");
+		if (msgName == null)
+		    throw new IllegalArgumentException("Name cannot be null");
+		
 		String msgData = rc.getBodyAsString();
 
 		BaseRequest request = null;
