@@ -34,6 +34,6 @@ public class DefaultNonDeferredTriggerHandlingTest extends AbstractTriggerTest {
             e.printStackTrace();
         }
 
-        Assert.assertTrue(processed == iterations);
+        Assert.assertEquals(iterations, processed);
     }
 }
