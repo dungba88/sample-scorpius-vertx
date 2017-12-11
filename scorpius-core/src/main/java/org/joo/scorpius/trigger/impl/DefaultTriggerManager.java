@@ -9,8 +9,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joo.libra.support.PredicateExecutionException;
 import org.joo.promise4j.DoneCallback;
 import org.joo.promise4j.FailCallback;
@@ -42,8 +40,6 @@ import lombok.Setter;
 import net.jodah.failsafe.SyncFailsafe;
 
 public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implements TriggerManager {
-
-    private static final Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
 
     private @Getter ApplicationContext applicationContext;
 
