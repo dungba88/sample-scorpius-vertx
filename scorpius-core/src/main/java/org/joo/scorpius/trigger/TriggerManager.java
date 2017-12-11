@@ -38,5 +38,5 @@ public interface TriggerManager extends TriggerEventDispatcher, LifeCycle {
 
     public TriggerHandlingStrategy getHandlingStrategy();
 
-    public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy);
+    public void setHandlingStrategy(TriggerHandlingStrategy handlingStrategy);
 }

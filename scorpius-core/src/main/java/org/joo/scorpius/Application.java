@@ -12,43 +12,44 @@ import lombok.Getter;
 
 public class Application {
 
-	private @Getter TriggerManager triggerManager;
+    private @Getter TriggerManager triggerManager;
 
-	private AtomicBoolean initialized;
+    private AtomicBoolean initialized;
 
-	private @Getter ApplicationContext applicationContext;
+    private @Getter ApplicationContext applicationContext;
 
-	private @Getter Bootstrap<?> bootstrap;
+    private @Getter Bootstrap<?> bootstrap;
 
-	public Application() {
-		this(new ApplicationContextBuilder());
-	}
+    public Application() {
+        this(new ApplicationContextBuilder());
+    }
 
-	public Application(final Builder<ApplicationContext> applicationContextBuilder) {
-		this.initialized = new AtomicBoolean(false);
-		this.applicationContext = applicationContextBuilder.build();
-	}
+    public Application(final Builder<ApplicationContext> applicationContextBuilder) {
+        this.initialized = new AtomicBoolean(false);
+        this.applicationContext = applicationContextBuilder.build();
+    }
 
-	public <T> Promise<T, Throwable> run(final Bootstrap<T> bootstrap) {
-		if (!initialized.compareAndSet(false, true))
-			throw new IllegalStateException("Application is already running");
+    public <T> Promise<T, Throwable> run(final Bootstrap<T> bootstrap) {
+        if (!initialized.compareAndSet(false, true))
+            throw new IllegalStateException("Application is already running");
 
-		this.triggerManager = new DefaultTriggerManager(applicationContext);
-		this.triggerManager.start();
-		
+        this.triggerManager = new DefaultTriggerManager(applicationContext);
+
         this.bootstrap = bootstrap;
-		bootstrap.setTriggerManager(triggerManager);
-		bootstrap.setApplicationContext(applicationContext);
-		Promise<T, Throwable> promise = bootstrap.run();
+        bootstrap.setTriggerManager(triggerManager);
+        bootstrap.setApplicationContext(applicationContext);
+        Promise<T, Throwable> promise = bootstrap.run();
 
-		Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-		return promise;
-	}
+        this.triggerManager.start();
 
-	public void shutdown() {
-		if (triggerManager != null)
-			triggerManager.shutdown();
-		if (bootstrap != null)
-			bootstrap.shutdown();
-	}
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+        return promise;
+    }
+
+    public void shutdown() {
+        if (triggerManager != null)
+            triggerManager.shutdown();
+        if (bootstrap != null)
+            bootstrap.shutdown();
+    }
 }
