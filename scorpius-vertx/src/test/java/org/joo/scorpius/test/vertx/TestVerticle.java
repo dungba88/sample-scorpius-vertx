@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import org.joo.scorpius.Application;
 import org.joo.scorpius.Bootstrap;
 import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
+import org.joo.scorpius.support.vertx.eventbus.EventBusHandlingStrategy;
 import org.joo.scorpius.support.vertx.verticle.SimpleScorpiusVerticle;
 import org.joo.scorpius.test.support.SampleResponse;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
@@ -35,20 +36,20 @@ public class TestVerticle {
                 res.cause().printStackTrace();
             latch.countDown();
         });
-        
+
         try {
             latch.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             Assert.fail(e.getMessage());
         }
-        
+
         vertx.eventBus().<TriggerExecutionContext>consumer("scorpius").handler(event -> {
             event.body().execute();
         });
-        
+
         CountDownLatch latch2 = new CountDownLatch(1);
-        
+
         verticle1.getApplication().getTriggerManager().fire("greet_1", null, res -> {
             SampleResponse response = (SampleResponse) res;
             if (response.getName().equals("2"))
@@ -68,6 +69,7 @@ public class TestVerticle {
     private Bootstrap<?> configBootstrap1(Application application, Vertx vertx) {
         return AbstractBootstrap.from(() -> {
             TriggerManager manager = application.getTriggerManager();
+            manager.setHandlingStrategy(new EventBusHandlingStrategy(vertx.eventBus()));
             manager.registerTrigger("greet_1").withAction(executionContext -> {
                 verticle2.getApplication().getTriggerManager().fire("greet_2", null, executionContext::finish,
                         executionContext::fail);
@@ -78,6 +80,7 @@ public class TestVerticle {
     private Bootstrap<?> configBootstrap2(Application application, Vertx vertx) {
         return AbstractBootstrap.from(() -> {
             TriggerManager manager = application.getTriggerManager();
+            manager.setHandlingStrategy(new EventBusHandlingStrategy(vertx.eventBus()));
             manager.registerTrigger("greet_2").withAction(executionContext -> {
                 executionContext.finish(new SampleResponse("2"));
             });
