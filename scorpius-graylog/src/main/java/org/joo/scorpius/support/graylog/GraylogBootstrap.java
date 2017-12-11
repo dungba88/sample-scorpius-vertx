@@ -24,7 +24,7 @@ import org.joo.scorpius.trigger.TriggerEvent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class GraylogBootstrap extends AbstractBootstrap {
+public class GraylogBootstrap extends AbstractBootstrap<Void> {
 
     static {
         PluginManager.addPackage(AnnotatedGelfJsonAppender.class.getPackage().getName());
@@ -46,7 +46,7 @@ public class GraylogBootstrap extends AbstractBootstrap {
     }
 
     @Override
-    public Promise<?, Throwable> run() {
+    public Promise<Void, Throwable> run() {
         registerEventHandlers();
         return new SimpleDonePromise<>(null);
     }

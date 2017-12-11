@@ -14,7 +14,7 @@ import com.typesafe.config.Config;
 
 import lombok.Getter;
 
-public class TriggerTypeSafeBootstrap extends AbstractBootstrap {
+public class TriggerTypeSafeBootstrap extends AbstractBootstrap<Void> {
 
     private static final String DEFAULT_CONFIG_NAME = "triggers";
 
@@ -29,7 +29,7 @@ public class TriggerTypeSafeBootstrap extends AbstractBootstrap {
     }
 
     @Override
-    public Promise<?, Throwable> run() {
+    public Promise<Void, Throwable> run() {
         Config config = applicationContext.getInstance(Config.class);
         if (config == null) {
             throw new IllegalStateException(

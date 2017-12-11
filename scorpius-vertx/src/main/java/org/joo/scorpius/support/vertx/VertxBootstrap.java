@@ -17,7 +17,7 @@ import io.vertx.core.http.HttpServerOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
-public class VertxBootstrap extends AbstractBootstrap {
+public class VertxBootstrap extends AbstractBootstrap<Void> {
 
 	private static final Logger logger = LogManager.getLogger(VertxBootstrap.class);
 
@@ -60,15 +60,15 @@ public class VertxBootstrap extends AbstractBootstrap {
 		return this;
 	}
 
-	public Promise<?, Throwable> run() {
+	public Promise<Void, Throwable> run() {
 		msgController = new VertxMessageController(triggerManager);
 		Router restAPI = routingConfig != null ? routingConfig.apply(vertx) : configureRoutes(vertx);
-		Deferred<?, Throwable> deferred = new CompletableDeferredObject<>();
+		Deferred<Void, Throwable> deferred = new CompletableDeferredObject<>();
 		server.requestHandler(restAPI::accept).listen(port, res -> serverListener(res, deferred));
 		return deferred.promise();
 	}
 
-	private void serverListener(AsyncResult<HttpServer> res, Deferred<?, Throwable> deferred) {
+	private void serverListener(AsyncResult<HttpServer> res, Deferred<Void, Throwable> deferred) {
 		if (res.failed()) {
 			if (logger.isFatalEnabled())
 				logger.fatal("Exception occurred while initializing Vertx Web", res.cause());

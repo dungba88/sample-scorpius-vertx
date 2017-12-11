@@ -7,7 +7,7 @@ import org.joo.scorpius.support.bootstrap.AbstractBootstrap;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-public class TypeSafeBootstrap extends AbstractBootstrap {
+public class TypeSafeBootstrap extends AbstractBootstrap<Config> {
     
     private Config config;
 
@@ -24,7 +24,7 @@ public class TypeSafeBootstrap extends AbstractBootstrap {
     }
 
     @Override
-    public Promise<?, Throwable> run() {
+    public Promise<Config, Throwable> run() {
         config.checkValid(ConfigFactory.defaultReference());
         applicationContext.override(Config.class, config);
         return new SimpleDonePromise<>(config);
