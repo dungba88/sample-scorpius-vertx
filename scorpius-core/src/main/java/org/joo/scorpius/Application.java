@@ -8,15 +8,17 @@ import org.joo.scorpius.support.builders.Builder;
 import org.joo.scorpius.trigger.TriggerManager;
 import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
 
+import lombok.Getter;
+
 public class Application {
 
-	private TriggerManager triggerManager;
+	private @Getter TriggerManager triggerManager;
 
 	private AtomicBoolean initialized;
 
-	private ApplicationContext applicationContext;
+	private @Getter ApplicationContext applicationContext;
 
-	private Bootstrap<?> bootstrap;
+	private @Getter Bootstrap<?> bootstrap;
 
 	public Application() {
 		this(new ApplicationContextBuilder());
@@ -31,8 +33,10 @@ public class Application {
 		if (!initialized.compareAndSet(false, true))
 			throw new IllegalStateException("Application is already running");
 
-		this.bootstrap = bootstrap;
 		this.triggerManager = new DefaultTriggerManager(applicationContext);
+		this.triggerManager.start();
+		
+        this.bootstrap = bootstrap;
 		bootstrap.setTriggerManager(triggerManager);
 		bootstrap.setApplicationContext(applicationContext);
 		Promise<T, Throwable> promise = bootstrap.run();

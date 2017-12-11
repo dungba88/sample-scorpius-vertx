@@ -1,6 +1,7 @@
 package org.joo.scorpius.trigger;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.function.Supplier;
 
 import org.joo.scorpius.support.BaseRequest;
@@ -33,7 +34,10 @@ public class TriggerConfig implements TriggerRegistration {
     }
 
     private Class<?> getRequestClassFor(final Trigger<? extends BaseRequest, ? extends BaseResponse> trigger) {
-        return ((Class<?>) ((ParameterizedType) trigger.getClass().getGenericSuperclass()).getActualTypeArguments()[0]);
+        Type superClassType = trigger.getClass().getGenericSuperclass();
+        if (!(superClassType instanceof ParameterizedType))
+            return BaseRequest.class;
+        return ((Class<?>) ((ParameterizedType) superClassType).getActualTypeArguments()[0]);
     }
 
     @Override

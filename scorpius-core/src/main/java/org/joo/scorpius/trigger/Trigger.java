@@ -7,8 +7,4 @@ import org.joo.scorpius.support.exception.TriggerExecutionException;
 public interface Trigger<T extends BaseRequest, H extends BaseResponse> {
 
     public void execute(TriggerExecutionContext executionContext) throws TriggerExecutionException;
-
-    public default String getName() {
-        return getClass().getName();
-    }
 }

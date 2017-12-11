@@ -10,7 +10,12 @@ public class DefaultHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void close() throws Exception {
-        // nothing to close
+    public void start() {
+        // do nothing
+    }
+
+    @Override
+    public void shutdown() {
+        // do nothing
     }
 }

@@ -6,6 +6,7 @@ import org.joo.promise4j.Promise;
 import org.joo.scorpius.ApplicationContext;
 import org.joo.scorpius.support.BaseRequest;
 import org.joo.scorpius.support.BaseResponse;
+import org.joo.scorpius.support.LifeCycle;
 import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.PeriodicTaskMessage;
@@ -13,7 +14,7 @@ import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import net.jodah.failsafe.SyncFailsafe;
 
-public interface TriggerManager extends TriggerEventDispatcher {
+public interface TriggerManager extends TriggerEventDispatcher, LifeCycle {
 
     public BaseRequest decodeRequestForEvent(String name, String data) throws MalformedRequestException;
 
@@ -24,20 +25,18 @@ public interface TriggerManager extends TriggerEventDispatcher {
 
     public Promise<BaseResponse, TriggerExecutionException> fire(String name, BaseRequest data,
             SyncFailsafe<Object> failSafe);
+    
+    public TriggerRegistration registerTrigger(String name);
+    
+    public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
 
     public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg);
 
     public TriggerRegistration registerPeriodicEvent(PeriodicTaskMessage msg, TriggerConfig triggerConfig);
-
-    public TriggerRegistration registerTrigger(String name);
-
-    public TriggerRegistration registerTrigger(String name, TriggerConfig triggerConfig);
 
     public ApplicationContext getApplicationContext();
 
     public TriggerHandlingStrategy getHandlingStrategy();
 
     public void setHandlingStrategy(TriggerHandlingStrategy handlingStategy);
-
-    public void shutdown();
 }

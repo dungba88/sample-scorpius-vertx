@@ -16,7 +16,7 @@ import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
-public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
+public class DisruptorHandlingStrategy implements TriggerHandlingStrategy {
 
     private static final int DEFAULT_BUFFER_SIZE = 1024;
 
@@ -64,7 +64,6 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
                 waitStrategy);
         this.disruptor.setDefaultExceptionHandler(new DisruptorExceptionHandler());
         this.disruptor.handleEventsWithWorkerPool(this::onEvent);
-        this.disruptor.start();
     }
 
     @Override
@@ -102,7 +101,12 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy, AutoC
     }
 
     @Override
-    public void close() throws Exception {
+    public void start() {
+        this.disruptor.start();
+    }
+
+    @Override
+    public void shutdown() {
         disruptor.shutdown();
         producerExecutor.shutdown();
     }

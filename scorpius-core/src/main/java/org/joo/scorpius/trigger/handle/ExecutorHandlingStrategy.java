@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
-public class ExecutorHandlingStrategy implements TriggerHandlingStrategy, AutoCloseable {
+public class ExecutorHandlingStrategy implements TriggerHandlingStrategy {
 
     private boolean ownedExecutor;
 
@@ -26,9 +26,13 @@ public class ExecutorHandlingStrategy implements TriggerHandlingStrategy, AutoCl
     }
 
     @Override
-    public void close() throws Exception {
-        if (ownedExecutor) {
+    public void start() {
+        
+    }
+
+    @Override
+    public void shutdown() {
+        if (ownedExecutor)
             executor.shutdown();
-        }
     }
 }

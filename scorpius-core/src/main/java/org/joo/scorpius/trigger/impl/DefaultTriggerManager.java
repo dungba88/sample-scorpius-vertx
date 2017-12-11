@@ -2,9 +2,7 @@ package org.joo.scorpius.trigger.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,6 +24,7 @@ import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.builders.TriggerExecutionContextBuilder;
 import org.joo.scorpius.support.builders.contracts.TriggerExecutionContextBuilderFactory;
 import org.joo.scorpius.support.builders.contracts.TriggerHandlingStrategyFactory;
+import org.joo.scorpius.support.builders.contracts.TriggerRepositoryFactory;
 import org.joo.scorpius.support.exception.MalformedRequestException;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.PeriodicTaskMessage;
@@ -33,6 +32,7 @@ import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 import org.joo.scorpius.trigger.TriggerManager;
 import org.joo.scorpius.trigger.TriggerRegistration;
+import org.joo.scorpius.trigger.TriggerRepository;
 import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,9 +45,9 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
     private static final Logger logger = LogManager.getLogger(DefaultTriggerManager.class);
 
-    private Map<String, List<TriggerConfig>> triggerConfigs;
-
     private @Getter ApplicationContext applicationContext;
+
+    private @Getter @Setter TriggerRepository triggerRepository;
 
     private @Getter @Setter TriggerHandlingStrategy handlingStrategy;
 
@@ -56,11 +56,17 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     private @Getter List<ScheduledFuture<?>> scheduledFutures;
 
     public DefaultTriggerManager(final ApplicationContext applicationContext) {
-        this.triggerConfigs = new HashMap<>();
         this.applicationContext = applicationContext;
+        this.triggerRepository = applicationContext.getInstance(TriggerRepositoryFactory.class).create();
         this.handlingStrategy = applicationContext.getInstance(TriggerHandlingStrategyFactory.class).create();
-        this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
         this.scheduledFutures = new ArrayList<>();
+        this.scheduledExecutors = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    @Override
+    public void start() {
+        triggerRepository.start();
+        handlingStrategy.start();
     }
 
     @Override
@@ -71,11 +77,8 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         if (name == null)
             throw new MalformedRequestException("Event name is null");
 
-        if (!triggerConfigs.containsKey(name))
-            return null;
-
-        List<TriggerConfig> configs = triggerConfigs.get(name);
-        if (configs.isEmpty())
+        List<TriggerConfig> configs = triggerRepository.getTriggerConfigs(name);
+        if (configs == null || configs.isEmpty())
             return null;
 
         ObjectMapper mapper = new ObjectMapper();
@@ -106,15 +109,15 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     private Promise<BaseResponse, TriggerExecutionException> fireWithFailSafe(final String name, final BaseRequest data,
             final DoneCallback<BaseResponse> doneCallback, final FailCallback<TriggerExecutionException> failCallback,
             SyncFailsafe<Object> failSafe) {
-        if (!triggerConfigs.containsKey(name))
-            return resolveDefault(doneCallback);
-
-        List<TriggerConfig> configs = triggerConfigs.get(name);
-
         if (data != null && !data.verifyTraceId()) {
             TriggerExecutionException ex = new TriggerExecutionException("TraceId has not been attached");
             return rejectDefault(failCallback, ex);
         }
+
+        List<TriggerConfig> configs = triggerRepository.getTriggerConfigs(name);
+
+        if (configs == null)
+            return resolveDefault(doneCallback);
 
         TriggerExecutionContext dummyContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
 
@@ -186,16 +189,13 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
     }
 
     @Override
-    public TriggerRegistration registerTrigger(final String name) {
+    public TriggerRegistration registerTrigger(String name) {
         return registerTrigger(name, new TriggerConfig());
     }
 
     @Override
     public TriggerRegistration registerTrigger(final String name, final TriggerConfig triggerConfig) {
-        if (!triggerConfigs.containsKey(name))
-            triggerConfigs.put(name, new ArrayList<>());
-        triggerConfigs.get(name).add(triggerConfig);
-        return triggerConfig;
+        return triggerRepository.registerTrigger(name, triggerConfig);
     }
 
     @Override
@@ -216,15 +216,12 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
 
     @Override
     public void shutdown() {
-    		clearEventHandlers();
+        clearEventHandlers();
         for (ScheduledFuture<?> future : scheduledFutures) {
             future.cancel(true);
         }
         scheduledExecutors.shutdown();
-        try {
-            handlingStrategy.close();
-        } catch (Exception e) {
-            logger.warn("Exception occurred when closing handling strategy", e);
-        }
+        triggerRepository.shutdown();
+        handlingStrategy.shutdown();
     }
 }

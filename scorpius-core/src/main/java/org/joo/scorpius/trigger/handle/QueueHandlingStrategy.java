@@ -15,9 +15,6 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
         for (int i = 0; i < noConsumers; i++) {
             this.consumerThreads[i] = new ConsumerThread(queue);
         }
-        for (int i = 0; i < noConsumers; i++) {
-            this.consumerThreads[i].start();
-        }
     }
 
     @Override
@@ -28,7 +25,14 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void close() throws Exception {
+    public void start() {
+        for (ConsumerThread thread : consumerThreads) {
+            thread.start();
+        }
+    }
+
+    @Override
+    public void shutdown() {
         for (ConsumerThread thread : consumerThreads) {
             thread.cancel();
         }
