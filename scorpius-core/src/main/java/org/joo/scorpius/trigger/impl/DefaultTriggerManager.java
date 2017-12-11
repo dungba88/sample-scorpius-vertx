@@ -73,13 +73,13 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         if (name == null)
             throw new MalformedRequestException("Event name is null");
 
-        List<TriggerConfig> configs = triggerRepository.getTriggerConfigs(name);
-        if (configs == null || configs.isEmpty())
+        TriggerConfig[] configs = triggerRepository.getTriggerConfigs(name);
+        if (configs == null || configs.length == 0)
             return null;
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return (BaseRequest) mapper.readValue(data, configs.get(0).getRequestClass());
+            return (BaseRequest) mapper.readValue(data, configs[0].getRequestClass());
         } catch (IOException e) {
             throw new MalformedRequestException(e);
         }
@@ -110,16 +110,14 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
             return rejectDefault(failCallback, ex);
         }
 
-        List<TriggerConfig> configs = triggerRepository.getTriggerConfigs(name);
+        TriggerConfig[] configs = triggerRepository.getTriggerConfigs(name);
 
         if (configs == null)
             return resolveDefault(doneCallback);
 
-        TriggerExecutionContext dummyContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
-
         TriggerConfig config;
         try {
-            config = findMatchingTrigger(configs, dummyContext);
+            config = findMatchingTrigger(configs, data, applicationContext, name);
         } catch (PredicateExecutionException e) {
             TriggerExecutionException ex = new TriggerExecutionException("Condition evaluation failed", e);
             return rejectDefault(failCallback, ex);
@@ -149,10 +147,15 @@ public class DefaultTriggerManager extends AbstractTriggerEventDispatcher implem
         return executionContext.promise();
     }
 
-    private TriggerConfig findMatchingTrigger(final List<TriggerConfig> configs,
-            final TriggerExecutionContext dummyExecutionContext) throws PredicateExecutionException {
+    private TriggerConfig findMatchingTrigger(TriggerConfig[] configs, BaseRequest data,
+            ApplicationContext applicationContext, String name) throws PredicateExecutionException {
+        TriggerExecutionContext dummyExecutionContext = null;
         for (TriggerConfig config : configs) {
-            if (config.getCondition() == null || config.getCondition().satisfiedBy(dummyExecutionContext))
+            if (config.getCondition() == null)
+                return config;
+            if (dummyExecutionContext == null)
+                dummyExecutionContext = new SimpleTriggerExecutionContext(data, applicationContext, name);
+            if (config.getCondition().satisfiedBy(dummyExecutionContext))
                 return config;
         }
         return null;
