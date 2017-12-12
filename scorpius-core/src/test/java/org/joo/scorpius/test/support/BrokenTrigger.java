@@ -12,6 +12,6 @@ public class BrokenTrigger extends AbstractTrigger<SampleRequest, BaseResponse> 
 		executionContext.verifyTraceId();
 		SampleRequest theRequest = (SampleRequest) executionContext.getRequest();
 		String name = theRequest.getName() + executionContext.getTraceId() + executionContext.fetchRawTraceId();
-		throw new UnsupportedOperationException(name);
+		throw new UnsupportedOperationException("broken " + name);
 	}
 }

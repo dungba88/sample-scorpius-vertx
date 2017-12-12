@@ -27,7 +27,6 @@ import org.joo.scorpius.test.support.SampleRequest;
 import org.joo.scorpius.test.support.SampleResponse;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.test.support.TraceIdRequiredRequest;
-import org.joo.scorpius.trigger.TriggerConfig;
 import org.joo.scorpius.trigger.TriggerEvent;
 import org.joo.scorpius.trigger.handle.disruptor.DisruptorHandlingStrategy;
 import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
@@ -49,10 +48,9 @@ public class TestTriggerManager {
         context.override(IdGenerator.class, new TimeBasedIdGenerator());
         context.override(TriggerHandlingStrategyFactory.class, () -> new DisruptorHandlingStrategy());
         this.manager = new DefaultTriggerManager(context);
-        this.manager.registerTrigger("greet_java", new TriggerConfig(new SampleTrigger()))
+        this.manager.registerTrigger("greet_java").withAction(new SampleTrigger())
                 .withCondition(execContext -> execContext.getRequest() != null);
-        this.manager.registerTrigger("greet_java", new TriggerConfig(new BrokenTrigger()))
-                .withCondition(execContext -> execContext.getRequest() == null);
+        this.manager.registerTrigger("broken").withAction(new BrokenTrigger());
         this.manager.registerTrigger("retryable_consumer").withAction(retryTrigger);
         RetryPolicy retryPolicy = new RetryPolicy().retryOn(TriggerExecutionException.class)
                 .withDelay(100, TimeUnit.MILLISECONDS).withMaxRetries(3);
@@ -133,15 +131,15 @@ public class TestTriggerManager {
     @Test
     public void testException() {
         CountDownLatch latch = new CountDownLatch(2);
-        manager.fire("greet_java", null).fail(ex -> {
+        manager.fire("broken", new SampleRequest()).fail(ex -> {
             Assert.assertTrue(ex.getCause() instanceof UnsupportedOperationException
-                    && ex.getCause().getMessage().equals("broken"));
+                    && ex.getCause().getMessage().startsWith("broken"));
             latch.countDown();
         });
 
-        manager.fire("greet_java", null, null, ex -> {
+        manager.fire("broken", new SampleRequest(), null, ex -> {
             Assert.assertTrue(ex.getCause() instanceof UnsupportedOperationException
-                    && ex.getCause().getMessage().equals("broken"));
+                    && ex.getCause().getMessage().startsWith("broken"));
             latch.countDown();
         });
 
