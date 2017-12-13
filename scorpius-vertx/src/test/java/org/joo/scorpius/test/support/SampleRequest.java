@@ -19,9 +19,4 @@ public class SampleRequest extends BaseRequest {
     public String getName() {
         return name;
     }
-
-    @Override
-    public boolean verifyTraceId() {
-        return true;
-    }
 }

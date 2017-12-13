@@ -29,7 +29,7 @@ public abstract class AbstractVertxController implements Handler<RoutingContext>
     }
 
     protected void doFireEvent(RoutingContext rc, String msgName, BaseRequest request) {
-        if (request != null && request.fetchRawTraceId() != null)
+        if (request != null && request.fetchRawTraceId() == null)
             request.attachTraceId(getTraceId(rc, triggerManager.getApplicationContext()));
 
         triggerManager.fire(msgName, request).done(triggerResponse -> onDone(triggerResponse, rc.response(), rc))
