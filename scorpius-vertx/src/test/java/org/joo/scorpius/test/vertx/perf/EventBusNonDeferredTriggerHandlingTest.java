@@ -1,5 +1,6 @@
 package org.joo.scorpius.test.vertx.perf;
 
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -36,9 +37,12 @@ public class EventBusNonDeferredTriggerHandlingTest extends AbstractTriggerTest 
 	protected void doTest(long iterations, String msgName) {
 		AtomicInteger counter = new AtomicInteger();
 		CountDownLatch latch = new CountDownLatch(1);
+		
+		SampleRequest request = new SampleRequest("name");
+		request.attachTraceId(Optional.empty());
 
 		for (int i = 0; i < iterations; i++) {
-			manager.fire(msgName, new SampleRequest("name"), response -> {
+			manager.fire(msgName, request, response -> {
 				SampleResponse sampleResponse = (SampleResponse) response;
 				if (sampleResponse.getName().equals("Hi name")) {
 					if (counter.incrementAndGet() == iterations) {
