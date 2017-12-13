@@ -43,9 +43,9 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
     private TriggerManager triggerManager;
 
-    public DefaultTriggerExecutionContext(final TriggerManager manager, final TriggerConfig config, final BaseRequest request,
-            final ApplicationContext applicationContext, final Deferred<BaseResponse, TriggerExecutionException> deferred,
-            final String id, final String eventName) {
+    public DefaultTriggerExecutionContext(final TriggerManager manager, final TriggerConfig config,
+            final BaseRequest request, final ApplicationContext applicationContext,
+            final Deferred<BaseResponse, TriggerExecutionException> deferred, final String id, final String eventName) {
         this.id = id;
         this.eventName = eventName;
         this.triggerManager = manager;
@@ -125,26 +125,27 @@ public class DefaultTriggerExecutionContext implements TriggerExecutionContext {
 
     @Override
     public void attachTraceId(final Optional<String> traceId) {
-        request.attachTraceId(traceId);
+        if (request != null)
+            request.attachTraceId(traceId);
     }
 
     @Override
     public boolean verifyTraceId() {
-        return request.verifyTraceId();
+        return request != null ? request.verifyTraceId() : false;
     }
 
     @Override
     public String getTraceId() {
-        return request.getTraceId();
+        return request != null ? request.getTraceId() : null;
     }
 
     @Override
     public Optional<String> fetchRawTraceId() {
-        return request.fetchRawTraceId();
+        return request != null ? request.fetchRawTraceId() : null;
     }
 
-	@Override
-	public ExecutionContextMessage toMessage() {
-		return new ExecutionContextMessage(id, eventName, request);
-	}
+    @Override
+    public ExecutionContextMessage toMessage() {
+        return new ExecutionContextMessage(id, eventName, request);
+    }
 }
