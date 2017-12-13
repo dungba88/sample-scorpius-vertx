@@ -3,7 +3,7 @@ package org.joo.scorpius.trigger.handle;
 import org.joo.scorpius.support.queue.HandlingQueue;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
-public class QueueHandlingStrategy implements TriggerHandlingStrategy {
+public class QueueHandlingStrategy extends AbstractTriggerHandlingStrategy {
 
     private HandlingQueue queue;
 
@@ -25,14 +25,14 @@ public class QueueHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void start() {
+    protected void doStart() {
         for (ConsumerThread thread : consumerThreads) {
             thread.start();
         }
     }
 
     @Override
-    public void shutdown() {
+    protected void doShutdown() {
         for (ConsumerThread thread : consumerThreads) {
             thread.cancel();
         }

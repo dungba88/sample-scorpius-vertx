@@ -16,6 +16,7 @@ import org.joo.scorpius.support.builders.id.AtomicIdGenerator;
 import org.joo.scorpius.support.builders.id.TimeBasedIdGenerator;
 import org.joo.scorpius.support.builders.id.UUIDGenerator;
 import org.joo.scorpius.support.exception.MalformedRequestException;
+import org.joo.scorpius.support.exception.NoMatchingRouteException;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.ExecutionContextFinishMessage;
 import org.joo.scorpius.support.message.ExecutionContextStartMessage;
@@ -28,6 +29,9 @@ import org.joo.scorpius.test.support.SampleResponse;
 import org.joo.scorpius.test.support.SampleTrigger;
 import org.joo.scorpius.test.support.TraceIdRequiredRequest;
 import org.joo.scorpius.trigger.TriggerEvent;
+import org.joo.scorpius.trigger.handle.DefaultHandlingStrategy;
+import org.joo.scorpius.trigger.handle.HashedHandlingStrategy;
+import org.joo.scorpius.trigger.handle.RoutingHandlingStrategy;
 import org.joo.scorpius.trigger.handle.disruptor.DisruptorHandlingStrategy;
 import org.joo.scorpius.trigger.impl.DefaultTriggerManager;
 import org.junit.After;
@@ -65,7 +69,90 @@ public class TestTriggerManager {
         this.manager.registerPeriodicEvent(new PeriodicTaskMessage(200, 200, new SampleRequest("name")))
                 .withAction(PeriodicTrigger::new);
 
+        DefaultHandlingStrategy defaultStrategy = new DefaultHandlingStrategy();
+        DisruptorHandlingStrategy disruptorStrategy = new DisruptorHandlingStrategy();
+        RoutingHandlingStrategy strategy = new RoutingHandlingStrategy()
+                .addRoute("route1", "request.name contains 'John'", disruptorStrategy)
+                .addRoute("route2", "request.name contains 'Mary'", defaultStrategy).addRoute("route3", defaultStrategy)
+                .removeRoute("route3");
+
+        HashedHandlingStrategy<Integer> hashedStrategy = new HashedHandlingStrategy<>(ec -> {
+            SampleRequest request = (SampleRequest) ec.getRequest();
+            if (request == null || request.getName() == null)
+                return -1;
+            if (request.getName().contains("John"))
+                return 1;
+            if (request.getName().contains("Mary"))
+                return 0;
+            return -1;
+        }).addStrategy(0, disruptorStrategy).addStrategy(1, defaultStrategy);
+
+        this.manager.registerTrigger("routing").withAction(SampleTrigger::new).withHandlingStrategy(strategy);
+        this.manager.registerTrigger("hashed").withAction(SampleTrigger::new).withHandlingStrategy(hashedStrategy);
+
         manager.start();
+    }
+
+    @Test
+    public void testRoutingStrategy() {
+        CountDownLatch latch = new CountDownLatch(4);
+        manager.fire("routing", new SampleRequest()).fail(ex -> {
+            if (ex.getCause() instanceof NoMatchingRouteException)
+                latch.countDown();
+        });
+
+        manager.fire("routing", new SampleRequest("Peter")).fail(ex -> {
+            if (ex.getCause() instanceof NoMatchingRouteException)
+                latch.countDown();
+        });
+
+        manager.fire("routing", new SampleRequest("John 1"), res -> {
+            latch.countDown();
+        }, null);
+
+        manager.fire("routing", new SampleRequest("Mary 1")).done(res -> {
+            latch.countDown();
+        });
+
+        try {
+            latch.await(1000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(0, latch.getCount());
+    }
+    
+    @Test
+    public void testHashedStrategy() {
+        CountDownLatch latch = new CountDownLatch(4);
+        manager.fire("hashed", new SampleRequest()).fail(ex -> {
+            if (ex.getCause() instanceof NoMatchingRouteException)
+                latch.countDown();
+        });
+
+        manager.fire("hashed", new SampleRequest("Peter")).fail(ex -> {
+            if (ex.getCause() instanceof NoMatchingRouteException)
+                latch.countDown();
+        });
+
+        manager.fire("hashed", new SampleRequest("John 1"), res -> {
+            latch.countDown();
+        }, null);
+
+        manager.fire("hashed", new SampleRequest("Mary 1")).done(res -> {
+            latch.countDown();
+        });
+
+        try {
+            latch.await(1000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(0, latch.getCount());
     }
 
     @Test

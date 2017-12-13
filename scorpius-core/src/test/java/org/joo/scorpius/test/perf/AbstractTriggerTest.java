@@ -28,8 +28,8 @@ public abstract class AbstractTriggerTest {
     public static List<Object[]> data() {
         List<Object[]> list = new ArrayList<>();
         list.add(new Object[] { 1000 });
-        list.add(new Object[] { 10000 });
-        list.add(new Object[] { 100000 });
+//        list.add(new Object[] { 10000 });
+//        list.add(new Object[] { 100000 });
 //        list.add(new Object[] { 1000000 });
 //        list.add(new Object[] { 10000000 });
         return list;

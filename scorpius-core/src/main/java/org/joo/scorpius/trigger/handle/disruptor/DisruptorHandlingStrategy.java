@@ -8,7 +8,7 @@ import org.joo.scorpius.support.builders.DefaultThreadFactoryBuilder;
 import org.joo.scorpius.support.builders.contracts.TriggerThreadFactory;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
-import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
+import org.joo.scorpius.trigger.handle.AbstractTriggerHandlingStrategy;
 
 import com.lmax.disruptor.RingBuffer;
 import com.lmax.disruptor.WaitStrategy;
@@ -16,7 +16,7 @@ import com.lmax.disruptor.YieldingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
-public class DisruptorHandlingStrategy implements TriggerHandlingStrategy {
+public class DisruptorHandlingStrategy extends AbstractTriggerHandlingStrategy {
 
     private static final int DEFAULT_BUFFER_SIZE = 1024;
 
@@ -101,12 +101,12 @@ public class DisruptorHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void start() {
+    protected void doStart() {
         this.disruptor.start();
     }
 
     @Override
-    public void shutdown() {
+    protected void doShutdown() {
         disruptor.shutdown();
         producerExecutor.shutdown();
     }

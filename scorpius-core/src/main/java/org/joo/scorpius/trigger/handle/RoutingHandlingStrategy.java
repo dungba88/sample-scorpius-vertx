@@ -8,13 +8,24 @@ import org.joo.scorpius.support.exception.NoMatchingRouteException;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.trigger.TriggerCondition;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
+import org.joo.scorpius.trigger.impl.SqlTriggerCondition;
 
 import lombok.Getter;
 import lombok.NonNull;
 
-public class RoutingHandlingStrategy implements TriggerHandlingStrategy {
+public class RoutingHandlingStrategy extends AbstractTriggerHandlingStrategy {
 
     private Map<String, StrategyRoute> routes = new ConcurrentHashMap<>();
+
+    public RoutingHandlingStrategy addRoute(final @NonNull String name,
+            final @NonNull TriggerHandlingStrategy strategy) {
+        return addRoute(name, (TriggerCondition) null, strategy);
+    }
+
+    public RoutingHandlingStrategy addRoute(final @NonNull String name, final String condition,
+            final @NonNull TriggerHandlingStrategy strategy) {
+        return addRoute(name, new SqlTriggerCondition(condition), strategy);
+    }
 
     public RoutingHandlingStrategy addRoute(final @NonNull String name, final TriggerCondition condition,
             final @NonNull TriggerHandlingStrategy strategy) {
@@ -22,14 +33,21 @@ public class RoutingHandlingStrategy implements TriggerHandlingStrategy {
         return this;
     }
 
-    @Override
-    public void start() {
-
+    public RoutingHandlingStrategy removeRoute(final @NonNull String name) {
+        routes.remove(name);
+        return this;
     }
 
     @Override
-    public void shutdown() {
+    protected void doStart() {
+        for (StrategyRoute route : routes.values())
+            route.getStrategy().start();
+    }
 
+    @Override
+    protected void doShutdown() {
+        for (StrategyRoute route : routes.values())
+            route.getStrategy().shutdown();
     }
 
     @Override

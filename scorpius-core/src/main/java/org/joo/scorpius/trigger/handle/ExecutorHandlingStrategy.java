@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
-public class ExecutorHandlingStrategy implements TriggerHandlingStrategy {
+public class ExecutorHandlingStrategy extends AbstractTriggerHandlingStrategy {
 
     private boolean ownedExecutor;
 
@@ -26,12 +26,12 @@ public class ExecutorHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void start() {
+    protected void doStart() {
         
     }
 
     @Override
-    public void shutdown() {
+    protected void doShutdown() {
         if (ownedExecutor)
             executor.shutdown();
     }

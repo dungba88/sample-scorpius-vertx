@@ -6,7 +6,7 @@ import org.joo.scorpius.support.BaseResponse;
 import org.joo.scorpius.support.exception.TriggerExecutionException;
 import org.joo.scorpius.support.message.ExecutionContextMessage;
 import org.joo.scorpius.trigger.TriggerExecutionContext;
-import org.joo.scorpius.trigger.handle.TriggerHandlingStrategy;
+import org.joo.scorpius.trigger.handle.AbstractTriggerHandlingStrategy;
 import org.msgpack.MessagePack;
 
 import io.vertx.core.AsyncResult;
@@ -15,7 +15,7 @@ import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.eventbus.Message;
 import io.vertx.core.eventbus.MessageCodec;
 
-public class EventBusHandlingStrategy implements TriggerHandlingStrategy {
+public class EventBusHandlingStrategy extends AbstractTriggerHandlingStrategy {
 
 	private static final String DEFAULT_ADDRESS = "scorpius";
 
@@ -70,13 +70,12 @@ public class EventBusHandlingStrategy implements TriggerHandlingStrategy {
 	}
 
 	@Override
-	public void start() {
-		eventBus.unregisterDefaultCodec(ExecutionContextMessage.class);
+	protected void doStart() {
 		eventBus.registerDefaultCodec(ExecutionContextMessage.class, msgCodec);
 	}
 
 	@Override
-	public void shutdown() {
+	protected void doShutdown() {
 		eventBus.unregisterDefaultCodec(ExecutionContextMessage.class);
 	}
 }

@@ -2,7 +2,7 @@ package org.joo.scorpius.trigger.handle;
 
 import org.joo.scorpius.trigger.TriggerExecutionContext;
 
-public class DefaultHandlingStrategy implements TriggerHandlingStrategy {
+public class DefaultHandlingStrategy extends AbstractTriggerHandlingStrategy {
 
     @Override
     public void handle(final TriggerExecutionContext context) {
@@ -10,12 +10,12 @@ public class DefaultHandlingStrategy implements TriggerHandlingStrategy {
     }
 
     @Override
-    public void start() {
+    protected void doStart() {
         // do nothing
     }
 
     @Override
-    public void shutdown() {
+    protected void doShutdown() {
         // do nothing
     }
 }

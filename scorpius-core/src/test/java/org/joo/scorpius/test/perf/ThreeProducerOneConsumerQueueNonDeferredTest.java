@@ -42,6 +42,6 @@ public class ThreeProducerOneConsumerQueueNonDeferredTest extends AbstractTrigge
 			e.printStackTrace();
 		}
 
-		Assert.assertTrue(processed.get() == iterations);
+		Assert.assertEquals(iterations, processed.get());
 	}
 }

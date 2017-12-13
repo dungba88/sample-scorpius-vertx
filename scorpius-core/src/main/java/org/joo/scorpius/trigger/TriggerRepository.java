@@ -7,4 +7,6 @@ public interface TriggerRepository extends LifeCycle {
     public TriggerRegistration registerTrigger(final String name, final TriggerConfig triggerConfig);
     
     public TriggerConfig[] getTriggerConfigs(String name);
+
+    public TriggerConfig[] getTriggerConfigs();
 }
