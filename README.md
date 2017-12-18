@@ -206,6 +206,8 @@ Almost everything in Scorpius is extensible, or configurable. The most prominien
 - `DisruptorHandlingStrategy`: This will use LMAX Disruptor to execute the triggers. It is the fastest and most efficient strategy besides the default one
 - `ExecutorHandlingStrategy`: This will use Java `ExecutorService` to execute the triggers. You can specify number of threads used by the `ExecutorService`
 - `QueueHandlingStrategy`: This will an adhoc queue to execute the trigger
+- `RoutingHandlingStrategy`: Allow you to wrap multiple strategies and specify the condition for each one. This is useful if you want multiple triggers to handle the same event under different conditions.
+- `HashedHandlingStrategy`: Allow you to wrap multiple strategies and specify a hash function (from `TriggerExecutionContext` to a type of your choice) to find the strategy.
 
 *Which strategy to be used?*
 
@@ -216,6 +218,8 @@ If you want your trigger to prematurely return result to caller, and continue do
 Because `DisruptorHandlingStrategy` only use 1 threads for the consumer, if you want to make use of full CPU power, there are 2 ways to achieve:
 - Scale horizontally, use 1 `DisruptorHandlingStrategy` for each type or group of events.
 - Use `ExecutorHandlingStrategy` and set the number of threads properly.
+
+`RoutingHandlingStrategy` and `HashedHandlingStrategy` are advanced strategies which might be useful in some situations.
 
 ### note on DisruptorHandlingStrategy
 
